@@ -1,70 +1,239 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#070b13">
-  <title>Xenon Edge Test</title>
+  <meta name="theme-color" content="#080b17">
+  <title>Edge Desk · Personal Control Bar</title>
   <style>
     * { box-sizing: border-box; }
-    :root { color-scheme: dark; }
-    body { margin: 0; min-height: 100vh; min-height: 100svh; background: radial-gradient(ellipse at 50% 50%, #14213b 0, #080c15 58%, #05070c 100%); color: #f3f7ff; font: 16px/1.4 system-ui, sans-serif; }
-    .dashboard { width: 100%; min-height: 100vh; min-height: 100svh; padding: clamp(24px, 4.2vw, 96px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: 1fr auto; align-items: center; gap: clamp(24px, 3vw, 72px); overflow: hidden; }
-    .brand { align-self: center; }
-    .eyebrow, .caption { color: #82d8ff; font-size: clamp(10px, 1.1vw, 15px); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
-    h1 { margin: 18px 0 12px; font-size: clamp(30px, 3vw, 64px); line-height: 1.02; letter-spacing: -.04em; }
-    h1 span { color: #81d7ff; }
-    .brand p, .subtle { margin: 0; color: #9aa9c1; font-size: clamp(13px, 1.1vw, 18px); }
-    .clock-panel { min-width: 0; text-align: center; padding: clamp(20px, 2vw, 48px) 0; border-left: 1px solid #283956; border-right: 1px solid #283956; }
-    .live { display: inline-flex; align-items: center; gap: 10px; color: #9aa9c1; font-size: clamp(10px, 1vw, 14px); letter-spacing: .16em; text-transform: uppercase; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #54e39a; box-shadow: 0 0 14px #54e39a; }
-    #clock { margin: 20px 0 10px; color: #f5f8ff; font-size: clamp(56px, 15vh, 156px); font-weight: 650; line-height: .95; letter-spacing: -.055em; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    #date { color: #aab7cc; font-size: clamp(13px, 1.15vw, 18px); }
-    .cards { display: grid; gap: clamp(14px, 2vh, 24px); }
-    .card { padding: clamp(16px, 1.6vw, 30px); border: 1px solid #263853; border-radius: 16px; background: linear-gradient(135deg, #121c2cdd, #0c121ddd); }
-    .card-label { display: block; margin-bottom: 8px; color: #8191aa; font-size: 11px; font-weight: 700; letter-spacing: .17em; }
-    .card strong { display: block; color: #f1f6ff; font-size: clamp(19px, 2vw, 34px); font-variant-numeric: tabular-nums; }
-    .card small { display: block; margin-top: 4px; color: #9aa9c1; font-size: clamp(12px, 1vw, 15px); }
-    .ready { color: #54e39a !important; }
-    footer { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; padding-top: 18px; border-top: 1px solid #26334a; color: #71809a; font-size: 10px; font-weight: 700; letter-spacing: .18em; }
-    @media (max-aspect-ratio: 2/1) {
-      .dashboard { min-height: 100svh; grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; gap: 22px; padding: 28px; overflow: auto; }
-      .brand { text-align: center; }
-      .clock-panel { border: 0; border-top: 1px solid #283956; border-bottom: 1px solid #283956; }
-      #clock { font-size: clamp(54px, 15vw, 112px); }
-      .cards { grid-template-columns: 1fr 1fr; }
-      footer { grid-column: 1; flex-wrap: wrap; }
+    :root { color-scheme: dark; --ink:#f4f6ff; --muted:#a0aac4; --line:#344066; --panel:#111630ee; --green:#b5ff83; --blue:#9aaeff; }
+    body { margin:0; min-width:320px; min-height:100vh; min-height:100dvh; overflow:hidden; color:var(--ink); background:radial-gradient(ellipse at 50% 45%,#10224a 0,#080b17 58%,#05060c 100%); font:15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    button { color:inherit; font:inherit; cursor:pointer; }
+    .app { width:100%; height:100vh; height:100dvh; padding:16px 20px 20px; display:grid; grid-template-rows:54px minmax(0,1fr); gap:14px; }
+    .topbar { min-width:0; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; }
+    .brand { display:flex; align-items:center; gap:11px; min-width:0; }
+    .brand-mark { width:34px; height:34px; display:grid; place-items:center; border:1px solid #c2ff95; border-radius:11px; color:#c2ff95; font-size:20px; background:#b5ff8316; box-shadow:0 0 25px #a6ff8422; }
+    .brand-name { font-size:16px; font-weight:850; letter-spacing:.12em; white-space:nowrap; }
+    .brand-sub { margin-top:2px; color:#8994b4; font-size:9px; font-weight:700; letter-spacing:.2em; }
+    .top-status { justify-self:center; display:flex; align-items:center; gap:9px; padding:8px 13px; border:1px solid #313b61; border-radius:99px; background:#11172b; color:#c4cce0; font-size:11px; font-weight:750; white-space:nowrap; }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:#aaff77; box-shadow:0 0 12px #aaff77; }
+    .top-actions { justify-self:end; display:flex; gap:8px; }
+    .small-btn { border:1px solid #39466e; border-radius:10px; background:#111831; padding:8px 12px; color:#dbe2fa; font-size:11px; font-weight:750; transition:.18s ease; }
+    .small-btn:hover { border-color:#a6ff82; background:#a6ff8218; }
+    .columns { min-height:0; display:grid; grid-template-columns:1.04fr .98fr 1.18fr; gap:14px; }
+    .panel { min-width:0; min-height:0; display:flex; flex-direction:column; padding:clamp(16px,1.5vw,26px); border:1px solid #35416a; border-radius:18px; background:linear-gradient(145deg,#111831ed,#0b1022f2); box-shadow:0 16px 52px #0005,inset 0 1px #ffffff0a; overflow:hidden; }
+    .panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:16px; }
+    .kicker { color:var(--green); font-size:9px; font-weight:850; letter-spacing:.19em; text-transform:uppercase; }
+    .panel-title { margin:4px 0 0; font-size:clamp(17px,1.4vw,24px); line-height:1.1; letter-spacing:-.025em; }
+    .icon-btn { flex:0 0 auto; width:35px; height:35px; display:grid; place-items:center; border:1px solid #6375bb; border-radius:10px; background:#111a34; font-size:15px; transition:.18s ease; }
+    .icon-btn:hover { color:var(--green); border-color:var(--green); transform:translateY(-1px); }
+    .weather { position:relative; justify-content:space-between; background:radial-gradient(ellipse at 80% 25%,#1a4a3d88,transparent 48%),linear-gradient(145deg,#101936,#0a1022 75%); }
+    .weather-main { display:grid; grid-template-columns:1fr auto; align-items:center; gap:8px; flex:1; min-height:0; }
+    .clock { font-size:clamp(42px,5.6vw,100px); font-weight:780; line-height:.94; letter-spacing:-.065em; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .date { margin-top:10px; color:#b5bfd5; font-size:clamp(11px,.9vw,14px); }
+    .weather-symbol { justify-self:end; font-size:clamp(45px,5vw,86px); filter:drop-shadow(0 0 22px #9dcfff44); }
+    .temperature { margin-top:clamp(16px,2.4vh,28px); display:flex; align-items:flex-start; gap:8px; }
+    .temp-value { font-size:clamp(46px,5vw,84px); font-weight:760; line-height:.9; letter-spacing:-.06em; font-variant-numeric:tabular-nums; }
+    .temp-unit { padding-top:5px; color:#a8caff; font-size:clamp(17px,1.5vw,25px); }
+    .condition { margin-top:8px; color:#e1e8f9; font-size:clamp(13px,1.05vw,17px); font-weight:700; }
+    .weather-note { margin-top:4px; color:var(--muted); font-size:11px; }
+    .weather-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:20px; padding-top:15px; border-top:1px solid #303b5c; }
+    .stat-label { color:#8591ae; font-size:9px; font-weight:800; letter-spacing:.1em; }
+    .stat-value { margin-top:5px; color:#edf2ff; font-size:clamp(12px,1vw,16px); font-weight:750; font-variant-numeric:tabular-nums; }
+    .weather-error { color:#ffcf8a; }
+    .tools-panel { background:radial-gradient(ellipse at 50% 0%,#29345f55,transparent 52%),linear-gradient(145deg,#11162f,#0b1021); }
+    .tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px; }
+    .tab { padding:8px 5px; border:1px solid #344064; border-radius:9px; background:#171e3a; color:#c4cce1; font-size:10px; font-weight:800; }
+    .tab.active { border-color:#91e98b; background:linear-gradient(135deg,#a9fb8c55,#4aa87d4a); color:#e8ffda; box-shadow:0 0 16px #9aff7620; }
+    .tool-grid { flex:1; min-height:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:7px; }
+    .tool { min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; border:1px solid #303c64; border-radius:11px; background:linear-gradient(150deg,#1a2344,#111831); transition:.16s ease; }
+    .tool:hover { border-color:#a5f382; background:#253456; transform:translateY(-2px); }
+    .tool-symbol { font-size:clamp(20px,2vw,35px); line-height:1; color:#f1f5ff; }
+    .tool-label { color:#bdc7e1; font-size:clamp(8px,.65vw,10px); font-weight:750; text-align:center; }
+    .helper { margin-top:10px; color:#8390ad; font-size:10px; text-align:center; }
+    .reply-panel { background:radial-gradient(ellipse at 90% 0%,#183d3c66,transparent 46%),linear-gradient(145deg,#11162f,#0a1020); }
+    .reply-head-actions { display:flex; gap:7px; align-items:center; }
+    .reply-list { min-height:0; flex:1; display:flex; flex-direction:column; gap:8px; overflow:auto; padding-right:3px; }
+    .reply { width:100%; min-height:48px; display:grid; grid-template-columns:18px minmax(0,1fr) 28px; align-items:center; gap:8px; padding:9px 10px; border:1px solid #303b60; border-radius:10px; background:linear-gradient(100deg,#171f3d,#11182d); text-align:left; transition:.16s ease; }
+    .reply:hover { border-color:#a2f27f; background:#1b2940; }
+    .reply-mark { color:#aaff88; font-size:13px; }
+    .reply-text { min-width:0; color:#e8edff; font-size:clamp(10px,.78vw,13px); font-weight:650; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .copy-mark { display:grid; place-items:center; color:#9daedc; font-size:15px; }
+    .custom-remove { color:#8190ad; font-size:11px; text-align:center; }
+    .custom-remove:hover { color:#ff9aaf; }
+    .reply-foot { margin-top:10px; display:flex; justify-content:space-between; align-items:center; gap:8px; color:#7f8ba7; font-size:9px; }
+    .toast { position:fixed; left:50%; bottom:24px; z-index:5; transform:translate(-50%,18px); opacity:0; pointer-events:none; padding:10px 15px; border:1px solid #9ff280; border-radius:99px; background:#13221c; color:#eaffdc; font-size:12px; font-weight:800; box-shadow:0 8px 30px #0008; transition:.2s ease; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-aspect-ratio:2/1) {
+      body { overflow:auto; }
+      .app { height:auto; min-height:100dvh; padding:12px; grid-template-rows:auto auto; }
+      .topbar { grid-template-columns:1fr auto; }
+      .top-status { display:none; }
+      .columns { grid-template-columns:1fr; grid-template-rows:minmax(360px,auto) minmax(430px,auto) minmax(420px,auto); }
+      .panel { padding:18px; }
+      .weather-main { min-height:190px; }
+      .clock { font-size:clamp(54px,13vw,86px); }
+      .weather-symbol { font-size:72px; }
+      .tool-label { font-size:10px; }
+      .tool-symbol { font-size:30px; }
+      .reply-text { font-size:13px; }
     }
+    @media (max-width:480px) { .brand-name { font-size:13px; } .small-btn { padding:8px 9px; } .columns { grid-template-rows:minmax(350px,auto) minmax(420px,auto) minmax(400px,auto); } }
   </style>
 </head>
 <body>
-  <main class="dashboard">
-    <header class="brand">
-      <div class="eyebrow">Personal dashboard</div>
-      <h1>Xenon Edge<br><span>Test</span></h1>
-      <p>A first custom screen<br>made for the ultrawide display.</p>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div>
+      <div class="top-status"><span class="status-dot"></span><span>위젯 자동 동기화</span><span id="sync-time">날씨 연결 중</span></div>
+      <div class="top-actions"><button class="small-btn" id="add-reply">＋ 문구 추가</button><button class="small-btn" id="fullscreen" aria-label="전체 화면">⛶</button></div>
     </header>
-    <section class="clock-panel" aria-label="Current local time">
-      <div class="live"><span class="dot"></span>HTML widget online</div>
-      <div id="clock" aria-live="off">--:--:--</div>
-      <div id="date"></div>
-    </section>
-    <aside class="cards" aria-label="Display status">
-      <div class="card"><span class="card-label">DISPLAY</span><strong>2560 × 720</strong><small>32:9 ultrawide · landscape</small></div>
-      <div class="card"><span class="card-label">WIDGET STATUS</span><strong class="ready">READY</strong><small>Clock updates every second</small></div>
-    </aside>
-    <footer><span>FIRST CUSTOM HTML WIDGET</span><span>LOCAL TIME · AUTO-REFRESH</span></footer>
-  </main>
+    <main class="columns">
+      <section class="panel weather" aria-label="에드먼튼 시계와 날씨">
+        <div class="panel-head"><div><div class="kicker">◷ EDMONTON · ALBERTA</div><h2 class="panel-title">시간과 날씨</h2></div><button class="icon-btn" id="refresh-weather" aria-label="날씨 새로고침" title="날씨 새로고침">↻</button></div>
+        <div class="weather-main">
+          <div><div class="clock" id="clock">--:--:--</div><div class="date" id="date">에드먼튼 현지 시각</div><div class="temperature"><span class="temp-value" id="temperature">--</span><span class="temp-unit">°C</span></div><div class="condition" id="condition">날씨를 불러오는 중</div><div class="weather-note" id="feels">잠시만 기다려 주세요</div></div>
+          <div class="weather-symbol" id="weather-icon">🌤️</div>
+        </div>
+        <div class="weather-stats"><div><div class="stat-label">오늘 최고</div><div class="stat-value" id="high">--°</div></div><div><div class="stat-label">오늘 최저</div><div class="stat-value" id="low">--°</div></div><div><div class="stat-label">바람</div><div class="stat-value" id="wind">-- km/h</div></div></div>
+      </section>
+      <section class="panel tools-panel" aria-label="빠른 기호 복사">
+        <div class="panel-head"><div><div class="kicker">✧ QUICK TOOLS</div><h2 class="panel-title">빠른 문구 복사함</h2></div><button class="icon-btn" id="copy-last" aria-label="최근 항목 다시 복사" title="최근 항목 다시 복사">▢</button></div>
+        <div class="tabs" id="tool-tabs"><button class="tab active" data-group="work">업무</button><button class="tab" data-group="mood">감정</button><button class="tab" data-group="content">콘텐츠</button><button class="tab" data-group="other">기타</button></div>
+        <div class="tool-grid" id="tool-grid"></div>
+        <div class="helper">버튼을 누르면 기호와 문구가 복사돼요</div>
+      </section>
+      <section class="panel reply-panel" aria-label="자주 쓰는 답변 문구">
+        <div class="panel-head"><div><div class="kicker">▤ REPLY BANK</div><h2 class="panel-title">자주 쓰는 문구</h2></div><div class="reply-head-actions"><button class="icon-btn" id="add-reply-icon" aria-label="문구 추가" title="문구 추가">＋</button></div></div>
+        <div class="reply-list" id="reply-list"></div>
+        <div class="reply-foot"><span>문구를 누르면 바로 복사돼요.</span><span id="reply-count"></span></div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite">복사했어요</div>
   <script>
-    const clock = document.getElementById("clock");
-    const date = document.getElementById("date");
+    const EDMONTON_TZ = "America/Edmonton";
+    const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=53.5461&longitude=-113.4938&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=celsius&wind_speed_unit=kmh&timezone=America%2FEdmonton&forecast_days=1";
+    const GROUPS = {
+      work: [{icon:"→",label:"다음 단계",text:"→ "},{icon:"•",label:"목록",text:"• "},{icon:"✓",label:"완료",text:"✓ "},{icon:"※",label:"참고",text:"※ "},{icon:"★",label:"중요",text:"★ "},{icon:"×",label:"제외",text:"× "},{icon:"①",label:"번호 1",text:"① "},{icon:"②",label:"번호 2",text:"② "},{icon:"③",label:"번호 3",text:"③ "},{icon:"☑",label:"할 일",text:"☑ "},{icon:"⌛",label:"대기 중",text:"⌛ "},{icon:"➜",label:"이동",text:"➜ "}],
+      mood: [{icon:"🙂",label:"좋아요",text:"🙂 "},{icon:"😊",label:"감사",text:"😊 "},{icon:"🎉",label:"축하",text:"🎉 "},{icon:"🙏",label:"부탁",text:"🙏 "},{icon:"👏",label:"잘했어요",text:"👏 "},{icon:"🤔",label:"생각 중",text:"🤔 "},{icon:"💡",label:"아이디어",text:"💡 "},{icon:"🔥",label:"강조",text:"🔥 "}],
+      content: [{icon:"【 】",label:"대괄호",text:"【내용】"},{icon:"〈 〉",label:"꺾쇠",text:"〈내용〉"},{icon:"「 」",label:"인용",text:"「내용」"},{icon:"—",label:"구분선",text:"──────────"},{icon:"…",label:"말줄임",text:"…"},{icon:"★",label:"별표",text:"★★★★★"},{icon:"①",label:"원문자 1",text:"①"},{icon:"②",label:"원문자 2",text:"②"},{icon:"③",label:"원문자 3",text:"③"},{icon:"→",label:"화살표",text:"→"},{icon:"↑",label:"위쪽",text:"↑"},{icon:"↓",label:"아래쪽",text:"↓"}],
+      other: [{icon:"✓",label:"체크",text:"✓"},{icon:"✕",label:"취소",text:"✕"},{icon:"!",label:"주의",text:"!"},{icon:"?",label:"질문",text:"?"},{icon:"©",label:"저작권",text:"©"},{icon:"@",label:"골뱅이",text:"@"},{icon:"#",label:"해시태그",text:"#"},{icon:"%",label:"퍼센트",text:"%"}]
+    };
+    const DEFAULT_REPLIES = ["확인했습니다. 감사합니다!","조금 더 확인해보겠습니다.","잠시만 기다려 주세요.","오늘 안으로 전달드리겠습니다.","업데이트 후 다시 공유할게요."];
+    let lastCopied = "";
+    let toastTimer;
+    const clockEl = document.getElementById("clock");
     function updateClock() {
       const now = new Date();
-      clock.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-      date.textContent = now.toLocaleDateString([], { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      clockEl.textContent = new Intl.DateTimeFormat("en-CA", {timeZone:EDMONTON_TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);
+      document.getElementById("date").textContent = new Intl.DateTimeFormat("ko-KR", {timeZone:EDMONTON_TZ,weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now) + " · 에드먼튼";
     }
-    updateClock();
-    setInterval(updateClock, 1000);
+    function describeWeather(code, isDay) {
+      if (code === 0) return ["맑음", isDay ? "☀️" : "🌙"];
+      if (code <= 3) return [code === 1 ? "대체로 맑음" : "구름 조금", isDay ? "🌤️" : "☁️"];
+      if (code === 45 || code === 48) return ["안개", "🌫️"];
+      if (code >= 51 && code <= 57) return ["이슬비", "🌦️"];
+      if (code >= 61 && code <= 67) return ["비", "🌧️"];
+      if (code >= 71 && code <= 77) return ["눈", "❄️"];
+      if (code >= 80 && code <= 82) return ["소나기", "🌦️"];
+      if (code >= 85 && code <= 86) return ["눈 소나기", "🌨️"];
+      if (code >= 95) return ["뇌우", "⛈️"];
+      return ["날씨 정보", "🌤️"];
+    }
+    async function loadWeather() {
+      const condition = document.getElementById("condition");
+      condition.classList.remove("weather-error");
+      condition.textContent = "날씨를 불러오는 중";
+      try {
+        const response = await fetch(WEATHER_URL, {cache:"no-store"});
+        if (!response.ok) throw new Error("weather request failed");
+        const data = await response.json();
+        const current = data.current;
+        const daily = data.daily;
+        const summary = describeWeather(current.weather_code, current.is_day);
+        document.getElementById("temperature").textContent = Math.round(current.temperature_2m);
+        document.getElementById("condition").textContent = summary[0];
+        document.getElementById("weather-icon").textContent = summary[1];
+        document.getElementById("feels").textContent = "체감 " + Math.round(current.apparent_temperature) + "°C · 습도 " + Math.round(current.relative_humidity_2m) + "%";
+        document.getElementById("high").textContent = Math.round(daily.temperature_2m_max[0]) + "°";
+        document.getElementById("low").textContent = Math.round(daily.temperature_2m_min[0]) + "°";
+        document.getElementById("wind").textContent = Math.round(current.wind_speed_10m) + " km/h";
+        document.getElementById("sync-time").textContent = "갱신 " + new Intl.DateTimeFormat("ko-KR", {timeZone:EDMONTON_TZ,hour:"2-digit",minute:"2-digit"}).format(new Date());
+      } catch (error) {
+        condition.textContent = "날씨 연결을 확인해 주세요";
+        condition.classList.add("weather-error");
+        document.getElementById("feels").textContent = "인터넷에 연결되면 자동으로 다시 불러와요";
+        document.getElementById("sync-time").textContent = "날씨 연결 대기 중";
+        document.getElementById("weather-icon").textContent = "☁️";
+      }
+    }
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+    async function copyText(text) {
+      lastCopied = text;
+      try { await navigator.clipboard.writeText(text); }
+      catch (error) {
+        const field = document.createElement("textarea");
+        field.value = text; field.style.position = "fixed"; field.style.opacity = "0";
+        document.body.appendChild(field); field.select(); document.execCommand("copy"); field.remove();
+      }
+      showToast("복사했어요 · " + text.slice(0,24));
+    }
+    function renderTools(group) {
+      const grid = document.getElementById("tool-grid");
+      grid.replaceChildren();
+      GROUPS[group].forEach(item => {
+        const button = document.createElement("button");
+        button.className = "tool"; button.type = "button"; button.setAttribute("aria-label",item.label + " 복사");
+        const icon = document.createElement("span"); icon.className = "tool-symbol"; icon.textContent = item.icon;
+        const label = document.createElement("span"); label.className = "tool-label"; label.textContent = item.label;
+        button.append(icon,label); button.addEventListener("click",() => copyText(item.text)); grid.appendChild(button);
+      });
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active",tab.dataset.group === group));
+    }
+    function readReplies() {
+      try { const saved = JSON.parse(localStorage.getItem("edge-desk-replies") || "null"); return Array.isArray(saved) ? saved : DEFAULT_REPLIES; }
+      catch (error) { return DEFAULT_REPLIES; }
+    }
+    function renderReplies() {
+      const list = document.getElementById("reply-list");
+      list.replaceChildren();
+      const replies = readReplies();
+      replies.forEach((text,index) => {
+        const row = document.createElement("div"); row.className = "reply-row";
+        const button = document.createElement("button"); button.className = "reply"; button.type = "button"; button.setAttribute("aria-label",text + " 복사");
+        const mark = document.createElement("span"); mark.className = "reply-mark"; mark.textContent = "▣";
+        const content = document.createElement("span"); content.className = "reply-text"; content.textContent = text;
+        const copy = document.createElement("span"); copy.className = "copy-mark"; copy.textContent = "▢";
+        button.append(mark,content,copy); button.addEventListener("click",() => copyText(text)); row.appendChild(button);
+        if (index >= DEFAULT_REPLIES.length) {
+          const remove = document.createElement("button"); remove.className = "custom-remove"; remove.type = "button"; remove.textContent = "삭제"; remove.setAttribute("aria-label",text + " 삭제");
+          remove.addEventListener("click",() => { const updated = readReplies(); updated.splice(index,1); localStorage.setItem("edge-desk-replies",JSON.stringify(updated)); renderReplies(); showToast("문구를 삭제했어요"); }); row.appendChild(remove);
+        }
+        list.appendChild(row);
+      });
+      document.getElementById("reply-count").textContent = replies.length + "개 저장됨";
+    }
+    function addReply() {
+      const text = prompt("추가할 문구를 입력해 주세요.");
+      if (!text || !text.trim()) return;
+      const replies = readReplies(); replies.push(text.trim());
+      localStorage.setItem("edge-desk-replies",JSON.stringify(replies)); renderReplies(); showToast("문구를 저장했어요");
+    }
+    document.getElementById("tool-tabs").addEventListener("click",event => { const tab = event.target.closest(".tab"); if (tab) renderTools(tab.dataset.group); });
+    document.getElementById("refresh-weather").addEventListener("click",loadWeather);
+    document.getElementById("copy-last").addEventListener("click",() => lastCopied ? copyText(lastCopied) : showToast("먼저 복사할 항목을 눌러 주세요"));
+    document.getElementById("add-reply").addEventListener("click",addReply);
+    document.getElementById("add-reply-icon").addEventListener("click",addReply);
+    document.getElementById("fullscreen").addEventListener("click",() => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); });
+    updateClock(); setInterval(updateClock,1000); renderTools("work"); renderReplies(); loadWeather(); setInterval(loadWeather,15*60*1000);
   </script>
 </body>
 </html>
