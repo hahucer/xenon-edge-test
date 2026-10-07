@@ -3,27 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080b14">
+  <meta name="theme-color" content="#070b13">
   <title>Xenon Edge Test</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 0%, #14234a 0, #080b14 58%); color: #f4f7ff; font: 16px/1.4 system-ui, sans-serif; }
-    main { width: min(92vw, 560px); padding: 34px; border: 1px solid #31456d; border-radius: 24px; background: #111827dd; box-shadow: 0 20px 80px #0008; text-align: center; }
-    .label { color: #7dd3fc; font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
-    h1 { margin: 12px 0 8px; font-size: clamp(28px, 7vw, 46px); }
-    p { margin: 0; color: #aab6cc; }
-    #clock { margin-top: 28px; font-size: clamp(40px, 12vw, 72px); font-variant-numeric: tabular-nums; letter-spacing: .03em; }
-    #date { margin-top: 4px; color: #aab6cc; }
-    .dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 12px #4ade80; vertical-align: 2px; }
+    :root { color-scheme: dark; }
+    body { margin: 0; min-height: 100vh; min-height: 100svh; background: radial-gradient(ellipse at 50% 50%, #14213b 0, #080c15 58%, #05070c 100%); color: #f3f7ff; font: 16px/1.4 system-ui, sans-serif; }
+    .dashboard { width: 100%; min-height: 100vh; min-height: 100svh; padding: clamp(24px, 4.2vw, 96px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr); grid-template-rows: 1fr auto; align-items: center; gap: clamp(24px, 3vw, 72px); overflow: hidden; }
+    .brand { align-self: center; }
+    .eyebrow, .caption { color: #82d8ff; font-size: clamp(10px, 1.1vw, 15px); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 18px 0 12px; font-size: clamp(30px, 3vw, 64px); line-height: 1.02; letter-spacing: -.04em; }
+    h1 span { color: #81d7ff; }
+    .brand p, .subtle { margin: 0; color: #9aa9c1; font-size: clamp(13px, 1.1vw, 18px); }
+    .clock-panel { min-width: 0; text-align: center; padding: clamp(20px, 2vw, 48px) 0; border-left: 1px solid #283956; border-right: 1px solid #283956; }
+    .live { display: inline-flex; align-items: center; gap: 10px; color: #9aa9c1; font-size: clamp(10px, 1vw, 14px); letter-spacing: .16em; text-transform: uppercase; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #54e39a; box-shadow: 0 0 14px #54e39a; }
+    #clock { margin: 20px 0 10px; color: #f5f8ff; font-size: clamp(56px, 15vh, 156px); font-weight: 650; line-height: .95; letter-spacing: -.055em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #date { color: #aab7cc; font-size: clamp(13px, 1.15vw, 18px); }
+    .cards { display: grid; gap: clamp(14px, 2vh, 24px); }
+    .card { padding: clamp(16px, 1.6vw, 30px); border: 1px solid #263853; border-radius: 16px; background: linear-gradient(135deg, #121c2cdd, #0c121ddd); }
+    .card-label { display: block; margin-bottom: 8px; color: #8191aa; font-size: 11px; font-weight: 700; letter-spacing: .17em; }
+    .card strong { display: block; color: #f1f6ff; font-size: clamp(19px, 2vw, 34px); font-variant-numeric: tabular-nums; }
+    .card small { display: block; margin-top: 4px; color: #9aa9c1; font-size: clamp(12px, 1vw, 15px); }
+    .ready { color: #54e39a !important; }
+    footer { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; padding-top: 18px; border-top: 1px solid #26334a; color: #71809a; font-size: 10px; font-weight: 700; letter-spacing: .18em; }
+    @media (max-aspect-ratio: 2/1) {
+      .dashboard { min-height: 100svh; grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; gap: 22px; padding: 28px; overflow: auto; }
+      .brand { text-align: center; }
+      .clock-panel { border: 0; border-top: 1px solid #283956; border-bottom: 1px solid #283956; }
+      #clock { font-size: clamp(54px, 15vw, 112px); }
+      .cards { grid-template-columns: 1fr 1fr; }
+      footer { grid-column: 1; flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <div class="label"><span class="dot"></span>HTML widget online</div>
-    <h1>Xenon Edge Test</h1>
-    <p>Your first custom screen is running.</p>
-    <div id="clock" aria-live="off">--:--:--</div>
-    <div id="date"></div>
+  <main class="dashboard">
+    <header class="brand">
+      <div class="eyebrow">Personal dashboard</div>
+      <h1>Xenon Edge<br><span>Test</span></h1>
+      <p>A first custom screen<br>made for the ultrawide display.</p>
+    </header>
+    <section class="clock-panel" aria-label="Current local time">
+      <div class="live"><span class="dot"></span>HTML widget online</div>
+      <div id="clock" aria-live="off">--:--:--</div>
+      <div id="date"></div>
+    </section>
+    <aside class="cards" aria-label="Display status">
+      <div class="card"><span class="card-label">DISPLAY</span><strong>2560 × 720</strong><small>32:9 ultrawide · landscape</small></div>
+      <div class="card"><span class="card-label">WIDGET STATUS</span><strong class="ready">READY</strong><small>Clock updates every second</small></div>
+    </aside>
+    <footer><span>FIRST CUSTOM HTML WIDGET</span><span>LOCAL TIME · AUTO-REFRESH</span></footer>
   </main>
   <script>
     const clock = document.getElementById("clock");
