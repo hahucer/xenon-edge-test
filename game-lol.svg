@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" role="img" aria-labelledby="title desc">
+  <title id="title">League of Legends shortcut</title>
+  <desc id="desc">An original gold letter L inside a circular crest, created for a personal game shortcut.</desc>
+  <defs>
+    <linearGradient id="gold" x1="70" y1="30" x2="232" y2="268" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff0a6"/>
+      <stop offset=".32" stop-color="#d9b75e"/>
+      <stop offset=".64" stop-color="#b38732"/>
+      <stop offset="1" stop-color="#f3d681"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="116" y1="70" x2="193" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffedaa"/>
+      <stop offset=".48" stop-color="#e3bf67"/>
+      <stop offset="1" stop-color="#9e7126"/>
+    </linearGradient>
+  </defs>
+  <circle cx="150" cy="150" r="125" fill="none" stroke="#63451e" stroke-width="12"/>
+  <circle cx="150" cy="150" r="125" fill="none" stroke="url(#gold)" stroke-width="7"/>
+  <circle cx="150" cy="150" r="111" fill="none" stroke="#bc964b" stroke-width="2" opacity=".72"/>
+  <path d="M150 22 160 36 150 50 140 36Z" fill="url(#gold)" stroke="#775321" stroke-width="2"/>
+  <path d="M108 74H153V87H143V204H181L195 179H207L198 220H107V207H118V87H108Z" fill="#644719" transform="translate(0 4)"/>
+  <path d="M108 70H153V83H143V200H181L195 175H207L198 216H107V203H118V83H108Z" fill="url(#letter)" stroke="#edcd78" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M123 85V201H135V83" fill="none" stroke="#ffeab0" stroke-width="2" opacity=".55"/>
+  <path d="M110 207H193L199 185" fill="none" stroke="#ffe8a2" stroke-width="2" opacity=".55"/>
+  <path d="m77 204 7 4 8-9-3-14-8 7Zm14 25 8 1 5-10-6-12-6 9Zm22 17 8-2 2-12-9-9-3 11Zm110-42-7 4-8-9 3-14 8 7Zm-14 25-8 1-5-10 6-12 6 9Zm-22 17-8-2-2-12 9-9 3 11Z" fill="url(#gold)"/>
+  <path d="M150 248 157 257 150 266 143 257Z" fill="url(#gold)"/>
+</svg>
