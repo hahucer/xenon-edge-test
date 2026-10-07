@@ -128,7 +128,7 @@
     const clockEl = document.getElementById("clock");
     function updateClock() {
       const now = new Date();
-      clockEl.textContent = new Intl.DateTimeFormat("en-CA", {timeZone:EDMONTON_TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(now);
+      clockEl.textContent = new Intl.DateTimeFormat("en-CA", {timeZone:EDMONTON_TZ,hour:"2-digit",minute:"2-digit",hour12:true}).format(now);
       document.getElementById("date").textContent = new Intl.DateTimeFormat("ko-KR", {timeZone:EDMONTON_TZ,weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now) + " · 에드먼튼";
     }
     function describeWeather(code, isDay) {
