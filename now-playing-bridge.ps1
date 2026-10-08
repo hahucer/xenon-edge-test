@@ -5,6 +5,7 @@ $Port = 47831
 $MaxBodyBytes = 131072
 $MaxHeaderBytes = 16384
 $MaxRecords = 1000
+$WidgetKeys = @('memo', 'focus', 'countdown', 'calculator', 'calendar')
 $Utf8 = [Text.UTF8Encoding]::new($false, $true)
 $AllowedOrigins = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 [void]$AllowedOrigins.Add('https://hahucer.github.io')
@@ -20,6 +21,12 @@ try { Add-Type -AssemblyName System.Runtime.WindowsRuntime } catch { $MediaAvail
 $script:MediaResponse = @{ bridge = $true; available = $false; playing = $false }
 $script:MediaResponseAt = [DateTime]::MinValue
 $script:NextMediaQueryAt = [DateTime]::MinValue
+$script:WeatherState = @{ available = $false; stale = $true; error = $null; status = 'loading'; updatedAt = $null; location = 'Edmonton'; timezone = 'America/Edmonton'; current = $null; today = $null; units = @{ temperature = 'C'; humidity = '%'; wind = 'km/h'; precipitation = 'mm' } }
+$script:WeatherHttpClient = $null
+$script:WeatherTask = $null
+$script:WeatherCancellation = $null
+$script:WeatherTimedOut = $false
+$script:NextWeatherQueryAt = [DateTime]::MinValue
 
 function Wait-WinRtOperation($Operation, [DateTime]$Deadline) {
     while ($Operation.Status.ToString() -eq 'Started') {
@@ -42,7 +49,7 @@ function Remember-MediaResponse($Response) {
     $script:MediaResponseAt = [DateTime]::UtcNow
     return $Response
 }
-function Get-NowPlaying {
+function Get-LegacyNowPlaying {
     $now = [DateTime]::UtcNow
     if ($now -lt $script:NextMediaQueryAt) { return (Recent-MediaResponse) }
     $script:NextMediaQueryAt = $now.AddSeconds(3)
@@ -107,6 +114,257 @@ function Valid-Records($Value, [string]$Kind) {
     }
     return ,($items.ToArray())
 }
+function Has-Property($Object, [string]$Name) {
+    if ($Object -is [Collections.IDictionary]) { return $Object.Contains($Name) }
+    return ($null -ne $Object.PSObject.Properties[$Name])
+}
+function Object-Keys($Object) {
+    if ($Object -is [Collections.IDictionary]) { return ,@($Object.Keys) }
+    return ,@($Object.PSObject.Properties.Name)
+}
+function Valid-Integer($Value, [long]$Minimum, [long]$Maximum) {
+    if (($Value -isnot [int] -and $Value -isnot [long]) -or $Value -lt $Minimum -or $Value -gt $Maximum) { Invalid-Data 'invalid_integer' }
+    return [long]$Value
+}
+function Valid-Number($Value, [double]$Minimum, [double]$Maximum) {
+    if ($Value -isnot [int] -and $Value -isnot [long] -and $Value -isnot [double] -and $Value -isnot [decimal]) { Invalid-Data 'number_required' }
+    $number = [double]$Value
+    if ([double]::IsNaN($number) -or [double]::IsInfinity($number) -or $number -lt $Minimum -or $number -gt $Maximum) { Invalid-Data 'invalid_number' }
+    return $number
+}
+function Valid-WidgetText($Value, [int]$Maximum, [bool]$Multiline = $false) {
+    if ($Value -isnot [string] -or $Value.Length -gt $Maximum) { Invalid-Data 'invalid_widget_text' }
+    $forbidden = if ($Multiline) { '[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]' } else { '[\x00-\x1F\x7F]' }
+    if ($Value -match $forbidden) { Invalid-Data 'invalid_widget_text' }
+    return $Value
+}
+function Default-Widgets {
+    try { $edmonton = [TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, 'Mountain Standard Time') }
+    catch { try { $edmonton = [TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::UtcNow, 'America/Edmonton') } catch { $edmonton = [DateTime]::UtcNow } }
+    return [ordered]@{
+        memo = [ordered]@{ text = '' }
+        focus = [ordered]@{ durationSeconds = [long]300; remainingSeconds = [double]300; running = $false; endAt = $null }
+        countdown = [ordered]@{ durationSeconds = [long]600; remainingSeconds = [double]600; running = $false; endAt = $null }
+        calculator = [ordered]@{ expression = ''; result = '0'; history = @(); entry = '0'; accumulator = $null; lastOperand = $null; operation = $null; lastOperation = $null; waiting = $false; finished = $false; error = $false }
+        calendar = [ordered]@{ year = [long][Math]::Min(2100, [Math]::Max(2000, $edmonton.Year)); month = [long]($edmonton.Month - 1) }
+    }
+}
+function Valid-WidgetValue([string]$Key, $Value) {
+    Require-Object $Value
+    switch -CaseSensitive ($Key) {
+        'memo' { return [ordered]@{ text = Valid-WidgetText (Property-Value $Value 'text') 10000 $true } }
+        { $_ -ceq 'focus' -or $_ -ceq 'countdown' } {
+            $running = Property-Value $Value 'running'
+            if ($running -isnot [bool]) { Invalid-Data 'running_must_be_boolean' }
+            $endAt = Property-Value $Value 'endAt'
+            if ($null -ne $endAt) { $endAt = Valid-Integer $endAt 1 253402300799999 }
+            if ($running -and $null -eq $endAt) { Invalid-Data 'running_timer_requires_end_at' }
+            return [ordered]@{
+                durationSeconds = Valid-Integer (Property-Value $Value 'durationSeconds') 1 86400
+                remainingSeconds = Valid-Number (Property-Value $Value 'remainingSeconds') 0 86400
+                running = $running
+                endAt = $endAt
+            }
+        }
+        'calculator' {
+            $history = Property-Value $Value 'history'
+            if ($history -isnot [Array] -or $history.Count -gt 20) { Invalid-Data 'invalid_calculator_history' }
+            $items = [Collections.Generic.List[object]]::new()
+            foreach ($entry in $history) {
+                Require-Object $entry
+                $record = [ordered]@{ expression = Valid-WidgetText (Property-Value $entry 'expression') 200; result = Valid-WidgetText (Property-Value $entry 'result') 200 }
+                if (Has-Property $entry 'at') {
+                    $record.at = Valid-Integer (Property-Value $entry 'at') 0 253402300799999
+                }
+                $items.Add($record)
+            }
+            $calculator = [ordered]@{ expression = Valid-WidgetText (Property-Value $Value 'expression') 200; result = Valid-WidgetText (Property-Value $Value 'result') 200; history = $items.ToArray() }
+            $calculator.entry = if (Has-Property $Value 'entry') { Valid-WidgetText (Property-Value $Value 'entry') 200 } else { $calculator.result }
+            foreach ($key in @('accumulator', 'lastOperand')) {
+                $number = if (Has-Property $Value $key) { Property-Value $Value $key } else { $null }
+                if ($null -ne $number) { $number = Valid-Number $number (-[double]::MaxValue) ([double]::MaxValue) }
+                $calculator[$key] = $number
+            }
+            foreach ($key in @('operation', 'lastOperation')) {
+                $operator = if (Has-Property $Value $key) { Property-Value $Value $key } else { $null }
+                if ($null -ne $operator -and ($operator -isnot [string] -or $operator -cnotin @('+', '-', '*', '/'))) { Invalid-Data 'invalid_calculator_operator' }
+                $calculator[$key] = $operator
+            }
+            foreach ($key in @('waiting', 'finished', 'error')) {
+                $flag = if (Has-Property $Value $key) { Property-Value $Value $key } else { $false }
+                if ($flag -isnot [bool]) { Invalid-Data 'calculator_flag_must_be_boolean' }
+                $calculator[$key] = $flag
+            }
+            return $calculator
+        }
+        'calendar' { return [ordered]@{ year = Valid-Integer (Property-Value $Value 'year') 2000 2100; month = Valid-Integer (Property-Value $Value 'month') 0 11 } }
+        default { Invalid-Data 'unsupported_widget' }
+    }
+}
+function Valid-Widgets($Value) {
+    $widgets = Default-Widgets
+    if ($null -eq $Value) { return $widgets }
+    Require-Object $Value
+    foreach ($key in (Object-Keys $Value)) { if ($key -cnotin $WidgetKeys) { Invalid-Data 'unsupported_widget' } }
+    foreach ($key in $WidgetKeys) { if (Has-Property $Value $key) { $widgets[$key] = Valid-WidgetValue $key (Property-Value $Value $key) } }
+    return $widgets
+}
+function Valid-WidgetRevisions($Value) {
+    $revisions = [ordered]@{ memo = [long]0; focus = [long]0; countdown = [long]0; calculator = [long]0; calendar = [long]0 }
+    if ($null -eq $Value) { return $revisions }
+    Require-Object $Value
+    foreach ($key in (Object-Keys $Value)) { if ($key -cnotin $WidgetKeys) { Invalid-Data 'unsupported_widget' } }
+    foreach ($key in $WidgetKeys) { if (Has-Property $Value $key) { $revisions[$key] = Valid-Integer (Property-Value $Value $key) 0 ([long]::MaxValue - 1) } }
+    return $revisions
+}
+function Set-WeatherFailure([string]$Reason) {
+    $script:WeatherState.stale = $true
+    $script:WeatherState.error = $Reason
+    $script:WeatherState.status = if ($script:WeatherState.available) { 'stale' } else { 'error' }
+    $script:NextWeatherQueryAt = [DateTime]::UtcNow.AddSeconds(30)
+}
+function Weather-Snapshot($Data) {
+    Require-Object $Data
+    $current = Property-Value $Data 'current'
+    $daily = Property-Value $Data 'daily'
+    Require-Object $current
+    Require-Object $daily
+    $minimums = Property-Value $daily 'temperature_2m_min'
+    $maximums = Property-Value $daily 'temperature_2m_max'
+    if ($minimums -isnot [Array] -or $maximums -isnot [Array] -or $minimums.Count -eq 0 -or $maximums.Count -eq 0) { Invalid-Data 'invalid_weather_daily' }
+    $minimum = Valid-Number $minimums[0] -100 100
+    $maximum = Valid-Number $maximums[0] -100 100
+    if ($minimum -gt $maximum) { Invalid-Data 'invalid_weather_daily' }
+    $time = Property-Value $current 'time'
+    if ($time -is [DateTime]) { $time = $time.ToString('yyyy-MM-ddTHH:mm', [Globalization.CultureInfo]::InvariantCulture) }
+    $time = Valid-WidgetText $time 40
+    return @{
+        available = $true; stale = $false; error = $null; status = 'ready'
+        updatedAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+        location = 'Edmonton'; timezone = 'America/Edmonton'
+        units = @{ temperature = 'C'; humidity = '%'; wind = 'km/h'; precipitation = 'mm' }
+        current = @{
+            temperature_2m = Valid-Number (Property-Value $current 'temperature_2m') -100 100
+            apparent_temperature = Valid-Number (Property-Value $current 'apparent_temperature') -150 150
+            relative_humidity_2m = Valid-Number (Property-Value $current 'relative_humidity_2m') 0 100
+            weather_code = Valid-Integer (Property-Value $current 'weather_code') 0 99
+            wind_speed_10m = Valid-Number (Property-Value $current 'wind_speed_10m') 0 500
+            precipitation = Valid-Number (Property-Value $current 'precipitation') 0 1000
+            is_day = Valid-Integer (Property-Value $current 'is_day') 0 1
+            time = $time
+        }
+        today = @{ temperature_2m_min = $minimum; temperature_2m_max = $maximum }
+    }
+}
+function Advance-Weather {
+    # HttpClient runs its request asynchronously. No dashboard handler waits for DNS or weather.
+    if ($null -ne $script:WeatherTask) {
+        if ($script:WeatherTask.IsCompleted) {
+            $response = $null
+            try {
+                $response = $script:WeatherTask.GetAwaiter().GetResult()
+                if (-not $script:WeatherTimedOut) {
+                    [void]$response.EnsureSuccessStatusCode()
+                    $json = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                    $script:WeatherState = Weather-Snapshot (ConvertFrom-Json -InputObject $json -ErrorAction Stop)
+                    $script:NextWeatherQueryAt = [DateTime]::UtcNow.AddMinutes(10)
+                }
+            } catch { if (-not $script:WeatherTimedOut) { Set-WeatherFailure 'weather_unavailable' } }
+            finally {
+                if ($null -ne $response) { $response.Dispose() }
+                $script:WeatherTask.Dispose()
+                $script:WeatherTask = $null
+                if ($null -ne $script:WeatherCancellation) { $script:WeatherCancellation.Dispose(); $script:WeatherCancellation = $null }
+            }
+        } elseif (-not $script:WeatherTimedOut -and [DateTime]::UtcNow -ge $script:WeatherDeadline) {
+            $script:WeatherTimedOut = $true
+            $script:WeatherCancellation.Cancel()
+            Set-WeatherFailure 'weather_timeout'
+        }
+    }
+    if ($null -ne $script:WeatherTask -or [DateTime]::UtcNow -lt $script:NextWeatherQueryAt) { return }
+    try {
+        if ($null -eq $script:WeatherHttpClient) {
+            Add-Type -AssemblyName System.Net.Http
+            $script:WeatherHttpClient = [Net.Http.HttpClient]::new()
+            $script:WeatherHttpClient.Timeout = [TimeSpan]::FromSeconds(2)
+            $script:WeatherHttpClient.MaxResponseContentBufferSize = 1048576
+        }
+        $script:WeatherCancellation = [Threading.CancellationTokenSource]::new(2000)
+        $script:WeatherTimedOut = $false
+        $script:WeatherDeadline = [DateTime]::UtcNow.AddSeconds(2)
+        $script:NextWeatherQueryAt = [DateTime]::UtcNow.AddMinutes(10)
+        $uri = 'https://api.open-meteo.com/v1/forecast?latitude=53.5461&longitude=-113.4938&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,precipitation,is_day&daily=temperature_2m_min,temperature_2m_max&timezone=America%2FEdmonton&forecast_days=1'
+        $script:WeatherTask = $script:WeatherHttpClient.GetAsync($uri, [Net.Http.HttpCompletionOption]::ResponseContentRead, $script:WeatherCancellation.Token)
+    } catch {
+        if ($null -ne $script:WeatherCancellation) { $script:WeatherCancellation.Dispose(); $script:WeatherCancellation = $null }
+        Set-WeatherFailure 'weather_unavailable'
+    }
+}
+function Empty-MediaSnapshot([string]$Reason, [bool]$Helper = $false, [bool]$Stale = $false) {
+    return @{ schema = 1; updatedAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds(); bridge = $true; helper = $Helper; available = $false; playing = $false; status = 'Stopped'; title = ''; artist = ''; album = ''; source = ''; positionSeconds = [double]0; durationSeconds = [double]0; reason = $Reason; stale = $Stale; artworkVersion = ''; artworkMime = ''; artworkBytes = [long]0 }
+}
+function Read-BoundedLocalFile([string]$Path, [int]$Maximum) {
+    $file = $null
+    try {
+        $share = [IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete
+        $file = [IO.FileStream]::new($Path, [IO.FileMode]::Open, [IO.FileAccess]::Read, $share)
+        if ($file.Length -le 0 -or $file.Length -gt $Maximum) { Invalid-Data 'invalid_local_file_size' }
+        $bytes = [byte[]]::new([int]$file.Length)
+        $offset = 0
+        while ($offset -lt $bytes.Length) {
+            $read = $file.Read($bytes, $offset, $bytes.Length - $offset)
+            if ($read -le 0) { Invalid-Data 'truncated_local_file' }
+            $offset += $read
+        }
+        return ,$bytes
+    } finally { if ($null -ne $file) { $file.Dispose() } }
+}
+function Normalize-MediaSnapshot($Value) {
+    Require-Object $Value
+    if ((Valid-Integer (Property-Value $Value 'schema') 1 1) -ne 1) { Invalid-Data 'invalid_media_schema' }
+    $snapshot = Empty-MediaSnapshot '' $true
+    foreach ($key in @('bridge', 'helper', 'available', 'playing', 'stale')) {
+        $flag = Property-Value $Value $key
+        if ($flag -isnot [bool]) { Invalid-Data 'invalid_media_flag' }
+        $snapshot[$key] = $flag
+    }
+    foreach ($key in @('status', 'title', 'artist', 'album', 'source', 'reason')) { $snapshot[$key] = Valid-WidgetText (Property-Value $Value $key) 1024 $true }
+    $snapshot.updatedAt = Valid-Integer (Property-Value $Value 'updatedAt') 0 253402300799999
+    $snapshot.positionSeconds = Valid-Number (Property-Value $Value 'positionSeconds') 0 31536000
+    $snapshot.durationSeconds = Valid-Number (Property-Value $Value 'durationSeconds') 0 31536000
+    $snapshot.artworkBytes = Valid-Integer (Property-Value $Value 'artworkBytes') 0 2097152
+    $snapshot.artworkVersion = Valid-WidgetText (Property-Value $Value 'artworkVersion') 64
+    $snapshot.artworkMime = Valid-WidgetText (Property-Value $Value 'artworkMime') 32
+    if ($snapshot.artworkBytes -gt 0) {
+        if ($snapshot.artworkVersion -cnotmatch '^[a-f0-9]{64}$' -or $snapshot.artworkMime -cnotin @('image/png', 'image/jpeg', 'image/gif', 'image/webp')) { Invalid-Data 'invalid_media_artwork' }
+    } elseif ($snapshot.artworkVersion -ne '' -or $snapshot.artworkMime -ne '') { Invalid-Data 'invalid_media_artwork' }
+    $age = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - $snapshot.updatedAt
+    if ($age -lt -10000) { Invalid-Data 'invalid_media_timestamp' }
+    if ($age -gt 15000) { $snapshot.stale = $true; $snapshot.playing = $false; $snapshot.reason = 'helper_snapshot_stale' }
+    return $snapshot
+}
+function Get-NowPlaying {
+    $path = Join-Path $DataDirectory 'media-state.json'
+    if ([IO.File]::Exists($path)) {
+        try { return (Normalize-MediaSnapshot (ConvertFrom-Json -InputObject ($Utf8.GetString((Read-BoundedLocalFile $path 65536))) -ErrorAction Stop)) }
+        catch { return (Empty-MediaSnapshot 'helper_snapshot_invalid' $true $true) }
+    }
+    $legacy = Get-LegacyNowPlaying
+    $reason = if ($legacy.available) { 'legacy_media_helper_missing' } elseif (-not $MediaAvailable) { 'helper_missing_runtime_unavailable' } else { 'helper_missing' }
+    $snapshot = Empty-MediaSnapshot $reason
+    $snapshot.available = [bool]$legacy.available
+    $snapshot.playing = [bool]$legacy.playing
+    foreach ($key in @('status', 'title', 'artist', 'album', 'source')) { if ($legacy.ContainsKey($key)) { $snapshot[$key] = [string]$legacy[$key] } }
+    return $snapshot
+}
+function Artwork-Mime([byte[]]$Bytes) {
+    if ($Bytes.Length -ge 8 -and $Bytes[0] -eq 137 -and $Bytes[1] -eq 80 -and $Bytes[2] -eq 78 -and $Bytes[3] -eq 71 -and $Bytes[4] -eq 13 -and $Bytes[5] -eq 10 -and $Bytes[6] -eq 26 -and $Bytes[7] -eq 10) { return 'image/png' }
+    if ($Bytes.Length -ge 3 -and $Bytes[0] -eq 255 -and $Bytes[1] -eq 216 -and $Bytes[2] -eq 255) { return 'image/jpeg' }
+    if ($Bytes.Length -ge 6 -and [Text.Encoding]::ASCII.GetString($Bytes, 0, 6) -cin @('GIF87a', 'GIF89a')) { return 'image/gif' }
+    if ($Bytes.Length -ge 12 -and [Text.Encoding]::ASCII.GetString($Bytes, 0, 4) -ceq 'RIFF' -and [Text.Encoding]::ASCII.GetString($Bytes, 8, 4) -ceq 'WEBP') { return 'image/webp' }
+    return ''
+}
 function Valid-State($Value) {
     Require-Object $Value
     $schema = Property-Value $Value 'schema'
@@ -116,6 +374,8 @@ function Valid-State($Value) {
     if (-not [Guid]::TryParse($storeId, [ref]$uuid) -or $uuid -eq [Guid]::Empty) { Invalid-Data 'invalid_store_id' }
     $revision = Property-Value $Value 'revision'
     if (($revision -isnot [int] -and $revision -isnot [long]) -or $revision -lt 0 -or $revision -ge [long]::MaxValue) { Invalid-Data 'invalid_revision' }
+    if (Has-Property $Value 'widgets') { if ($null -eq (Property-Value $Value 'widgets')) { Invalid-Data 'invalid_widgets' } }
+    if (Has-Property $Value 'widgetRevisions') { if ($null -eq (Property-Value $Value 'widgetRevisions')) { Invalid-Data 'invalid_widget_revisions' } }
     $opIds = Property-Value $Value 'processedOpIds'
     if ($opIds -isnot [Array] -or $opIds.Count -gt 512) { Invalid-Data 'invalid_operation_history' }
     $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
@@ -125,7 +385,7 @@ function Valid-State($Value) {
         if (-not $seen.Add($id)) { Invalid-Data 'duplicate_operation_id' }
         $history.Add($id)
     }
-    return @{ schema = 1; storeId = $storeId; revision = [long]$revision; tasks = (Valid-Records (Property-Value $Value 'tasks') 'task'); events = (Valid-Records (Property-Value $Value 'events') 'event'); processedOpIds = $history.ToArray() }
+    return @{ schema = 1; storeId = $storeId; revision = [long]$revision; tasks = (Valid-Records (Property-Value $Value 'tasks') 'task'); events = (Valid-Records (Property-Value $Value 'events') 'event'); widgets = (Valid-Widgets (Property-Value $Value 'widgets')); widgetRevisions = (Valid-WidgetRevisions (Property-Value $Value 'widgetRevisions')); processedOpIds = $history.ToArray() }
 }
 function Save-State($State) {
     [void][IO.Directory]::CreateDirectory($DataDirectory)
@@ -155,7 +415,7 @@ function Save-State($State) {
 }
 function Load-State {
     if (-not [IO.File]::Exists($StatePath)) {
-        $state = @{ schema = 1; storeId = [Guid]::NewGuid().ToString(); revision = [long]0; tasks = @(); events = @(); processedOpIds = @() }
+        $state = @{ schema = 1; storeId = [Guid]::NewGuid().ToString(); revision = [long]0; tasks = @(); events = @(); widgets = (Default-Widgets); widgetRevisions = (Valid-WidgetRevisions $null); processedOpIds = @() }
         Save-State $state
         return $state
     }
@@ -167,7 +427,9 @@ function Load-State {
         throw "Dashboard data cannot be read. The existing file was not changed: $StatePath. Restore a valid backup or select a separate DataDirectory."
     }
 }
-function Public-State($State) { return @{ schema = 1; storeId = $State.storeId; revision = $State.revision; tasks = @($State.tasks); events = @($State.events) } }
+function Public-State($State) {
+    return @{ schema = 1; storeId = $State.storeId; revision = $State.revision; serverNow = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds(); tasks = @($State.tasks); events = @($State.events); widgets = $State.widgets; widgetRevisions = $State.widgetRevisions; live = @{ weather = $script:WeatherState; media = (Get-NowPlaying) } }
+}
 function Valid-Batch($Body) {
     Require-Object $Body
     $inputOperations = Property-Value $Body 'operations'
@@ -186,6 +448,11 @@ function Valid-Batch($Body) {
             'task.remove' { $normalized.id = Valid-Id (Property-Value $operation 'id') }
             'event.add' { $normalized.item = Valid-Event (Property-Value $operation 'item') }
             'event.remove' { $normalized.id = Valid-Id (Property-Value $operation 'id') }
+            { $_ -ceq 'widget.set' -or $_ -ceq 'widget.import' } {
+                $normalized.key = Valid-String (Property-Value $operation 'key') 32
+                if ($normalized.key -cnotin $WidgetKeys) { Invalid-Data 'unsupported_widget' }
+                $normalized.value = Valid-WidgetValue $normalized.key (Property-Value $operation 'value')
+            }
             'import' {
                 $normalized.tasks = Valid-Records (Property-Value $operation 'tasks') 'task'
                 $normalized.events = Valid-Records (Property-Value $operation 'events') 'event'
@@ -198,7 +465,7 @@ function Valid-Batch($Body) {
 }
 function Apply-Batch($Operations) {
     # Detached records become live only after successful atomic persistence.
-    $next = @{ schema = 1; storeId = $script:DashboardState.storeId; revision = $script:DashboardState.revision; tasks = @(); events = @(); processedOpIds = @() }
+    $next = @{ schema = 1; storeId = $script:DashboardState.storeId; revision = $script:DashboardState.revision; tasks = @(); events = @(); widgets = (Valid-Widgets $script:DashboardState.widgets); widgetRevisions = (Valid-WidgetRevisions $script:DashboardState.widgetRevisions); processedOpIds = @() }
     $tasks = [Collections.Generic.List[object]]::new()
     $events = [Collections.Generic.List[object]]::new()
     $history = [Collections.Generic.List[string]]::new()
@@ -224,6 +491,20 @@ function Apply-Batch($Operations) {
                 if (-not $exists) { $events.Add($operation.item); $changed = $true }
             }
             'event.remove' { for ($i = $events.Count - 1; $i -ge 0; $i--) { if ($events[$i].id -ceq $operation.id) { $events.RemoveAt($i); $changed = $true } } }
+            { $_ -ceq 'widget.set' -or $_ -ceq 'widget.import' } {
+                $key = $operation.key
+                $widgetRevision = $next.widgetRevisions[$key]
+                if ($operation.kind -ceq 'widget.set' -or $widgetRevision -eq 0) {
+                    $before = $next.widgets[$key] | ConvertTo-Json -Depth 10 -Compress
+                    $after = $operation.value | ConvertTo-Json -Depth 10 -Compress
+                    if ($before -cne $after -or $widgetRevision -eq 0) {
+                        if ($widgetRevision -ge ([long]::MaxValue - 1)) { Invalid-Data 'widget_revision_limit' }
+                        $next.widgets[$key] = $operation.value
+                        $next.widgetRevisions[$key] = [long]$widgetRevision + 1
+                        $changed = $true
+                    }
+                }
+            }
             'import' {
                 foreach ($item in $operation.tasks) {
                     $exists = $false
@@ -400,6 +681,7 @@ try {
     Write-Output "Xenon Edge dashboard bridge: http://127.0.0.1:$Port (loopback only)"
     $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
     while ($true) {
+        Advance-Weather
         if ([DateTime]::UtcNow -ge $nextHeartbeat) {
             Broadcast-Dashboard
             $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
@@ -422,7 +704,7 @@ try {
             $origin = [string]$headers['Origin']
             if (-not $AllowedHosts.Contains([string]$headers['Host'])) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'host_not_allowed' }; continue }
             if ($headers.ContainsKey('Origin') -and -not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_not_allowed' }; continue }
-            $knownPath = $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/dashboard/events', '/now-playing')
+            $knownPath = $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/dashboard/events', '/now-playing', '/media-art')
             if (-not $knownPath) { Write-JsonResponse $stream 404 'Not Found' @{ error = 'not_found' } $origin; continue }
             if ($request.method -ceq 'OPTIONS') {
                 if (-not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_required' }; continue }
@@ -465,6 +747,20 @@ try {
                 }
                 '/dashboard' { Write-JsonResponse $stream 200 'OK' (Public-State $script:DashboardState) $origin }
                 '/now-playing' { Write-JsonResponse $stream 200 'OK' (Get-NowPlaying) $origin }
+                '/media-art' {
+                    $media = Get-NowPlaying
+                    $artPath = Join-Path $DataDirectory 'media-art.bin'
+                    if (-not $media.available -or $media.stale -or $media.artworkBytes -le 0 -or -not [IO.File]::Exists($artPath)) {
+                        Write-JsonResponse $stream 404 'Not Found' @{ error = 'artwork_unavailable' } $origin
+                    } else {
+                        try {
+                            $art = Read-BoundedLocalFile $artPath 2097152
+                            $mime = Artwork-Mime $art
+                            if ($mime -ceq '' -or $mime -cne $media.artworkMime -or $art.Length -ne $media.artworkBytes) { Invalid-Data 'invalid_media_artwork' }
+                            Write-HttpResponse $stream 200 'OK' $art $mime $origin
+                        } catch { Write-JsonResponse $stream 404 'Not Found' @{ error = 'artwork_unavailable' } $origin }
+                    }
+                }
                 default {
                     $name = if ($request.path -ceq '/game.html') { 'game.html' } else { 'index.html' }
                     $path = Join-Path $PSScriptRoot $name
@@ -489,5 +785,7 @@ try {
     }
 } finally {
     for ($i = $script:DashboardSubscribers.Count - 1; $i -ge 0; $i--) { Remove-DashboardSubscriber $i }
+    if ($null -ne $script:WeatherCancellation) { $script:WeatherCancellation.Cancel(); $script:WeatherCancellation.Dispose() }
+    if ($null -ne $script:WeatherHttpClient) { $script:WeatherHttpClient.Dispose() }
     $listener.Stop()
 }

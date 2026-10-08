@@ -276,21 +276,247 @@ body{font-size:20px}
   background: #b5ff83;
   box-shadow: 0 0 8px #b5ff8380;
 }
-html[data-mode="edge"] .tasks-panel #task-form,
-html[data-mode="edge"] .events-panel #event-add-toggle,
-html[data-mode="edge"] .events-panel #event-add-popover {
-  display: none !important;
+/* Compact, shared timer controls. These overrides follow the display typography. */
+.timer-panel .timer-content{gap:0}
+.timer-panel .timer-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:min(100%,470px);margin-top:12px}
+.timer-panel .timer-controls button{min-height:48px}
+.timer-panel .presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:min(100%,470px);margin:0}
+.timer-panel .preset{min-height:48px}
+.timer-panel .preset.is-selected{color:#e7ffd7;border-color:#b5ff83;background:linear-gradient(135deg,#b5ff832a,#78b89118);box-shadow:0 0 12px #b5ff8314}
+.timer-panel .timer-caption{letter-spacing:.03em}
+.timer-panel .timer-display{margin:18px 0 22px}
+.timer-panel .timer-track{margin-bottom:28px}
+.work-countdown-panel .wc-content{justify-content:center;min-height:210px;padding:24px 0}
+.work-countdown-panel .wc-display{margin:0 0 12px;font-size:clamp(48px,17cqw,116px)}
+.work-countdown-panel .wc-track{margin-top:25px;height:7px;width:86%}
+.wc-timer-controls{display:flex;align-items:center;justify-content:center;gap:13px;margin:16px 0 12px}
+.wc-timer-start{width:92px;height:76px;display:grid;place-items:center;padding:0;border:1px solid #bdff98;border-radius:18px;background:linear-gradient(135deg,#cbffad,#a9ee90);color:#14210d;box-shadow:0 0 24px #b5ff831b}
+.wc-timer-start svg{width:36px;height:36px}
+.wc-timer-start:hover{background:#e0ffc8}
+.wc-timer-reset{width:54px;height:54px;display:grid;place-items:center;padding:0;border:1px solid #7a8bab;border-radius:13px;background:#0c1429;color:#d8e2fa}
+.wc-timer-reset svg{width:25px;height:25px}
+.wc-timer-reset:hover{color:#d6ffbb;border-color:#b5ff83}
+.wc-timer-start:focus-visible,.wc-timer-reset:focus-visible{outline:2px solid #b5ff83;outline-offset:3px}
+.wc-minutes-field{display:flex;align-items:center;gap:12px}
+.wc-minutes-field input{flex:1;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+.wc-minutes-field span{color:#c5d1e8;font-size:18px;font-weight:750}
+.work-countdown-panel .wc-popover{width:min(350px,calc(100% - 32px))}
+.work-countdown-panel .wc-edit svg{width:23px;height:23px}
+.work-calc-panel .panel-head{align-items:center;flex-wrap:nowrap}
+.work-calc-copy{width:46px;height:46px;min-width:46px;min-height:46px;flex:0 0 auto;padding:0;color:#d6ffbb}
+.work-calc-copy svg{width:22px;height:22px}
+@media(max-width:700px){.wc-timer-start{width:82px;height:68px}.work-countdown-panel .wc-display{font-size:clamp(48px,17cqw,100px)}}
+.home-live-weather,
+.home-live-media {
+  container-type: inline-size;
+  gap: 14px;
+}
+.home-live-weather .panel-head,
+.home-live-media .panel-head {
+  align-items: center;
+  margin-bottom: 0;
+}
+.home-live-weather .kicker,
+.home-live-media .kicker {
+  font-size: clamp(15px, 3.8cqw, 19px);
+  letter-spacing: .08em;
+}
+.home-live-weather .panel-title,
+.home-live-media .panel-title {
+  font-size: clamp(22px, 5.5cqw, 32px);
+}
+.home-live-weather .home-time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+.home-live-weather .home-clock {
+  margin: 0;
+  font-size: clamp(40px, 15cqw, 86px);
+  white-space: nowrap;
+}
+.home-live-weather .home-date-sub {
+  font-size: clamp(17px, 4cqw, 22px);
+}
+.home-weather-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 5cqw, 26px);
+  flex: 1;
+  min-height: 100px;
+}
+.home-live-weather .home-weather-icon {
+  margin: 0;
+  font-size: clamp(48px, 15cqw, 72px);
+  line-height: 1;
+}
+.home-weather-reading { display: flex; flex-direction: column; gap: 7px; }
+.home-live-weather .home-temp { font-size: clamp(54px, 17cqw, 86px); }
+.home-live-weather .home-temp .home-temp-unit {
+  position: static;
+  inset: auto;
+  transform: none;
+  display: inline-block;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  margin: 7px 0 0 6px;
+  font-size: clamp(24px, 6cqw, 32px);
+  line-height: 1;
+}
+.home-live-weather .home-condition { margin: 0; font-size: clamp(20px, 5cqw, 28px); }
+.weather-live-status { font-size: clamp(17px, 4cqw, 21px); font-weight: 750; color: #caffae; }
+.home-live-weather[data-state="unavailable"] .weather-live-status,
+.home-live-weather[data-state="stale"] .weather-live-status { color: #ffd59b; }
+.weather-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.weather-detail {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 11px 13px;
+  border: 1px solid #35436a;
+  border-radius: 11px;
+  background: #0b1328b0;
+}
+.weather-detail-label { font-size: clamp(16px, 3.8cqw, 19px); color: #aab7d4; font-weight: 750; }
+.weather-detail-value { font-size: clamp(21px, 5.5cqw, 29px); color: #f3f6ff; font-weight: 850; white-space: nowrap; }
+.weather-updated { min-height: 20px; color: #aab7d4; text-align: right; font-size: clamp(16px, 3.8cqw, 20px); font-weight: 650; }
+.home-live-weather .home-weather-refresh {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  margin: 0;
+  padding: 0;
+  font-size: 25px;
+}
+.home-live-media .music-connection { font-size: clamp(16px, 3.8cqw, 20px); white-space: nowrap; }
+.home-live-media .now-playing-card {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 12px;
+  text-align: center;
+}
+.home-live-media .now-playing-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(100px, 38cqw, 200px);
+  height: clamp(100px, 38cqw, 200px);
+  flex: 0 0 auto;
+  border-radius: 18px;
+  border: 1px solid #5c7552;
+  background: radial-gradient(circle at 25% 15%, #b5ff8335, transparent 65%), #132132;
+  overflow: hidden;
+  font-size: clamp(45px, 16cqw, 80px);
+  color: #caffae;
+}
+.home-live-media .now-playing-art img { width: 100%; height: 100%; object-fit: cover; }
+.home-live-media .now-playing-art [hidden] { display: none !important; }
+.home-live-media .now-playing-copy { width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.home-live-media .now-playing-state { font-size: clamp(18px, 4.8cqw, 25px); font-weight: 850; color: #caffae; }
+.home-live-media .now-playing-state[hidden],
+.home-live-media .music-album[hidden],
+.home-live-media .music-timeline[hidden] { display: none !important; }
+.home-live-media .now-playing-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  width: 100%;
+  overflow: hidden;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: clamp(23px, 6.5cqw, 35px);
+  line-height: 1.25;
+  color: #f1f5ff;
+}
+.home-live-media .now-playing-artist { max-width: 100%; font-size: clamp(19px, 4.8cqw, 26px); line-height: 1.35; white-space: normal; overflow-wrap: anywhere; color: #c4cfea; }
+.home-live-media .music-album { max-width: 100%; font-size: clamp(17px, 4cqw, 22px); line-height: 1.3; color: #99abc9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-live-media .music-equalizer { height: 28px; margin: 0; }
+.home-live-media .music-equalizer i { width: 5px; }
+.music-timeline { width: 100%; padding: 0 4px; }
+.music-progress-track { height: 6px; border-radius: 99px; overflow: hidden; background: #2a3658; }
+.music-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #b5ff83, #7be4b0); transition: width .2s linear; }
+.music-time-labels { display: flex; justify-content: space-between; margin-top: 8px; color: #b6c4de; font-size: clamp(17px, 4cqw, 21px); font-weight: 750; font-variant-numeric: tabular-nums; }
+@media (max-height: 760px) {
+  .home-live-weather { gap: 8px; }
+  .home-live-weather .panel-head { flex: 0 0 auto; }
+  .home-live-weather .kicker { font-size: 16px; line-height: 1; }
+  .home-live-weather .panel-title { font-size: clamp(22px, 5cqw, 26px); line-height: 1.1; }
+  .home-live-weather .home-time-block { flex: 0 0 auto; padding: 0; gap: 0; min-height: 0; }
+  .home-live-weather .home-clock { font-size: clamp(48px, 11cqw, 60px); line-height: 1; }
+  .home-live-weather .home-date-sub { margin: 0; font-size: 17px; line-height: 1; }
+  .home-live-weather .home-weather-hero { min-height: 108px; }
+  .home-live-weather .home-weather-icon { font-size: 56px; }
+  .home-live-weather .home-weather-reading { gap: 4px; }
+  .home-live-weather .home-temp { font-size: clamp(50px, 11cqw, 60px); line-height: 1; }
+  .home-live-weather .home-temp .home-temp-unit { margin: 6px 0 0 6px; font-size: 27px; }
+  .home-live-weather .home-condition { font-size: 20px; line-height: 1.1; }
+  .home-live-weather .weather-live-status { font-size: 17px; line-height: 1.1; }
+  .home-live-weather .weather-details { flex: 0 0 auto; gap: 8px; }
+  .home-live-weather .weather-detail { padding: 6px 12px; gap: 2px; }
+  .home-live-weather .weather-detail-label { font-size: 18px; line-height: 1; white-space: nowrap; }
+  .home-live-weather .weather-detail-value { font-size: 24px; line-height: 1.1; }
+  .home-live-weather .weather-updated { flex: 0 0 auto; min-height: 20px; font-size: 17px; line-height: 20px; }
+  .home-live-media .now-playing-card {
+    display: grid;
+    grid-template-columns: minmax(90px, .8fr) minmax(0, 1.6fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 4px;
+    text-align: left;
+  }
+  .home-live-media .now-playing-art {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    width: min(100%, 180px);
+    height: auto;
+    aspect-ratio: 1;
+  }
+  .home-live-media .now-playing-copy {
+    grid-column: 2;
+    grid-row: 1;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+  }
+  .home-live-media .now-playing-title { font-size: clamp(26px, 5cqw, 32px); line-height: 1.2; }
+  .home-live-media .now-playing-artist { font-size: 22px; line-height: 1.25; }
+  .home-live-media .now-playing-state { font-size: 20px; line-height: 1.2; }
+  .home-live-media .music-album { font-size: 18px; line-height: 1.2; }
+  .home-live-media .music-equalizer { display: none; }
+  .home-live-media .music-timeline { grid-column: 1 / -1; grid-row: 2; width: 100%; padding: 0; }
+  .home-live-media .music-time-labels { font-size: 20px; line-height: 1.2; }
+}
+@media (max-height: 520px) {
+  .home-live-weather, .home-live-media { gap: 8px; padding: 14px; }
+  .home-live-weather .home-clock { font-size: clamp(38px, 10cqw, 50px); }
+  .home-live-weather .home-temp { font-size: clamp(44px, 10cqw, 52px); }
+  .home-live-weather .home-weather-hero { min-height: 100px; }
+  .home-live-media .now-playing-card { gap: 10px; padding: 10px 8px; }
+  .home-live-media .now-playing-art { width: min(100%, 125px); height: auto; }
+  .home-live-media .now-playing-copy { gap: 6px; }
 }
 </style>
 </head>
 <body><div class="app">
 <header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div><nav class="page-tabs" id="page-tabs" aria-label="페이지 메뉴"><button class="page-tab active" data-page="0">Home</button><button class="page-tab" data-page="1">Today</button><button class="page-tab" data-page="2">Work</button><button class="page-tab" data-page="3">Game</button><span class="sync-status" id="shared-status" data-state="disconnected" role="status" aria-live="polite" aria-label="위젯 자동 동기화 · 연결 대기" title="위젯 자동 동기화 · 연결 대기"><i class="sync-dot" aria-hidden="true"></i>위젯 자동 동기화</span></nav></header>
-<main class="columns home-grid page-view active" data-view="0"><section class="panel home-panel home-clock-weather-panel" aria-label="에드먼튼 시간과 날씨"><div class="kicker">◷ EDMONTON · LOCAL</div><h2 class="panel-title">현재 시간 · 날씨</h2><div class="home-time-weather-content"><div class="home-time-block"><div class="home-location">EDMONTON, AB</div><div class="home-clock" id="clock">--:-- p.m.</div><div class="home-date-sub" id="date">---</div></div><div class="home-weather-block"><div class="home-weather-icon" id="weather-icon">☁️</div><div class="home-temp"><span id="temperature">--</span><span class="home-temp-unit">°C</span></div><div class="home-condition" id="condition">날씨 연결 중</div><button class="control-btn home-weather-refresh" id="refresh-weather" type="button">↻ 새로고침</button></div></div></section><section class="panel home-panel home-holiday-panel" aria-label="앨버타·한국 캘린더"><div class="panel-head holiday-head"><div><div class="kicker">▦ ALBERTA · KOREA</div><h2 class="panel-title">캘린더</h2></div><div class="holiday-month-nav"><button class="icon-btn holiday-nav-btn" id="holiday-prev" type="button" aria-label="이전 달">‹</button><strong id="holiday-month">---</strong><button class="icon-btn holiday-nav-btn" id="holiday-next" type="button" aria-label="다음 달">›</button></div></div><div class="holiday-calendar" id="holiday-calendar"></div><div class="holiday-list" id="holiday-list"><div class="empty">공휴일을 불러오는 중이에요</div></div></section><section class="panel home-panel home-music-panel" aria-label="PC에서 재생 중인 음악"><div class="panel-head"><div><div class="kicker">♫ NOW PLAYING</div><h2 class="panel-title">지금 재생 중</h2></div><span class="music-connection" id="music-connection">연결 확인 중</span></div><div class="now-playing-card" id="now-playing-card"><div class="now-playing-art" aria-hidden="true">♫</div><div class="now-playing-copy"><span class="now-playing-state" id="music-state" hidden></span><strong class="now-playing-title" id="music-title">재생 정보를 확인하고 있어요</strong><span class="now-playing-artist" id="music-artist"></span></div><div class="music-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div></section></main>
+<main class="columns home-grid page-view active" data-view="0"><section class="panel home-panel home-clock-weather-panel home-live-weather" aria-label="에드먼튼 시간과 날씨" data-state="unavailable"><div class="panel-head"><div><div class="kicker">EDMONTON</div><h2 class="panel-title">현재 시간 · 날씨</h2></div><button class="icon-btn home-weather-refresh" id="refresh-weather" type="button" aria-label="최신 날씨 표시" title="최신 날씨 표시">↻</button></div><div class="home-time-block"><div class="home-clock" id="clock">--:-- AM</div><div class="home-date-sub" id="date">---</div></div><div class="home-weather-hero"><div class="home-weather-icon" id="weather-icon" aria-hidden="true">☁</div><div class="home-weather-reading"><div class="home-temp"><span id="temperature">--</span><span class="home-temp-unit">°C</span></div><div class="home-condition" id="condition">날씨 연결 대기</div><div class="weather-live-status" id="weather-live-status" role="status" aria-live="polite">날씨 정보를 기다리고 있어요</div></div></div><div class="weather-details"><div class="weather-detail"><span class="weather-detail-label">체감</span><strong class="weather-detail-value" id="weather-feels">—</strong></div><div class="weather-detail"><span class="weather-detail-label">최고 / 최저</span><strong class="weather-detail-value" id="weather-high-low">— / —</strong></div><div class="weather-detail"><span class="weather-detail-label">습도</span><strong class="weather-detail-value" id="weather-humidity">—</strong></div><div class="weather-detail"><span class="weather-detail-label">바람</span><strong class="weather-detail-value" id="weather-wind">—</strong></div></div><div class="weather-updated" id="weather-updated"></div></section><section class="panel home-panel home-holiday-panel" aria-label="앨버타·한국 캘린더"><div class="panel-head holiday-head"><div><div class="kicker">▦ ALBERTA · KOREA</div><h2 class="panel-title">캘린더</h2></div><div class="holiday-month-nav"><button class="icon-btn holiday-nav-btn" id="holiday-prev" type="button" aria-label="이전 달">‹</button><strong id="holiday-month">---</strong><button class="icon-btn holiday-nav-btn" id="holiday-next" type="button" aria-label="다음 달">›</button></div></div><div class="holiday-calendar" id="holiday-calendar"></div><div class="holiday-list" id="holiday-list"><div class="empty">공휴일을 불러오는 중이에요</div></div></section><section class="panel home-panel home-music-panel home-live-media" aria-label="PC에서 재생 중인 음악"><div class="panel-head"><div><div class="kicker">NOW PLAYING</div><h2 class="panel-title">지금 재생 중</h2></div><span class="music-connection" id="music-connection" role="status" aria-live="polite">연결 대기</span></div><div class="now-playing-card" id="now-playing-card" data-state="unavailable"><div class="now-playing-art" aria-hidden="true"><img id="music-art-image" alt="" hidden><span id="music-art-placeholder">♫</span></div><div class="now-playing-copy"><span class="now-playing-state" id="music-state" hidden></span><strong class="now-playing-title" id="music-title">PC 연결 대기</strong><span class="now-playing-artist" id="music-artist">재생 정보 연결을 확인해 주세요</span><span class="music-album" id="music-album" hidden></span></div><div class="music-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="music-timeline" id="music-timeline" hidden><div class="music-progress-track" id="music-progress-track" role="progressbar" aria-label="음악 재생 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="music-progress-fill" id="music-progress-fill"></div></div><div class="music-time-labels"><span id="music-elapsed">0:00</span><span id="music-duration">0:00</span></div></div></div></section></main>
 <section class="columns page-view" data-view="1">
 <section class="panel tasks-panel" aria-label="오늘의 할 일"><div class="panel-head task-panel-head"><div><div class="kicker">✧ TODAY</div><h2 class="panel-title">오늘의 할 일</h2></div><span class="task-count" id="task-count">0 / 0</span></div><div class="task-progress-track" role="progressbar" aria-label="할 일 진행률" aria-valuemin="0" aria-valuemax="100"><div class="task-progress-fill" id="task-progress-fill" aria-valuenow="0"></div></div><form class="task-form" id="task-form"><input class="field" id="task-input" placeholder="할 일을 입력하세요" autocomplete="off" maxlength="160"><button class="add-btn" aria-label="할 일 추가">＋</button></form><div class="task-list" id="task-list"></div></section>
-<section class="panel timer-panel" aria-label="집중 타이머"><div class="panel-head"><div><div class="kicker">◷ FOCUS SESSION</div><h2 class="panel-title">집중 타이머</h2></div><span class="subtle">집중하고, 잠깐 쉬어가요</span></div><div class="timer-content"><div class="timer-caption" id="timer-caption">FOCUS TIME</div><div class="timer-display" id="timer-display">25:00</div><div class="timer-track"><div class="timer-progress" id="timer-progress"></div></div><div class="timer-controls"><button class="control-btn primary" id="timer-start">시작</button><button class="control-btn" id="timer-reset">초기화</button></div><div class="presets"><button class="preset" data-min="25">25분 집중</button><button class="preset" data-min="5">5분 휴식</button></div><form class="timer-custom-form" id="timer-custom-form"><label for="timer-custom-minutes">직접 설정</label><input class="field" id="timer-custom-minutes" type="number" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="집중 시간 분"><span>분</span><button class="control-btn" type="submit">적용</button></form></div></section>
+<section class="panel timer-panel" aria-label="집중 타이머"><div class="panel-head"><div><div class="kicker">◷ FOCUS SESSION</div><h2 class="panel-title">집중 타이머</h2></div></div><div class="timer-content"><div class="timer-caption" id="timer-caption">5분</div><div class="timer-display" id="timer-display" role="timer" aria-label="집중 타이머 남은 시간">05:00</div><div class="timer-track"><div class="timer-progress" id="timer-progress"></div></div><div class="presets"><button type="button" class="preset is-selected" data-min="5" aria-pressed="true">5분</button><button type="button" class="preset" data-min="10" aria-pressed="false">10분</button></div><div class="timer-controls"><button type="button" class="control-btn primary" id="timer-start">시작</button><button type="button" class="control-btn" id="timer-reset">초기화</button></div></div></section>
 <section class="panel events-panel" aria-label="일정 D-DAY"><div class="panel-head event-panel-head"><div><div class="kicker">▦ NEXT</div><h2 class="panel-title">일정 · D-DAY</h2></div><div class="event-head-actions"><span class="event-count" id="event-count">0 일정</span><button class="icon-btn event-add-toggle" id="event-add-toggle" type="button" aria-label="일정 추가" title="일정 추가">＋</button></div></div><div class="event-add-popover" id="event-add-popover" hidden><form class="event-form" id="event-form"><label class="sr-only" for="event-name">일정 이름</label><input class="field" id="event-name" placeholder="일정 이름" autocomplete="off" maxlength="120" required><label class="sr-only" for="event-date">날짜</label><input class="field" id="event-date" type="date" aria-label="일정 날짜" min="0001-01-01" max="9999-12-31" required><label class="sr-only" for="event-time">시간</label><input class="field" id="event-time" type="time" aria-label="일정 시간" value="09:00"><button class="add-btn" aria-label="일정 저장">＋</button></form></div><div class="event-list" id="event-list"></div></section>
-</section><section class="columns page-view work-grid" data-view="2"><section class="panel work-panel" aria-label="업무 메모"><div class="panel-head"><div><div class="kicker">✎ NOTES</div><h2 class="panel-title">메모</h2></div><span class="work-note-status" id="work-note-status" role="status">자동 저장</span></div><textarea class="work-memo" id="work-memo" placeholder="메모 입력" aria-label="업무 메모 내용"></textarea><div class="work-note-actions"><button class="control-btn work-note-icon" id="work-note-clear" type="button" aria-label="비우기" title="메모 비우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M5 6l1 14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-14M10 10v7M14 10v7"/></svg></button><button class="control-btn primary work-note-icon" id="work-note-save" type="button" aria-label="저장" title="메모 저장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h9"/></svg></button></div></section><section class="panel work-calc-panel" id="work-calc-panel" aria-label="업무 계산기" tabindex="0"><div class="panel-head"><div><div class="kicker">▦ CALCULATOR</div><h2 class="panel-title">업무 계산기</h2></div></div><div class="work-calc-screen"><div class="work-calc-expression" id="work-calc-expression"></div><output class="work-calc-result" id="work-calc-result" aria-live="polite" aria-atomic="true">0</output></div><div class="work-calc-keys" aria-label="계산기 키패드"><button type="button" class="work-calc-key work-calc-utility" data-work-calc="clear" aria-label="계산기 초기화">C</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="backspace" aria-label="마지막 숫자 지우기">⌫</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="percent" aria-label="퍼센트">%</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="/" aria-label="나누기">÷</button><button type="button" class="work-calc-key" data-work-calc="7">7</button><button type="button" class="work-calc-key" data-work-calc="8">8</button><button type="button" class="work-calc-key" data-work-calc="9">9</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="*" aria-label="곱하기">×</button><button type="button" class="work-calc-key" data-work-calc="4">4</button><button type="button" class="work-calc-key" data-work-calc="5">5</button><button type="button" class="work-calc-key" data-work-calc="6">6</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="-" aria-label="빼기">−</button><button type="button" class="work-calc-key" data-work-calc="1">1</button><button type="button" class="work-calc-key" data-work-calc="2">2</button><button type="button" class="work-calc-key" data-work-calc="3">3</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="+" aria-label="더하기">+</button><button type="button" class="work-calc-key" data-work-calc="sign" aria-label="양수 음수 전환">+/−</button><button type="button" class="work-calc-key" data-work-calc="0">0</button><button type="button" class="work-calc-key" data-work-calc="decimal" aria-label="소수점">.</button><button type="button" class="work-calc-key work-calc-equals" data-work-calc="equals" aria-label="계산 결과">=</button></div></section><section class="panel work-countdown-panel" id="work-countdown-panel" aria-label="업무 카운트다운"><div class="panel-head"><div><div class="kicker">◷ COUNTDOWN</div><h2 class="panel-title">카운트다운</h2></div><button class="icon-btn wc-edit" id="wc-edit" type="button" aria-label="카운트다운 설정" aria-expanded="false" aria-controls="wc-popover" title="카운트다운 설정">✎</button></div><div class="wc-popover" id="wc-popover" hidden><form id="wc-form" class="wc-form"><label for="wc-name-input">일정 이름</label><input class="field" id="wc-name-input" type="text" placeholder="예: 다음 회의" maxlength="60" autocomplete="off"><label for="wc-date-input">목표 날짜 · 시간</label><input class="field" id="wc-date-input" type="datetime-local" min="2000-01-01T00:00" max="9999-12-31T23:59" required><div class="wc-form-actions"><button class="control-btn" id="wc-cancel" type="button">취소</button><button class="control-btn primary" type="submit">설정</button></div></form></div><div class="wc-content"><div class="wc-name" id="wc-name">다음 일정</div><div class="wc-display" id="wc-display" role="timer" aria-label="남은 시간">00:00:00</div><div class="wc-status" id="wc-status" role="status">일정 미설정</div><div class="wc-track" aria-hidden="true"><div class="wc-fill" id="wc-fill"></div></div></div><div class="wc-detail"><span>목표 시간</span><strong id="wc-target">—</strong></div><div class="wc-controls"><button class="control-btn wc-quick" type="button" data-wc-minutes="15">+15분</button><button class="control-btn wc-quick" type="button" data-wc-minutes="30">+30분</button><button class="control-btn wc-quick" type="button" data-wc-minutes="60">+60분</button></div><button class="control-btn wc-reset" id="wc-reset" type="button">↺ 초기화</button></section></section><section class="page-view game-view" data-view="3"><section class="game-widget" aria-label="롤체지지 M 위젯"><header class="game-widget-head"><div><div class="game-kicker">✦ TFT COMPANION</div><h2>롤체지지</h2></div><a class="lc-home" href="https://lolchess.gg/" target="_blank" rel="noopener noreferrer" aria-label="롤체지지 홈 · 새 창에서 열기" title="롤체지지 홈 · 새 창에서 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a></header><div class="lc-links"><a class="lc-builder" href="https://lolchess.gg/meta?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="추천 메타 · 새 창에서 열기"><div class="lc-board-wrap"><div class="lc-board-glow"></div><svg class="lc-board" viewBox="0 0 418 208" fill="none" aria-hidden="true"><polygon points="65.4,17.5 65.4,44.5 42.0,58.0 18.6,44.5 18.6,17.5 42.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,17.5 116.4,44.5 93.0,58.0 69.6,44.5 69.6,17.5 93.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,17.5 167.4,44.5 144.0,58.0 120.6,44.5 120.6,17.5 144.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="144" cy="31" r="8" fill="#cbffac"/><circle cx="144" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="218.4,17.5 218.4,44.5 195.0,58.0 171.6,44.5 171.6,17.5 195.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,17.5 269.4,44.5 246.0,58.0 222.6,44.5 222.6,17.5 246.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="246" cy="31" r="8" fill="#cbffac"/><circle cx="246" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="320.4,17.5 320.4,44.5 297.0,58.0 273.6,44.5 273.6,17.5 297.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,17.5 371.4,44.5 348.0,58.0 324.6,44.5 324.6,17.5 348.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,61.5 90.9,88.5 67.5,102.0 44.1,88.5 44.1,61.5 67.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,61.5 141.9,88.5 118.5,102.0 95.1,88.5 95.1,61.5 118.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="192.9,61.5 192.9,88.5 169.5,102.0 146.1,88.5 146.1,61.5 169.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,61.5 243.9,88.5 220.5,102.0 197.1,88.5 197.1,61.5 220.5,48.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="220.5" cy="75" r="8" fill="#cbffac"/><circle cx="220.5" cy="75" r="13" fill="none" stroke="#b5ff8333"/><polygon points="294.9,61.5 294.9,88.5 271.5,102.0 248.1,88.5 248.1,61.5 271.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,61.5 345.9,88.5 322.5,102.0 299.1,88.5 299.1,61.5 322.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="396.9,61.5 396.9,88.5 373.5,102.0 350.1,88.5 350.1,61.5 373.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="65.4,105.5 65.4,132.5 42.0,146.0 18.6,132.5 18.6,105.5 42.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,105.5 116.4,132.5 93.0,146.0 69.6,132.5 69.6,105.5 93.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,105.5 167.4,132.5 144.0,146.0 120.6,132.5 120.6,105.5 144.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="218.4,105.5 218.4,132.5 195.0,146.0 171.6,132.5 171.6,105.5 195.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,105.5 269.4,132.5 246.0,146.0 222.6,132.5 222.6,105.5 246.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="320.4,105.5 320.4,132.5 297.0,146.0 273.6,132.5 273.6,105.5 297.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,105.5 371.4,132.5 348.0,146.0 324.6,132.5 324.6,105.5 348.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,149.5 90.9,176.5 67.5,190.0 44.1,176.5 44.1,149.5 67.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,149.5 141.9,176.5 118.5,190.0 95.1,176.5 95.1,149.5 118.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="118.5" cy="163" r="8" fill="#cbffac"/><circle cx="118.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="192.9,149.5 192.9,176.5 169.5,190.0 146.1,176.5 146.1,149.5 169.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,149.5 243.9,176.5 220.5,190.0 197.1,176.5 197.1,149.5 220.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="294.9,149.5 294.9,176.5 271.5,190.0 248.1,176.5 248.1,149.5 271.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,149.5 345.9,176.5 322.5,190.0 299.1,176.5 299.1,149.5 322.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="322.5" cy="163" r="8" fill="#cbffac"/><circle cx="322.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="396.9,149.5 396.9,176.5 373.5,190.0 350.1,176.5 350.1,149.5 373.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/></svg></div><div class="lc-builder-copy"><span class="lc-domain">LOLCHESS.GG</span><strong>추천 메타</strong></div><span class="lc-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><div class="lc-secondary"><a class="lc-link" href="https://lolchess.gg/builder" target="_blank" rel="noopener noreferrer" aria-label="덱 빌더 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg></span><strong>덱 빌더</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><a class="lc-link" href="https://lolchess.gg/decks?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="덱 통계 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16v-5M12 16V5M18 16V8"/></svg></span><strong>덱 통계</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a></div></div></section></section></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+</section><section class="columns page-view work-grid" data-view="2"><section class="panel work-panel" aria-label="업무 메모"><div class="panel-head"><div><div class="kicker">✎ NOTES</div><h2 class="panel-title">메모</h2></div><span class="work-note-status" id="work-note-status" role="status">자동 저장</span></div><textarea class="work-memo" id="work-memo" placeholder="메모 입력" aria-label="업무 메모 내용"></textarea><div class="work-note-actions"><button class="control-btn work-note-icon" id="work-note-clear" type="button" aria-label="비우기" title="메모 비우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M5 6l1 14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-14M10 10v7M14 10v7"/></svg></button><button class="control-btn primary work-note-icon" id="work-note-save" type="button" aria-label="저장" title="메모 저장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h9"/></svg></button></div></section><section class="panel work-calc-panel" id="work-calc-panel" aria-label="계산기" tabindex="0"><div class="panel-head"><div><div class="kicker">▦ CALCULATOR</div><h2 class="panel-title">계산기</h2></div><button class="icon-btn work-calc-copy" id="work-calc-copy" type="button" aria-label="계산 결과 복사" title="계산 결과 복사"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div><div class="work-calc-screen"><div class="work-calc-expression" id="work-calc-expression"></div><output class="work-calc-result" id="work-calc-result" aria-live="polite" aria-atomic="true">0</output></div><div class="work-calc-keys" aria-label="계산기 키패드"><button type="button" class="work-calc-key work-calc-utility" data-work-calc="clear" aria-label="계산기 초기화">C</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="backspace" aria-label="마지막 숫자 지우기">⌫</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="percent" aria-label="퍼센트">%</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="/" aria-label="나누기">÷</button><button type="button" class="work-calc-key" data-work-calc="7">7</button><button type="button" class="work-calc-key" data-work-calc="8">8</button><button type="button" class="work-calc-key" data-work-calc="9">9</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="*" aria-label="곱하기">×</button><button type="button" class="work-calc-key" data-work-calc="4">4</button><button type="button" class="work-calc-key" data-work-calc="5">5</button><button type="button" class="work-calc-key" data-work-calc="6">6</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="-" aria-label="빼기">−</button><button type="button" class="work-calc-key" data-work-calc="1">1</button><button type="button" class="work-calc-key" data-work-calc="2">2</button><button type="button" class="work-calc-key" data-work-calc="3">3</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="+" aria-label="더하기">+</button><button type="button" class="work-calc-key" data-work-calc="sign" aria-label="양수 음수 전환">+/−</button><button type="button" class="work-calc-key" data-work-calc="0">0</button><button type="button" class="work-calc-key" data-work-calc="decimal" aria-label="소수점">.</button><button type="button" class="work-calc-key work-calc-equals" data-work-calc="equals" aria-label="계산 결과">=</button></div></section><section class="panel work-countdown-panel" id="work-countdown-panel" aria-label="카운트다운"><div class="panel-head"><div><div class="kicker">◷ COUNTDOWN</div><h2 class="panel-title">카운트다운</h2></div><button class="icon-btn wc-edit" id="wc-edit" type="button" aria-label="카운트다운 시간 편집" aria-expanded="false" aria-controls="wc-popover" title="카운트다운 시간 편집"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-13 13H3v-5Z"/><path d="m14 5 5 5"/></svg></button></div><div class="wc-popover" id="wc-popover" hidden><form id="wc-form" class="wc-form"><label for="wc-minutes-input">시간 설정</label><div class="wc-minutes-field"><input class="field" id="wc-minutes-input" type="number" min="1" max="1440" step="1" value="10" inputmode="numeric" required aria-label="카운트다운 시간 분"><span>분</span></div><div class="wc-form-actions"><button class="control-btn" id="wc-cancel" type="button">취소</button><button class="control-btn primary" type="submit">적용</button></div></form></div><div class="wc-content"><div class="wc-display" id="wc-display" role="timer" aria-label="카운트다운 남은 시간">10:00</div><div class="wc-track" aria-hidden="true"><div class="wc-fill" id="wc-fill"></div></div></div><div class="wc-timer-controls"><button class="wc-timer-start" id="wc-start" type="button" aria-label="시작" title="시작"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5a1 1 0 0 1 1.5-.87l10 6a1.6 1.6 0 0 1 0 2.74l-10 6A1 1 0 0 1 8 18.5Z"/></svg></button><button class="wc-timer-reset" id="wc-reset" type="button" aria-label="카운트다운 초기화" title="카운트다운 초기화"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.5 8.2M3 4v6h6"/></svg></button></div></section></section><section class="page-view game-view" data-view="3"><section class="game-widget" aria-label="롤체지지 M 위젯"><header class="game-widget-head"><div><div class="game-kicker">✦ TFT COMPANION</div><h2>롤체지지</h2></div><a class="lc-home" href="https://lolchess.gg/" target="_blank" rel="noopener noreferrer" aria-label="롤체지지 홈 · 새 창에서 열기" title="롤체지지 홈 · 새 창에서 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a></header><div class="lc-links"><a class="lc-builder" href="https://lolchess.gg/meta?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="추천 메타 · 새 창에서 열기"><div class="lc-board-wrap"><div class="lc-board-glow"></div><svg class="lc-board" viewBox="0 0 418 208" fill="none" aria-hidden="true"><polygon points="65.4,17.5 65.4,44.5 42.0,58.0 18.6,44.5 18.6,17.5 42.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,17.5 116.4,44.5 93.0,58.0 69.6,44.5 69.6,17.5 93.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,17.5 167.4,44.5 144.0,58.0 120.6,44.5 120.6,17.5 144.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="144" cy="31" r="8" fill="#cbffac"/><circle cx="144" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="218.4,17.5 218.4,44.5 195.0,58.0 171.6,44.5 171.6,17.5 195.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,17.5 269.4,44.5 246.0,58.0 222.6,44.5 222.6,17.5 246.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="246" cy="31" r="8" fill="#cbffac"/><circle cx="246" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="320.4,17.5 320.4,44.5 297.0,58.0 273.6,44.5 273.6,17.5 297.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,17.5 371.4,44.5 348.0,58.0 324.6,44.5 324.6,17.5 348.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,61.5 90.9,88.5 67.5,102.0 44.1,88.5 44.1,61.5 67.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,61.5 141.9,88.5 118.5,102.0 95.1,88.5 95.1,61.5 118.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="192.9,61.5 192.9,88.5 169.5,102.0 146.1,88.5 146.1,61.5 169.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,61.5 243.9,88.5 220.5,102.0 197.1,88.5 197.1,61.5 220.5,48.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="220.5" cy="75" r="8" fill="#cbffac"/><circle cx="220.5" cy="75" r="13" fill="none" stroke="#b5ff8333"/><polygon points="294.9,61.5 294.9,88.5 271.5,102.0 248.1,88.5 248.1,61.5 271.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,61.5 345.9,88.5 322.5,102.0 299.1,88.5 299.1,61.5 322.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="396.9,61.5 396.9,88.5 373.5,102.0 350.1,88.5 350.1,61.5 373.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="65.4,105.5 65.4,132.5 42.0,146.0 18.6,132.5 18.6,105.5 42.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,105.5 116.4,132.5 93.0,146.0 69.6,132.5 69.6,105.5 93.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,105.5 167.4,132.5 144.0,146.0 120.6,132.5 120.6,105.5 144.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="218.4,105.5 218.4,132.5 195.0,146.0 171.6,132.5 171.6,105.5 195.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,105.5 269.4,132.5 246.0,146.0 222.6,132.5 222.6,105.5 246.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="320.4,105.5 320.4,132.5 297.0,146.0 273.6,132.5 273.6,105.5 297.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,105.5 371.4,132.5 348.0,146.0 324.6,132.5 324.6,105.5 348.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,149.5 90.9,176.5 67.5,190.0 44.1,176.5 44.1,149.5 67.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,149.5 141.9,176.5 118.5,190.0 95.1,176.5 95.1,149.5 118.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="118.5" cy="163" r="8" fill="#cbffac"/><circle cx="118.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="192.9,149.5 192.9,176.5 169.5,190.0 146.1,176.5 146.1,149.5 169.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,149.5 243.9,176.5 220.5,190.0 197.1,176.5 197.1,149.5 220.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="294.9,149.5 294.9,176.5 271.5,190.0 248.1,176.5 248.1,149.5 271.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,149.5 345.9,176.5 322.5,190.0 299.1,176.5 299.1,149.5 322.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="322.5" cy="163" r="8" fill="#cbffac"/><circle cx="322.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="396.9,149.5 396.9,176.5 373.5,190.0 350.1,176.5 350.1,149.5 373.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/></svg></div><div class="lc-builder-copy"><span class="lc-domain">LOLCHESS.GG</span><strong>추천 메타</strong></div><span class="lc-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><div class="lc-secondary"><a class="lc-link" href="https://lolchess.gg/builder" target="_blank" rel="noopener noreferrer" aria-label="덱 빌더 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg></span><strong>덱 빌더</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><a class="lc-link" href="https://lolchess.gg/decks?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="덱 통계 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16v-5M12 16V5M18 16V8"/></svg></span><strong>덱 통계</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a></div></div></section></section></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (function () {
   "use strict";
@@ -299,7 +525,8 @@ html[data-mode="edge"] .events-panel #event-add-popover {
     cache: "edge-shared-state-v1",
     pending: "edge-shared-pending-v1",
     legacy: "edge-shared-legacy-v1",
-    imported: "edge-shared-imported-v1"
+    imported: "edge-shared-imported-v1",
+    widgetsImported: "edge-shared-widgets-imported-v1"
   };
   const POLL_MS = 1500;
   const FRESH_MS = 6000;
@@ -318,6 +545,9 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   let lastPush = 0;
   let pushSerial = 0;
   let renderRetry = false;
+  let widgetCapable = false;
+  let postingIds = new Set();
+  const WIDGET_KEYS = ["memo", "focus", "countdown", "calculator", "calendar"];
 
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
   function newId() {
@@ -364,6 +594,56 @@ html[data-mode="edge"] .events-panel #event-add-popover {
       return true;
     });
   }
+  function widgetValue(key, value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    if (key === "memo") return typeof value.text === "string" && value.text.length <= 10000 ? { text: value.text } : null;
+    if (key === "focus" || key === "countdown") {
+      const {durationSeconds, remainingSeconds, running, endAt} = value;
+      if (!Number.isInteger(durationSeconds) || durationSeconds < 1 || durationSeconds > 86400 ||
+          !Number.isFinite(remainingSeconds) || remainingSeconds < 0 || remainingSeconds > 86400 ||
+          typeof running !== "boolean" || (endAt !== null && (!Number.isSafeInteger(endAt) || endAt < 1 || endAt > 253402300799999)) ||
+          (running && endAt === null)) return null;
+      return {durationSeconds, remainingSeconds, running, endAt};
+    }
+    if (key === "calendar") return Number.isInteger(value.year) && value.year >= 2000 && value.year <= 2100 && Number.isInteger(value.month) && value.month >= 0 && value.month <= 11 ? {year: value.year, month: value.month} : null;
+    if (key === "calculator") {
+      if (typeof value.expression !== "string" || value.expression.length > 200 || typeof value.result !== "string" || value.result.length > 200 || !Array.isArray(value.history) || value.history.length > 20) return null;
+      const result = {expression:value.expression, result:value.result, history:[]};
+      for (const item of value.history) {
+        if (!item || typeof item.expression !== "string" || item.expression.length > 200 || typeof item.result !== "string" || item.result.length > 200) return null;
+        const record = {expression:item.expression,result:item.result};
+        if (item.at !== undefined && item.at !== null) {
+          if (!Number.isSafeInteger(item.at) || item.at < 0 || item.at > 253402300799999) return null;
+          record.at = item.at;
+        }
+        result.history.push(record);
+      }
+      if (value.entry !== undefined) { if (typeof value.entry !== "string" || value.entry.length > 200) return null; result.entry = value.entry; }
+      for (const field of ["accumulator", "lastOperand"]) if (value[field] !== undefined) { if (value[field] !== null && !Number.isFinite(value[field])) return null; result[field] = value[field]; }
+      for (const field of ["operation", "lastOperation"]) if (value[field] !== undefined) { if (value[field] !== null && !["+", "-", "*", "/"].includes(value[field])) return null; result[field] = value[field]; }
+      for (const field of ["waiting", "finished", "error"]) if (value[field] !== undefined) { if (typeof value[field] !== "boolean") return null; result[field] = value[field]; }
+      return result;
+    }
+    return null;
+  }
+  function readWidgetLegacy() {
+    const result = {};
+    try {
+      const text = localStorage.getItem("edge-work-memo");
+      if (text && text.length <= 10000) result.memo = {text};
+    } catch (_) { storageFailed = true; }
+    const countdown = readJSON("edge-work-countdown", null);
+    if (countdown && countdown.target) {
+      const endAt = new Date(countdown.target).getTime();
+      const remaining = Math.ceil((endAt - Date.now()) / 1000);
+      const createdAt = new Date(countdown.createdAt).getTime();
+      const originalDuration = Math.ceil((endAt - createdAt) / 1000);
+      const duration = Number.isInteger(originalDuration) && originalDuration >= 1 && originalDuration <= 86400 ? originalDuration : remaining;
+      if (remaining > 0 && remaining <= 86400) result.countdown = {durationSeconds:duration,remainingSeconds:remaining,running:true,endAt};
+    }
+    return result;
+  }
+  const widgetLegacy = readWidgetLegacy();
   function checkedState(value) {
     if (!value || value.schema !== 1 || !validId(value.storeId) ||
         !Number.isSafeInteger(value.revision) || value.revision < 0 ||
@@ -375,10 +655,30 @@ html[data-mode="edge"] .events-panel #event-add-popover {
     if (!tasks.every(strictTask) || !events.every(strictEvent) ||
         new Set(tasks.map(item => item.id)).size !== tasks.length ||
         new Set(events.map(item => item.id)).size !== events.length) throw new Error("저장소 항목 오류");
-    return { schema: 1, storeId: value.storeId, revision: value.revision, tasks: tasks, events: events };
+    const state = { schema: 1, storeId: value.storeId, revision: value.revision, tasks: tasks, events: events };
+    if (value.widgets !== undefined) {
+      if (!value.widgets || typeof value.widgets !== "object" || Array.isArray(value.widgets)) throw new Error("위젯 저장소 응답 오류");
+      state.widgets = {};
+      state.widgetRevisions = {};
+      for (const key of WIDGET_KEYS) {
+        const widget = widgetValue(key, value.widgets[key]);
+        if (!widget) throw new Error("위젯 항목 오류 · " + key);
+        const revision = value.widgetRevisions && value.widgetRevisions[key];
+        if (!Number.isSafeInteger(revision) || revision < 0) throw new Error("위젯 저장 버전 오류");
+        state.widgets[key] = widget;
+        state.widgetRevisions[key] = revision;
+      }
+    }
+    // Live data stays in memory and is shared by the local program, not written by a widget.
+    state.live = value.live && typeof value.live === "object" && !Array.isArray(value.live) ? clone(value.live) : {};
+    return state;
   }
   function checkedOperation(op) {
     if (!op || !validId(op.opId)) return null;
+    if ((op.kind === "widget.set" || op.kind === "widget.import") && WIDGET_KEYS.includes(op.key)) {
+      const value = widgetValue(op.key, op.value);
+      return value ? {opId:op.opId,kind:op.kind,key:op.key,value:value} : null;
+    }
     if (op.kind === "task.add") {
       const item = taskItem(op.item, false);
       return item ? { opId: op.opId, kind: op.kind, item: item } : null;
@@ -409,11 +709,13 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   writeJSON(KEYS.legacy, legacy);
   let imported = readJSON(KEYS.imported, {});
   if (!imported || typeof imported !== "object" || Array.isArray(imported)) imported = {};
+  let widgetsImported = readJSON(KEYS.widgetsImported, {});
+  if (!widgetsImported || typeof widgetsImported !== "object" || Array.isArray(widgetsImported)) widgetsImported = {};
   const savedPending = readJSON(KEYS.pending, []);
   let pending = Array.isArray(savedPending) ? savedPending.map(checkedOperation).filter(Boolean) : [];
   if (!Array.isArray(savedPending) || pending.length !== savedPending.length) storageFailed = true;
   pending = pending.filter((op, index, all) => all.findIndex(item => item.opId === op.opId) === index);
-  let view = { tasks: [], events: [] };
+  let view = { tasks: [], events: [], widgets: {}, live: {} };
   let viewSignature = "";
 
   const taskContent = item => item.text;
@@ -422,9 +724,12 @@ html[data-mode="edge"] .events-panel #event-add-popover {
     if (!items.some(existing => existing.id === item.id || (content && content(existing) === content(item)))) items.push(clone(item));
   }
   function optimisticView() {
-    const result = base ? { tasks: clone(base.tasks), events: clone(base.events) } : clone(legacy);
+    const result = base ? { tasks: clone(base.tasks), events: clone(base.events), widgets: clone(base.widgets || widgetLegacy), live: clone(base.live || {}) } : {...clone(legacy),widgets:clone(widgetLegacy),live:{}};
     pending.forEach(op => {
-      if (op.kind === "import") {
+      if (op.kind === "widget.set") result.widgets[op.key] = clone(op.value);
+      else if (op.kind === "widget.import") {
+        if (!base || !base.widgetRevisions || base.widgetRevisions[op.key] === 0) result.widgets[op.key] = clone(op.value);
+      } else if (op.kind === "import") {
         op.tasks.forEach(item => addUnique(result.tasks, item, taskContent));
         op.events.forEach(item => addUnique(result.events, item, eventContent));
       } else if (op.kind === "task.add") addUnique(result.tasks, op.item);
@@ -440,8 +745,8 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   function paintStatus() {
     const badge = document.getElementById("shared-status");
     if (!badge) return;
-    const connected = contactedServer && !storageFailed && !lastError && pending.length === 0 && Date.now() - lastSuccess <= FRESH_MS;
-    const reason = storageFailed ? "브라우저 저장을 사용할 수 없음" : pending.length ? "변경 사항 전송 대기" : lastError || "연결 확인 대기";
+    const connected = contactedServer && widgetCapable && !storageFailed && !lastError && pending.length === 0 && Date.now() - lastSuccess <= FRESH_MS;
+    const reason = storageFailed ? "브라우저 저장을 사용할 수 없음" : pending.length ? "변경 사항 전송 대기" : contactedServer && !widgetCapable ? "공유 프로그램 업데이트 필요" : lastError || "연결 확인 대기";
     const label = "위젯 자동 동기화 · " + (connected ? "연결됨" : reason);
     badge.dataset.state = connected ? "connected" : "disconnected";
     badge.dataset.transport = lastPush && Date.now() - lastPush <= FRESH_MS ? "push" : "poll";
@@ -481,13 +786,14 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   }
   function nextBatch() {
     const batch = [];
-    for (const op of pending.slice(0, BATCH_SIZE)) {
+    for (const op of pending) {
+      if (op.kind.startsWith("widget.") && !widgetCapable) continue;
+      if (batch.length >= BATCH_SIZE) break;
       const candidate = batch.concat(op);
       const bytes = new TextEncoder().encode(JSON.stringify({ operations: candidate })).length;
       if (bytes > MAX_BODY_BYTES) break;
       batch.push(clone(op));
     }
-    if (!batch.length && pending.length) throw new Error("전송 항목 크기 오류");
     return batch;
   }
   function remapPending(state) {
@@ -526,7 +832,18 @@ html[data-mode="edge"] .events-panel #event-add-popover {
     if (base && base.storeId === state.storeId && state.revision < base.revision) throw new Error("저장소 응답 순서 오류");
     remapPending(state);
     base = state;
-    writeJSON(KEYS.cache, base);
+    widgetCapable = !!state.widgets;
+    const cachedState = {...base};
+    delete cachedState.live;
+    writeJSON(KEYS.cache, cachedState);
+    if (widgetCapable && !widgetsImported[state.storeId]) {
+      const imports = Object.entries(widgetLegacy).filter(([key]) => state.widgetRevisions[key] === 0 && !pending.some(op => op.key === key)).map(([key,value]) => ({opId:newId(),kind:"widget.import",key,value:clone(value)}));
+      pending.unshift(...imports);
+      persistPending();
+      // The queued import is durable; a different client's later migration cannot overwrite edits.
+      widgetsImported[state.storeId] = true;
+      writeJSON(KEYS.widgetsImported, widgetsImported);
+    }
     if (!imported[state.storeId] && !pending.some(op => op.kind === "import")) {
       if (legacy.tasks.length || legacy.events.length) {
         // Import before offline edits: removing a legacy row must stay removed after migration.
@@ -544,6 +861,18 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   }
   function listName(key) { return key === "edge-tasks" ? "tasks" : key === "edge-events" ? "events" : null; }
   function getList(key) { const name = listName(key); return name ? clone(view[name]) : []; }
+  function getWidget(key, fallback) { return WIDGET_KEYS.includes(key) && view.widgets[key] ? clone(view.widgets[key]) : clone(fallback === undefined ? null : fallback); }
+  function setWidget(key, value) {
+    const checked = widgetValue(key, value);
+    if (!checked) { console.warn("위젯 저장 항목 오류 · " + key); return false; }
+    if (JSON.stringify(view.widgets[key]) === JSON.stringify(checked)) return true;
+    // Compact unsent typing/keypresses while preserving the exact payload of an in-flight request.
+    pending = pending.filter(op => !(op.kind === "widget.set" && op.key === key && !postingIds.has(op.opId)));
+    pending.push({opId:newId(),kind:"widget.set",key,value:checked});
+    persistPending(); publish(); schedule(0);
+    return true;
+  }
+  function hasSendablePending() { return pending.some(op => !op.kind.startsWith("widget.") || widgetCapable); }
   function setList(key, items) {
     const name = listName(key);
     if (!name || !Array.isArray(items)) return;
@@ -623,10 +952,12 @@ html[data-mode="edge"] .events-panel #event-add-popover {
     runAgain = false;
     const requestPushSerial = pushSerial;
     try {
-      const batch = contactedServer && pending.length ? nextBatch() : null;
+      const candidates = contactedServer && pending.length ? nextBatch() : [];
+      const batch = candidates.length ? candidates : null;
+      postingIds = new Set((batch || []).map(op => op.opId));
       let state = await request(batch);
       if (base && pushSerial > requestPushSerial && state.storeId !== base.storeId) return;
-      if (base && base.storeId === state.storeId && state.revision < base.revision) {
+      if (base && base.storeId === state.storeId && (state.revision < base.revision || (pushSerial > requestPushSerial && state.revision === base.revision))) {
         if (pushSerial > requestPushSerial) state = base;
         else throw new Error("저장소 응답 순서 오류");
       }
@@ -649,8 +980,9 @@ html[data-mode="edge"] .events-panel #event-add-popover {
       }
       paintStatus();
     } finally {
+      postingIds.clear();
       inFlight = false;
-      schedule(runAgain || (contactedServer && pending.length) ? 0 : POLL_MS);
+      schedule(runAgain || (contactedServer && hasSendablePending()) ? 0 : POLL_MS);
     }
   }
   function start() {
@@ -671,6 +1003,12 @@ html[data-mode="edge"] .events-panel #event-add-popover {
   window.EdgeShared = {
     getList: getList,
     setList: setList,
+    getWidget: getWidget,
+    setWidget: setWidget,
+    getLive: function () { return clone(view.live || {}); },
+    isConnected: function () { return contactedServer && widgetCapable && !lastError && Date.now() - lastSuccess <= FRESH_MS; },
+    now: function () { return Date.now(); },
+    refresh: function () { schedule(0); },
     subscribe: function (listener) { listeners.add(listener); return () => listeners.delete(listener); },
     start: start
   };
@@ -682,62 +1020,495 @@ const TZ="America/Edmonton",WEATHER_URL="https://api.open-meteo.com/v1/forecast?
 function readList(key){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events"))return window.EdgeShared.getList(key);try{const value=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(value))return [];let changed=false;value.forEach(item=>{if(item&&!item.id){item.id="edge-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,14);changed=true}});if(changed)saveList(key,value);return value}catch{return []}}function saveList(key,value){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events")){window.EdgeShared.setList(key,value);return}try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
 function showToast(message){const t=document.getElementById("toast");t.textContent=message;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),1500)}
 function updateClock(){const now=new Date();document.getElementById("clock").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:true}).format(now);document.getElementById("date").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,month:"short",day:"numeric"}).format(now)}
-function weatherText(code){if(code===0)return["맑음","☀️"];if(code<=3)return["구름 조금","🌤️"];if(code===45||code===48)return["안개","🌫️"];if(code<60)return["이슬비","🌦️"];if(code<70)return["비","🌧️"];if(code<80)return["눈","❄️"];if(code<90)return["소나기","🌦️"];return["뇌우","⛈️"]}
-async function loadWeather(){try{const response=await fetch(WEATHER_URL,{cache:"no-store"});if(!response.ok)throw Error();const data=await response.json(),summary=weatherText(data.current.weather_code);document.getElementById("temperature").textContent=Math.round(data.current.temperature_2m);document.getElementById("condition").textContent=summary[0];document.getElementById("weather-icon").textContent=summary[1]}catch{document.getElementById("condition").textContent="날씨 연결 대기"}}
-document.getElementById("refresh-weather").addEventListener("click",loadWeather);const NOW_PLAYING_URL="http://127.0.0.1:47831/now-playing";const musicPanel=document.getElementById("now-playing-card");function renderNowPlaying(data){const connection=document.getElementById("music-connection"),state=document.getElementById("music-state");connection.classList.toggle("online",Boolean(data.bridge));connection.textContent=data.bridge?"PC 연결됨":"연결 끊김";musicPanel.classList.toggle("is-playing",Boolean(data.playing));if(!data.available){state.textContent=data.bridge?"재생 중인 미디어 없음":"";state.hidden=!data.bridge;document.getElementById("music-title").textContent=data.bridge?"재생 중인 음악이 없습니다":"PC 재생 정보 연결 대기";document.getElementById("music-artist").textContent=data.bridge?"음악을 재생하면 여기에 표시됩니다":"Xenon Edge 로컬 브리지 필요";return}state.hidden=false;state.textContent=data.playing?"지금 재생 중":data.status==="Paused"?"일시정지":"재생 상태";document.getElementById("music-title").textContent=data.title||"제목 정보 없음";document.getElementById("music-artist").textContent=data.artist||data.album||"아티스트 정보 없음";}async function refreshNowPlaying(){try{const response=await fetch(NOW_PLAYING_URL,{cache:"no-store"});if(!response.ok)throw Error();renderNowPlaying(await response.json())}catch{renderNowPlaying({bridge:false,available:false,playing:false})}}refreshNowPlaying();setInterval(refreshNowPlaying,3000);
 document.getElementById("page-tabs").addEventListener("click",event=>{const button=event.target.closest(".page-tab");if(!button)return;document.querySelectorAll(".page-tab").forEach(tab=>tab.classList.toggle("active",tab===button));document.querySelectorAll(".page-view").forEach(view=>view.classList.toggle("active",Number(view.dataset.view)===Number(button.dataset.page)))});
 function renderTasks(){const box=document.getElementById("task-list");box.replaceChildren();const all=readList("edge-tasks"),done=all.filter(item=>item.done).length,total=all.length,percent=total?Math.round(done/total*100):0;document.getElementById("task-count").textContent=done+" / "+total;const fill=document.getElementById("task-progress-fill");fill.style.width=percent+"%";fill.setAttribute("aria-valuenow",String(percent));if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="할 일을 추가해 보세요";box.append(empty);return}const toggle=id=>{const list=readList("edge-tasks"),item=list.find(entry=>entry.id===id);if(!item)return;item.done=!item.done;saveList("edge-tasks",list);renderTasks()};all.forEach(task=>{const row=document.createElement("div");row.className="task-row"+(task.done?" done":"");row.setAttribute("role","button");row.setAttribute("tabindex","0");row.setAttribute("aria-label",task.text+(task.done?" 완료됨":" 미완료"));row.onclick=event=>{if(!event.target.closest(".remove-btn"))toggle(task.id)};row.onkeydown=event=>{if((event.key==="Enter"||event.key===" ")&&event.target===row){event.preventDefault();toggle(task.id)}};const check=document.createElement("button");check.className="task-toggle"+(task.done?" is-done":"");check.type="button";check.textContent=task.done?"✓":"";check.setAttribute("aria-label",task.done?task.text+" 완료 해제":task.text+" 완료 표시");check.onclick=event=>{event.stopPropagation();toggle(task.id)};const text=document.createElement("span");text.className="task-text";text.textContent=task.text;const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",task.text+" 삭제");remove.onclick=event=>{event.stopPropagation();const list=readList("edge-tasks").filter(entry=>entry.id!==task.id);saveList("edge-tasks",list);renderTasks()};row.append(check,text,remove);box.append(row)})}
 document.getElementById("task-form").addEventListener("submit",event=>{event.preventDefault();const input=document.getElementById("task-input"),text=input.value.trim();if(!text)return;const list=readList("edge-tasks");list.push({text,done:false});saveList("edge-tasks",list);input.value="";renderTasks()});
-let seconds=1500,totalSeconds=1500,interval=null;function paintTimer(){const m=Math.floor(seconds/60),s=seconds%60;document.getElementById("timer-display").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");document.getElementById("timer-progress").style.width=(totalSeconds?seconds/totalSeconds*100:0)+"%"}function stopTimer(){clearInterval(interval);interval=null;document.getElementById("timer-start").textContent="시작"}document.getElementById("timer-start").onclick=()=>{if(interval){stopTimer();return}document.getElementById("timer-start").textContent="일시정지";interval=setInterval(()=>{seconds=Math.max(0,seconds-1);paintTimer();if(seconds===0){stopTimer();showToast("집중 시간이 끝났어요")}},1000)};const timerCustomInput=document.getElementById("timer-custom-minutes");document.getElementById("timer-reset").onclick=()=>{stopTimer();seconds=totalSeconds=1500;timerCustomInput.value="25";document.getElementById("timer-caption").textContent="FOCUS TIME";paintTimer()};document.querySelectorAll(".preset").forEach(button=>button.onclick=()=>{stopTimer();const minutes=Number(button.dataset.min);totalSeconds=seconds=minutes*60;timerCustomInput.value=String(minutes);document.getElementById("timer-caption").textContent=minutes===5?"SHORT BREAK":"FOCUS TIME";paintTimer()});document.getElementById("timer-custom-form").addEventListener("submit",event=>{event.preventDefault();const minutes=Math.floor(Number(timerCustomInput.value));if(!Number.isFinite(minutes)||minutes<1||minutes>180){showToast("1분에서 180분 사이로 설정해 주세요");return}stopTimer();totalSeconds=seconds=minutes*60;timerCustomInput.value=String(minutes);document.getElementById("timer-caption").textContent="CUSTOM FOCUS";paintTimer();showToast(minutes+"분 타이머로 설정했어요")});
 function renderEvents(){const box=document.getElementById("event-list");box.replaceChildren();const today=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date()),todayUTC=Date.parse(today+"T00:00:00Z"),all=readList("edge-events").map(item=>({...item,time:item.time||""}));const getDiff=item=>Math.round((Date.parse(item.date+"T00:00:00Z")-todayUTC)/86400000);all.sort((a,b)=>{const da=getDiff(a),db=getDiff(b);if((da>=0)!==(db>=0))return da>=0?-1:1;return a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")});document.getElementById("event-count").textContent=all.length+" 일정";if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="＋ 버튼으로 일정을 추가해 보세요";box.append(empty);return}all.forEach((item,index)=>{const diff=getDiff(item),date=new Date(item.date+"T00:00:00Z"),month=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric"}).format(date),day=new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",day:"2-digit"}).format(date),row=document.createElement("div");row.className="event-card "+(index===0?"featured":"compact")+(diff<0?" past":"");const dateText=item.date.split("-").join(".");const dateTag=document.createElement("div");dateTag.className="event-date";const dayNumber=document.createElement("strong");dayNumber.textContent=day;const monthLabel=document.createElement("span");monthLabel.textContent=month;dateTag.append(dayNumber,monthLabel);const info=document.createElement("div");const name=document.createElement("div");name.className="event-name";name.textContent=item.name;const fullDate=document.createElement("div");fullDate.className="event-full-date";fullDate.textContent=dateText+(index===0?"":" · "+(item.time||"시간 미정"));info.append(name);if(index===0){const time=document.createElement("div");time.className="event-time";time.textContent=item.time||"시간 미정";info.append(time,fullDate)}else info.append(fullDate);const badge=document.createElement("span");badge.className="dday-badge";badge.textContent=diff===0?"D-DAY":diff>0?"D-"+diff:"D+"+Math.abs(diff);const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",item.name+" 삭제");remove.onclick=()=>{const items=readList("edge-events"),removeIndex=items.findIndex(entry=>entry.id===item.id);if(removeIndex>=0)items.splice(removeIndex,1);saveList("edge-events",items);renderEvents()};if(index===0)row.append(dateTag,info,badge,remove);else{const accent=document.createElement("i");accent.className="event-accent";row.append(accent,info,badge,remove)}box.append(row)})}
 document.getElementById("event-add-toggle").addEventListener("click",()=>{const popover=document.getElementById("event-add-popover");popover.hidden=!popover.hidden;if(!popover.hidden)document.getElementById("event-name").focus()});document.addEventListener("click",event=>{const popover=document.getElementById("event-add-popover"),button=document.getElementById("event-add-toggle");if(!popover.hidden&&!popover.contains(event.target)&&!button.contains(event.target))popover.hidden=true});document.getElementById("event-form").addEventListener("submit",event=>{event.preventDefault();const name=document.getElementById("event-name"),date=document.getElementById("event-date"),time=document.getElementById("event-time");if(!name.value.trim()||!date.value)return;const list=readList("edge-events");list.push({name:name.value.trim(),date:date.value,time:time.value});saveList("edge-events",list);name.value="";date.value="";time.value="09:00";document.getElementById("event-add-popover").hidden=true;renderEvents()});
-let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",year:"numeric",month:"long"});function holidayDateKey(year,month,day){return year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0")}async function loadHolidayYear(year){if(holidayDataByYear[year])return holidayDataByYear[year];try{const [caResponse,krResponse]=await Promise.all([fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/CA",{cache:"force-cache"}),fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/KR",{cache:"force-cache"})]);if(!caResponse.ok||!krResponse.ok)throw Error();const [caRecords,krRecords]=await Promise.all([caResponse.json(),krResponse.json()]);holidayDataByYear[year]=[...caRecords.filter(item=>item.global||(item.counties||[]).includes("CA-AB")).map(item=>({...item,region:"CA"})),...krRecords.map(item=>({...item,region:"KR"}))];return holidayDataByYear[year]}catch{return []}}function renderHolidayCalendar(){const year=holidayView.getFullYear(),month=holidayView.getMonth(),firstDay=new Date(Date.UTC(year,month,1)).getUTCDay(),daysInMonth=new Date(Date.UTC(year,month+1,0)).getUTCDate(),calendar=document.getElementById("holiday-calendar"),heading=document.getElementById("holiday-month");heading.textContent=holidayMonthFormatter.format(new Date(Date.UTC(year,month,1)));calendar.replaceChildren();["일","월","화","수","목","금","토"].forEach(label=>{const cell=document.createElement("div");cell.className="holiday-weekday";cell.textContent=label;calendar.append(cell)});const holidays=holidayDataByYear[year]||[],holidayByDate=new Map(holidays.map(item=>[item.date,item]));const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());for(let index=0;index<42;index++){const day=index-firstDay+1,cell=document.createElement("div"),date=new Date(Date.UTC(year,month,day)),key=holidayDateKey(year,month,day),holiday=holidayByDate.get(key);cell.className="holiday-day"+(day<1||day>daysInMonth?" outside":"")+(key===todayKey?" today":"")+(holiday?" is-holiday":"");cell.textContent=String(date.getUTCDate());if(holiday)cell.title=holiday.localName||holiday.name;calendar.append(cell)}const list=document.getElementById("holiday-list");list.replaceChildren();const monthHolidays=holidays.filter(item=>item.date.startsWith(holidayDateKey(year,month,1).slice(0,7))).sort((a,b)=>a.date.localeCompare(b.date));if(!monthHolidays.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="이번 달에는 표시할 공휴일이 없어요";list.append(empty);return}monthHolidays.forEach(item=>{const row=document.createElement("div"),date=document.createElement("span"),name=document.createElement("span");row.className="holiday-item";date.className="holiday-item-date";date.textContent=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric",day:"numeric"}).format(new Date(item.date+"T00:00:00Z"));name.className="holiday-item-name";name.textContent=item.localName||item.name;row.append(date,name);list.append(row)})}document.getElementById("holiday-prev").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()-1,1);renderHolidayCalendar()});document.getElementById("holiday-next").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()+1,1);renderHolidayCalendar()});updateClock();setInterval(updateClock,30000);loadWeather();setInterval(loadWeather,900000);renderHolidayCalendar();loadHolidayYear(holidayView.getFullYear()).then(renderHolidayCalendar);renderTasks();renderEvents();paintTimer();if(window.EdgeShared){window.EdgeShared.subscribe(()=>{renderTasks();renderEvents()});window.EdgeShared.start();}
+let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",year:"numeric",month:"long"});function holidayDateKey(year,month,day){return year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0")}async function loadHolidayYear(year){if(holidayDataByYear[year])return holidayDataByYear[year];try{const [caResponse,krResponse]=await Promise.all([fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/CA",{cache:"force-cache"}),fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/KR",{cache:"force-cache"})]);if(!caResponse.ok||!krResponse.ok)throw Error();const [caRecords,krRecords]=await Promise.all([caResponse.json(),krResponse.json()]);holidayDataByYear[year]=[...caRecords.filter(item=>item.global||(item.counties||[]).includes("CA-AB")).map(item=>({...item,region:"CA"})),...krRecords.map(item=>({...item,region:"KR"}))];return holidayDataByYear[year]}catch{return []}}function renderHolidayCalendar(){const year=holidayView.getFullYear(),month=holidayView.getMonth(),firstDay=new Date(Date.UTC(year,month,1)).getUTCDay(),daysInMonth=new Date(Date.UTC(year,month+1,0)).getUTCDate(),calendar=document.getElementById("holiday-calendar"),heading=document.getElementById("holiday-month");heading.textContent=holidayMonthFormatter.format(new Date(Date.UTC(year,month,1)));calendar.replaceChildren();["일","월","화","수","목","금","토"].forEach(label=>{const cell=document.createElement("div");cell.className="holiday-weekday";cell.textContent=label;calendar.append(cell)});const holidays=holidayDataByYear[year]||[],holidayByDate=new Map(holidays.map(item=>[item.date,item]));const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());for(let index=0;index<42;index++){const day=index-firstDay+1,cell=document.createElement("div"),date=new Date(Date.UTC(year,month,day)),key=holidayDateKey(year,month,day),holiday=holidayByDate.get(key);cell.className="holiday-day"+(day<1||day>daysInMonth?" outside":"")+(key===todayKey?" today":"")+(holiday?" is-holiday":"");cell.textContent=String(date.getUTCDate());if(holiday)cell.title=holiday.localName||holiday.name;calendar.append(cell)}const list=document.getElementById("holiday-list");list.replaceChildren();const monthHolidays=holidays.filter(item=>item.date.startsWith(holidayDateKey(year,month,1).slice(0,7))).sort((a,b)=>a.date.localeCompare(b.date));if(!monthHolidays.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="이번 달에는 표시할 공휴일이 없어요";list.append(empty);return}monthHolidays.forEach(item=>{const row=document.createElement("div"),date=document.createElement("span"),name=document.createElement("span");row.className="holiday-item";date.className="holiday-item-date";date.textContent=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric",day:"numeric"}).format(new Date(item.date+"T00:00:00Z"));name.className="holiday-item-name";name.textContent=item.localName||item.name;row.append(date,name);list.append(row)})}updateClock();setInterval(updateClock,30000);renderHolidayCalendar();loadHolidayYear(holidayView.getFullYear()).then(renderHolidayCalendar);renderTasks();renderEvents();if(window.EdgeShared){let renderedTaskState=JSON.stringify(window.EdgeShared.getList("edge-tasks")),renderedEventState=JSON.stringify(window.EdgeShared.getList("edge-events"));window.EdgeShared.subscribe(()=>{const taskState=JSON.stringify(window.EdgeShared.getList("edge-tasks")),eventState=JSON.stringify(window.EdgeShared.getList("edge-events"));if(taskState!==renderedTaskState){renderTasks();renderedTaskState=taskState}if(eventState!==renderedEventState){renderEvents();renderedEventState=eventState}});window.EdgeShared.start();}
 
-(()=>{const memo=document.getElementById("work-memo"),status=document.getElementById("work-note-status");try{memo.value=localStorage.getItem("edge-work-memo")||""}catch{status.textContent="자동 저장을 사용할 수 없어요"}const save=()=>{try{localStorage.setItem("edge-work-memo",memo.value);status.textContent="저장됨";return true}catch{status.textContent="저장하지 못했어요";return false}};memo.addEventListener("input",save);document.getElementById("work-note-save").addEventListener("click",()=>showToast(save()?"메모를 저장했어요":"브라우저 저장 공간을 확인해 주세요"));document.getElementById("work-note-clear").addEventListener("click",()=>{if(memo.value&&!confirm("메모 내용을 모두 비울까요?"))return;memo.value="";save();memo.focus()})})();
-(()=>{
-  const panel=document.getElementById("work-calc-panel");
-  if(!panel)return;
-  const output=document.getElementById("work-calc-result"),expression=document.getElementById("work-calc-expression");
-  let entry="0",accumulator=null,operation=null,waiting=false,finished=false,error=false,lastOperation=null,lastOperand=null,hint="";
-  const symbols={"+":"+","-":"−","*":"×","/":"÷"};
-  const normalized=value=>Object.is(value,-0)?"0":String(Number(value.toPrecision(12)));
-  function paint(){output.textContent=entry;output.classList.toggle("is-error",error);expression.textContent=hint;}
-  function clear(){entry="0";accumulator=null;operation=null;waiting=false;finished=false;error=false;lastOperation=null;lastOperand=null;hint="";}
-  function fail(message){entry=message;hint="C 또는 숫자를 눌러 다시 계산하세요";error=true;accumulator=null;operation=null;waiting=false;finished=false;lastOperation=null;lastOperand=null;}
-  function calculate(left,right,operator){if(operator==="/"&&right===0){fail("0으로 나눌 수 없어요");return null;}const value=operator==="+"?left+right:operator==="-"?left-right:operator==="*"?left*right:left/right;if(!Number.isFinite(value)){fail("계산 범위를 넘었어요");return null;}return Number(normalized(value));}
-  function take(action){
-    if(action==="clear"){clear();paint();return;}
-    if(error){if(/^\d$/.test(action)||action==="decimal")clear();else return;}
-    if(/^\d$/.test(action)){
-      if(waiting||finished){entry=action;waiting=false;if(finished){accumulator=null;operation=null;hint="계산 중";}finished=false;lastOperation=null;lastOperand=null;}
-      else if(entry.replace(/[-.]/g,"").length<12){entry=entry==="0"?action:entry==="-0"?"-"+action:entry+action;}
-      if(!operation)hint="계산 중";
-    }else if(action==="decimal"){
-      if(waiting||finished){entry="0.";waiting=false;if(finished){accumulator=null;operation=null;}finished=false;lastOperation=null;lastOperand=null;hint=operation?hint:"계산 중";}
-      else if(!entry.includes("."))entry+=".";
-    }else if(action==="backspace"){
-      if(!waiting&&!finished){entry=entry.length>1?entry.slice(0,-1):"0";if(entry==="-"||entry==="")entry="0";}
-    }else if(action==="sign"){
-      if(waiting){entry="-0";waiting=false;}else if(Number(entry)!==0)entry=entry.startsWith("-")?entry.slice(1):"-"+entry;else entry=entry.startsWith("-")?"0":"-0";
-      if(finished){finished=false;accumulator=null;operation=null;lastOperation=null;lastOperand=null;hint="계산 중";}
-    }else if(action==="percent"){
-      const value=Number(entry),percent=operation&&accumulator!==null&&(operation==="+"||operation==="-")?accumulator*value/100:value/100;
-      if(!Number.isFinite(percent))fail("계산 범위를 넘었어요");else{entry=normalized(percent);waiting=false;if(finished){finished=false;accumulator=null;operation=null;lastOperation=null;lastOperand=null;}hint=operation?String(accumulator)+" "+symbols[operation]+" "+entry:entry+"로 변환";}
-    }else if(Object.prototype.hasOwnProperty.call(symbols,action)){
-      const value=Number(entry);
-      if(operation&&accumulator!==null&&!waiting){const answer=calculate(accumulator,value,operation);if(answer===null){paint();return;}entry=normalized(answer);accumulator=answer;}
-      else if(!waiting||accumulator===null)accumulator=value;
-      operation=action;waiting=true;finished=false;lastOperation=null;lastOperand=null;hint=normalized(accumulator)+" "+symbols[action];
-    }else if(action==="equals"){
-      if(operation&&accumulator!==null){const operand=Number(entry),left=accumulator,operator=operation,answer=calculate(left,operand,operator);if(answer===null){paint();return;}hint=normalized(left)+" "+symbols[operator]+" "+normalized(operand)+" =";entry=normalized(answer);lastOperation=operator;lastOperand=operand;accumulator=answer;operation=null;waiting=false;finished=true;}
-      else if(finished&&lastOperation&&lastOperand!==null){const left=Number(entry),answer=calculate(left,lastOperand,lastOperation);if(answer===null){paint();return;}hint=normalized(left)+" "+symbols[lastOperation]+" "+normalized(lastOperand)+" =";entry=normalized(answer);accumulator=answer;}
-    }
-    paint();
+</script>
+<script>
+(() => {
+  'use strict';
+  const shared = window.EdgeShared;
+  if (!shared || typeof shared.getWidget !== 'function') return;
+  const parts = new Intl.DateTimeFormat('en-CA', {timeZone:'America/Edmonton',year:'numeric',month:'numeric'}).formatToParts(new Date());
+  const defaults = {year:Number(parts.find(p => p.type === 'year').value),month:Number(parts.find(p => p.type === 'month').value)-1};
+  let rendered = '';
+  function monthValue() { return shared.getWidget('calendar', defaults) || defaults; }
+  function paint() {
+    const value = monthValue(), signature = value.year + '-' + value.month;
+    if (rendered === signature) return;
+    rendered = signature;
+    holidayView = new Date(value.year, value.month, 1);
+    renderHolidayCalendar();
+    loadHolidayYear(value.year).then(() => { if (rendered === signature) renderHolidayCalendar(); });
   }
-  panel.addEventListener("click",event=>{const key=event.target.closest("[data-work-calc]");if(key&&panel.contains(key))take(key.dataset.workCalc);});
-  panel.addEventListener("keydown",event=>{if(event.ctrlKey||event.metaKey||event.altKey||event.target.closest("input,textarea,[contenteditable=true]"))return;let action=null;if(/^\d$/.test(event.key))action=event.key;else if(["+","-","*","/"].includes(event.key))action=event.key;else if(event.key===".")action="decimal";else if(event.key==="%")action="percent";else if(event.key==="Enter"||event.key==="=")action="equals";else if(event.key==="Backspace")action="backspace";else if(event.key==="Escape"||event.key.toLowerCase()==="c")action="clear";if(action){event.preventDefault();take(action);}});
+  function move(delta) {
+    const value = monthValue(), date = new Date(value.year, value.month + delta, 1);
+    if (date.getFullYear() < 2000 || date.getFullYear() > 2100) return;
+    shared.setWidget('calendar', {year:date.getFullYear(),month:date.getMonth()});
+  }
+  document.getElementById('holiday-prev').addEventListener('click', () => move(-1));
+  document.getElementById('holiday-next').addEventListener('click', () => move(1));
+  shared.subscribe(paint);
   paint();
-})();(()=>{const panel=document.getElementById('work-countdown-panel');if(!panel)return;const key='edge-work-countdown',display=document.getElementById('wc-display'),nameText=document.getElementById('wc-name'),status=document.getElementById('wc-status'),targetText=document.getElementById('wc-target'),fill=document.getElementById('wc-fill'),edit=document.getElementById('wc-edit'),popover=document.getElementById('wc-popover'),nameInput=document.getElementById('wc-name-input'),dateInput=document.getElementById('wc-date-input');let state=null;const toast=message=>{if(typeof showToast==='function')showToast(message)};try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&typeof saved.target==='number'&&Number.isFinite(saved.target)&&saved.target>0&&!Number.isNaN(new Date(saved.target).getTime())){state={name:typeof saved.name==='string'?saved.name.slice(0,60):'다음 일정',target:saved.target,createdAt:typeof saved.createdAt==='number'&&Number.isFinite(saved.createdAt)&&saved.createdAt<saved.target?saved.createdAt:saved.target-60000,notified:saved.notified===true}}}catch{}function persist(){try{if(state)localStorage.setItem(key,JSON.stringify(state));else localStorage.removeItem(key);return true}catch{toast('이 브라우저에서는 카운트다운을 저장할 수 없어요');return false}}function pad(value){return String(value).padStart(2,'0')}function inputDate(target){const date=new Date(target);return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate())+'T'+pad(date.getHours())+':'+pad(date.getMinutes())}const dateFormatter=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'}),timeFormatter=new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit',hour12:true});function paint(){if(!state){nameText.textContent='다음 일정';nameText.title='';display.textContent='00:00:00';display.classList.remove('wc-long');status.textContent='일정 미설정';targetText.textContent='—';fill.style.width='0%';panel.classList.remove('wc-ended');return}const remaining=Math.max(0,state.target-Date.now()),seconds=Math.ceil(remaining/1000),hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;nameText.textContent=state.name||'다음 일정';nameText.title=state.name||'다음 일정';display.textContent=pad(hours)+':'+pad(minutes)+':'+pad(secs);display.classList.toggle('wc-long',hours>99);status.textContent=remaining>0?'일정까지 남은 시간':'카운트다운 종료';targetText.textContent=dateFormatter.format(new Date(state.target))+' · '+timeFormatter.format(new Date(state.target));fill.style.width=(Math.min(100,Math.max(0,remaining/Math.max(1,state.target-state.createdAt)*100)))+'%';panel.classList.toggle('wc-ended',remaining===0);if(remaining===0&&!state.notified){state.notified=true;persist();toast((state.name||'일정')+' 카운트다운이 끝났어요')}}function closeSettings(){popover.hidden=true;edit.setAttribute('aria-expanded','false')}edit.addEventListener('click',()=>{if(!popover.hidden){closeSettings();return}nameInput.value=state?state.name:'';dateInput.value=inputDate(state&&state.target>Date.now()?state.target:Date.now()+1800000);popover.hidden=false;edit.setAttribute('aria-expanded','true');nameInput.focus()});document.getElementById('wc-cancel').addEventListener('click',()=>{closeSettings();edit.focus()});panel.addEventListener('keydown',event=>{if(event.key==='Escape'&&!popover.hidden){closeSettings();edit.focus()}});document.addEventListener('click',event=>{if(!popover.hidden&&!popover.contains(event.target)&&!edit.contains(event.target))closeSettings()});document.getElementById('wc-form').addEventListener('submit',event=>{event.preventDefault();const target=new Date(dateInput.value).getTime();if(!dateInput.value||!Number.isFinite(target)||target<=Date.now()){toast('지금보다 이후의 날짜와 시간을 선택해 주세요');dateInput.focus();return}state={name:nameInput.value.trim().slice(0,60)||'다음 일정',target,createdAt:Date.now(),notified:false};const stored=persist();closeSettings();paint();if(stored)toast('카운트다운을 설정했어요');edit.focus()});panel.querySelectorAll('[data-wc-minutes]').forEach(button=>button.addEventListener('click',()=>{const minutes=Number(button.dataset.wcMinutes),now=Date.now(),active=state&&state.target>now;state={name:active?state.name:'다음 일정',target:(active?state.target:now)+minutes*60000,createdAt:active?state.createdAt:now,notified:false};const stored=persist();closeSettings();paint();if(stored)toast(minutes+'분을 추가했어요')}));document.getElementById('wc-reset').addEventListener('click',()=>{state=null;const stored=persist();closeSettings();paint();if(stored)toast('카운트다운을 초기화했어요')});window.addEventListener('storage',event=>{if(event.key!==key)return;try{const saved=JSON.parse(event.newValue||'null');if(!saved)state=null;else if(typeof saved.target==='number'&&Number.isFinite(saved.target)&&saved.target>0&&!Number.isNaN(new Date(saved.target).getTime()))state={name:typeof saved.name==='string'?saved.name.slice(0,60):'다음 일정',target:saved.target,createdAt:typeof saved.createdAt==='number'&&Number.isFinite(saved.createdAt)&&saved.createdAt<saved.target?saved.createdAt:saved.target-60000,notified:saved.notified===true};paint()}catch{}});paint();setInterval(paint,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)paint()})})();
+})();
 
+</script>
+<script>
+/* Shared focus, memo, calculator and countdown controls. */
+(() => {
+  'use strict';
+  const shared = window.EdgeShared;
+  if (!shared || typeof shared.getWidget !== 'function' || typeof shared.setWidget !== 'function') return;
+  const notify = message => { if (typeof showToast === 'function') showToast(message); };
+  const now = () => { const value = typeof shared.now === 'function' ? Number(shared.now()) : Date.now(); return Number.isFinite(value) ? value : Date.now(); };
+  const $ = id => document.getElementById(id);
+  const pad = value => String(value).padStart(2, '0');
+  const playIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5a1 1 0 0 1 1.5-.87l10 6a1.6 1.6 0 0 1 0 2.74l-10 6A1 1 0 0 1 8 18.5Z"/></svg>';
+  const pauseIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1.2"/><rect x="14" y="4" width="4" height="16" rx="1.2"/></svg>';
+
+  function attachTimer(kind, defaults, elements) {
+    if (!elements.display || !elements.start || !elements.reset) return null;
+    const normalize = value => {
+      value = value && typeof value === 'object' ? value : defaults;
+      const duration = Number(value.durationSeconds);
+      const remaining = Number(value.remainingSeconds);
+      const endAt = Number(value.endAt);
+      return {
+        durationSeconds: Number.isFinite(duration) && duration > 0 ? Math.max(1, Math.min(86400, Math.floor(duration))) : defaults.durationSeconds,
+        remainingSeconds: Number.isFinite(remaining) && remaining >= 0 ? Math.min(86400, Math.floor(remaining)) : defaults.remainingSeconds,
+        running: value.running === true && Number.isFinite(endAt) && endAt > 0,
+        endAt: value.running === true && Number.isFinite(endAt) && endAt > 0 ? endAt : null
+      };
+    };
+    let state = normalize(shared.getWidget(kind, defaults));
+    let witnessedTarget = null;
+    let completionTarget = null;
+    function left() { return state.running ? Math.max(0, Math.ceil((state.endAt - now()) / 1000)) : state.remainingSeconds; }
+    function write(next) { state = normalize(next); shared.setWidget(kind, state); paint(); }
+    function paint() {
+      const remaining = left();
+      const active = state.running && remaining > 0;
+      const hours = Math.floor(remaining / 3600);
+      elements.display.textContent = hours > 0 ? hours + ':' + pad(Math.floor(remaining % 3600 / 60)) + ':' + pad(remaining % 60) : pad(Math.floor(remaining / 60)) + ':' + pad(remaining % 60);
+      if (elements.progress) elements.progress.style.width = Math.min(100, Math.max(0, remaining / state.durationSeconds * 100)) + '%';
+      elements.start.setAttribute('aria-label', active ? '일시정지' : remaining > 0 && remaining < state.durationSeconds ? '재개' : '시작');
+      elements.start.title = elements.start.getAttribute('aria-label');
+      elements.start.setAttribute('aria-pressed', String(active));
+      if (elements.icon) elements.start.innerHTML = active ? pauseIcon : playIcon;
+      else elements.start.textContent = active ? '일시정지' : remaining > 0 && remaining < state.durationSeconds ? '재개' : '시작';
+      if (elements.caption) elements.caption.textContent = Math.round(state.durationSeconds / 60) + '분';
+      if (elements.presets) elements.presets.forEach(button => {
+        const selected = Number(button.dataset.min) * 60 === state.durationSeconds;
+        button.classList.toggle('is-selected', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      if (active) witnessedTarget = state.endAt;
+      if (state.running && !remaining && witnessedTarget === state.endAt && completionTarget !== state.endAt) {
+        completionTarget = state.endAt;
+        witnessedTarget = null;
+        // Completion is derived from endAt. An old device must not overwrite
+        // a newly resumed timer by publishing its own late completion update.
+        notify(kind === 'focus' ? '집중 시간이 끝났어요' : '카운트다운이 끝났어요');
+      }
+    }
+    elements.start.addEventListener('click', () => {
+      const remaining = left();
+      if (state.running && remaining > 0) write({ ...state, remainingSeconds: remaining, running: false, endAt: null });
+      else {
+        const duration = remaining > 0 ? remaining : state.durationSeconds;
+        completionTarget = null;
+        write({ ...state, remainingSeconds: duration, running: true, endAt: now() + duration * 1000 });
+      }
+    });
+    elements.reset.addEventListener('click', () => {
+      witnessedTarget = null;
+      completionTarget = null;
+      write({ ...state, remainingSeconds: state.durationSeconds, running: false, endAt: null });
+    });
+    shared.subscribe(() => { state = normalize(shared.getWidget(kind, defaults)); paint(); });
+    paint();
+    setInterval(paint, 500);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) paint(); });
+    return {
+      getState: () => ({ ...state }),
+      setMinutes: minutes => {
+        witnessedTarget = null;
+        completionTarget = null;
+        const duration = Math.floor(minutes) * 60;
+        write({ durationSeconds: duration, remainingSeconds: duration, running: false, endAt: null });
+      }
+    };
+  }
+
+  const focusPresets = Array.from(document.querySelectorAll('.timer-panel [data-min]'));
+  const focus = attachTimer('focus', { durationSeconds: 300, remainingSeconds: 300, running: false, endAt: null }, {
+    display: $('timer-display'), start: $('timer-start'), reset: $('timer-reset'), progress: $('timer-progress'), caption: $('timer-caption'), presets: focusPresets
+  });
+  if (focus) focusPresets.forEach(button => button.addEventListener('click', () => focus.setMinutes(Number(button.dataset.min))));
+
+  const countdown = attachTimer('countdown', { durationSeconds: 600, remainingSeconds: 600, running: false, endAt: null }, {
+    display: $('wc-display'), start: $('wc-start'), reset: $('wc-reset'), progress: $('wc-fill'), icon: true
+  });
+  if (countdown) {
+    const edit = $('wc-edit'), popover = $('wc-popover'), minutes = $('wc-minutes-input');
+    function closeSettings() { popover.hidden = true; edit.setAttribute('aria-expanded', 'false'); }
+    edit.addEventListener('click', () => {
+      if (!popover.hidden) { closeSettings(); return; }
+      minutes.value = String(Math.max(1, Math.round(countdown.getState().durationSeconds / 60)));
+      popover.hidden = false;
+      edit.setAttribute('aria-expanded', 'true');
+      minutes.focus();
+      minutes.select();
+    });
+    $('wc-cancel').addEventListener('click', () => { closeSettings(); edit.focus(); });
+    $('wc-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const value = Number(minutes.value);
+      if (!Number.isInteger(value) || value < 1 || value > 1440) { notify('1분에서 1440분 사이로 설정해 주세요'); minutes.focus(); return; }
+      countdown.setMinutes(value);
+      closeSettings();
+      edit.focus();
+    });
+    $('work-countdown-panel').addEventListener('keydown', event => { if (event.key === 'Escape' && !popover.hidden) { closeSettings(); edit.focus(); } });
+    document.addEventListener('click', event => { if (!popover.hidden && !popover.contains(event.target) && !edit.contains(event.target)) closeSettings(); });
+  }
+
+  const memo = $('work-memo');
+  if (memo) {
+    const status = $('work-note-status');
+    memo.maxLength = 10000;
+    let pending = null, saveTimer = null, composing = false, deferredRemote = null;
+    function textFromShared() { const widget = shared.getWidget('memo', { text: '' }); return widget && typeof widget.text === 'string' ? widget.text : ''; }
+    memo.value = textFromShared();
+    function savePending() {
+      clearTimeout(saveTimer);
+      if (composing || pending === null) return false;
+      const text = pending;
+      if (shared.setWidget('memo', { text }) === false) { status.textContent = '저장하지 못했어요'; return false; }
+      pending = null;
+      deferredRemote = null;
+      status.textContent = '자동 저장';
+      return true;
+    }
+    function queueText() { pending = memo.value; deferredRemote = null; status.textContent = '입력 중'; clearTimeout(saveTimer); if (!composing) saveTimer = setTimeout(savePending, 250); }
+    memo.addEventListener('input', queueText);
+    memo.addEventListener('compositionstart', () => { composing = true; clearTimeout(saveTimer); });
+    memo.addEventListener('compositionend', () => { composing = false; queueText(); });
+    memo.addEventListener('blur', () => {
+      savePending();
+      if (pending === null && deferredRemote !== null) { memo.value = deferredRemote; deferredRemote = null; }
+    });
+    $('work-note-save').addEventListener('click', () => { pending = memo.value; notify(savePending() ? '메모를 저장했어요' : '메모를 저장하지 못했어요'); });
+    $('work-note-clear').addEventListener('click', () => {
+      if (memo.value && !confirm('메모 내용을 모두 비울까요?')) return;
+      memo.value = '';
+      pending = '';
+      composing = false;
+      savePending();
+      memo.focus();
+    });
+    shared.subscribe(() => {
+      const text = textFromShared();
+      if (pending !== null || composing) return;
+      if (text === memo.value) { deferredRemote = null; return; }
+      if (document.activeElement === memo) { deferredRemote = text; return; }
+      memo.value = text;
+      status.textContent = '자동 저장';
+    });
+    window.addEventListener('pagehide', () => { if (pending !== null) { composing = false; pending = memo.value; savePending(); } });
+  }
+
+  const calc = $('work-calc-panel');
+  if (calc) {
+    const output = $('work-calc-result'), expression = $('work-calc-expression');
+    const symbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+    const defaults = { expression: '', result: '0', history: [], entry: '0', accumulator: null, operation: null, waiting: false, finished: false, error: false, lastOperation: null, lastOperand: null };
+    let entry = '0', accumulator = null, operation = null, waiting = false, finished = false, error = false, lastOperation = null, lastOperand = null, hint = '', history = [];
+    const normalized = value => Object.is(value, -0) ? '0' : String(Number(value.toPrecision(12)));
+    function paint() { output.textContent = entry; output.classList.toggle('is-error', error); expression.textContent = hint; }
+    function load() {
+      const value = shared.getWidget('calculator', defaults) || defaults;
+      entry = typeof value.entry === 'string' ? value.entry : typeof value.result === 'string' ? value.result : '0';
+      accumulator = typeof value.accumulator === 'number' && Number.isFinite(value.accumulator) ? value.accumulator : null;
+      operation = Object.prototype.hasOwnProperty.call(symbols, value.operation) ? value.operation : null;
+      waiting = value.waiting === true; finished = value.finished === true; error = value.error === true;
+      lastOperation = Object.prototype.hasOwnProperty.call(symbols, value.lastOperation) ? value.lastOperation : null;
+      lastOperand = typeof value.lastOperand === 'number' && Number.isFinite(value.lastOperand) ? value.lastOperand : null;
+      hint = typeof value.expression === 'string' && /^[0-9eE+\-−×÷*\/.()%=\s]*$/.test(value.expression) ? value.expression : '';
+      history = Array.isArray(value.history) ? value.history.slice(-20) : [];
+      if (!error && !Number.isFinite(Number(entry))) { entry = '0'; accumulator = null; operation = null; waiting = false; finished = false; lastOperation = null; lastOperand = null; hint = ''; }
+      paint();
+    }
+    function save() { shared.setWidget('calculator', { expression: hint, result: entry, history, entry, accumulator, operation, waiting, finished, error, lastOperation, lastOperand }); paint(); }
+    function clear() { entry = '0'; accumulator = null; operation = null; waiting = false; finished = false; error = false; lastOperation = null; lastOperand = null; hint = ''; }
+    function fail(message) { entry = message; hint = ''; error = true; accumulator = null; operation = null; waiting = false; finished = false; lastOperation = null; lastOperand = null; }
+    function calculate(left, right, operator) {
+      if (operator === '/' && right === 0) { fail('0으로 나눌 수 없어요'); return null; }
+      const value = operator === '+' ? left + right : operator === '-' ? left - right : operator === '*' ? left * right : left / right;
+      if (!Number.isFinite(value)) { fail('계산 범위를 넘었어요'); return null; }
+      return Number(normalized(value));
+    }
+    function recordAnswer() { history = history.concat([{ expression: hint, result: entry, at: now() }]).slice(-20); }
+    function take(action) {
+      if (action === 'clear') { clear(); save(); return; }
+      if (error) { if (/^\d$/.test(action) || action === 'decimal') clear(); else return; }
+      if (/^\d$/.test(action)) {
+        if (waiting || finished) { entry = action; waiting = false; if (finished) { accumulator = null; operation = null; hint = ''; } finished = false; lastOperation = null; lastOperand = null; }
+        else if (entry.replace(/[-.]/g, '').length < 12) entry = entry === '0' ? action : entry === '-0' ? '-' + action : entry + action;
+        hint = operation ? normalized(accumulator) + ' ' + symbols[operation] + ' ' + entry : '';
+      } else if (action === 'decimal') {
+        if (waiting || finished) { entry = '0.'; waiting = false; if (finished) { accumulator = null; operation = null; } finished = false; lastOperation = null; lastOperand = null; }
+        else if (!entry.includes('.')) entry += '.';
+        hint = operation ? normalized(accumulator) + ' ' + symbols[operation] + ' ' + entry : '';
+      } else if (action === 'backspace') {
+        if (!waiting && !finished) { entry = entry.length > 1 ? entry.slice(0, -1) : '0'; if (entry === '-' || entry === '') entry = '0'; }
+        if (!finished) hint = operation ? normalized(accumulator) + ' ' + symbols[operation] + (waiting ? '' : ' ' + entry) : '';
+      } else if (action === 'sign') {
+        if (waiting) { entry = '-0'; waiting = false; } else if (Number(entry) !== 0) entry = entry.startsWith('-') ? entry.slice(1) : '-' + entry; else entry = entry.startsWith('-') ? '0' : '-0';
+        if (finished) { finished = false; accumulator = null; operation = null; lastOperation = null; lastOperand = null; }
+        hint = operation ? normalized(accumulator) + ' ' + symbols[operation] + ' ' + entry : '';
+      } else if (action === 'percent') {
+        const value = Number(entry), percent = operation && accumulator !== null && (operation === '+' || operation === '-') ? accumulator * value / 100 : value / 100;
+        if (!Number.isFinite(percent)) fail('계산 범위를 넘었어요');
+        else { entry = normalized(percent); waiting = false; if (finished) { finished = false; accumulator = null; operation = null; lastOperation = null; lastOperand = null; } hint = operation ? normalized(accumulator) + ' ' + symbols[operation] + ' ' + entry : ''; }
+      } else if (Object.prototype.hasOwnProperty.call(symbols, action)) {
+        const value = Number(entry);
+        if (operation && accumulator !== null && !waiting) { const answer = calculate(accumulator, value, operation); if (answer === null) { save(); return; } entry = normalized(answer); accumulator = answer; }
+        else if (!waiting || accumulator === null) accumulator = value;
+        operation = action; waiting = true; finished = false; lastOperation = null; lastOperand = null; hint = normalized(accumulator) + ' ' + symbols[action];
+      } else if (action === 'equals') {
+        if (operation && accumulator !== null) {
+          const operand = Number(entry), left = accumulator, operator = operation, answer = calculate(left, operand, operator);
+          if (answer === null) { save(); return; }
+          hint = normalized(left) + ' ' + symbols[operator] + ' ' + normalized(operand) + ' ='; entry = normalized(answer); lastOperation = operator; lastOperand = operand; accumulator = answer; operation = null; waiting = false; finished = true; recordAnswer();
+        } else if (finished && lastOperation && lastOperand !== null) {
+          const left = Number(entry), answer = calculate(left, lastOperand, lastOperation);
+          if (answer === null) { save(); return; }
+          hint = normalized(left) + ' ' + symbols[lastOperation] + ' ' + normalized(lastOperand) + ' ='; entry = normalized(answer); accumulator = answer; recordAnswer();
+        }
+      } else return;
+      save();
+    }
+    calc.addEventListener('click', event => { const key = event.target.closest('[data-work-calc]'); if (key && calc.contains(key)) take(key.dataset.workCalc); });
+    calc.addEventListener('keydown', event => {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.target.closest('input,textarea,[contenteditable=true]')) return;
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('button') && !event.target.closest('[data-work-calc]')) return;
+      let action = null;
+      if (/^\d$/.test(event.key)) action = event.key;
+      else if (['+', '-', '*', '/'].includes(event.key)) action = event.key;
+      else if (event.key === '.') action = 'decimal';
+      else if (event.key === '%') action = 'percent';
+      else if (event.key === 'Enter' || event.key === '=') action = 'equals';
+      else if (event.key === 'Backspace') action = 'backspace';
+      else if (event.key === 'Escape' || event.key.toLowerCase() === 'c') action = 'clear';
+      if (action) { event.preventDefault(); take(action); }
+    });
+    function fallbackCopy(text) {
+      const active = document.activeElement, field = document.createElement('textarea');
+      field.value = text; field.setAttribute('readonly', ''); field.style.cssText = 'position:fixed;left:-10000px;top:0;opacity:0';
+      document.body.append(field); field.select();
+      let success = false;
+      try { success = document.execCommand('copy'); } catch {}
+      field.remove(); if (active && typeof active.focus === 'function') active.focus();
+      return success;
+    }
+    $('work-calc-copy').addEventListener('click', async () => {
+      if (error) { notify('계산 결과가 있을 때 복사할 수 있어요'); return; }
+      const text = entry;
+      let copied = false;
+      try { if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') { await navigator.clipboard.writeText(text); copied = true; } } catch {}
+      if (!copied) copied = fallbackCopy(text);
+      notify(copied ? '계산 결과를 복사했어요' : '복사하지 못했어요. 결과를 직접 복사해 주세요');
+    });
+    shared.subscribe(load);
+    load();
+  }
+})();
+
+</script>
+<script>
+(function () {
+  "use strict";
+
+  let started = false;
+  let currentArtwork = "";
+  const byId = id => document.getElementById(id);
+  const number = value => typeof value === "number" && Number.isFinite(value) ? value : null;
+  function setText(id, value) {
+    const element = byId(id);
+    if (element && element.textContent !== String(value)) element.textContent = String(value);
+  }
+  function rounded(value, suffix) {
+    const numeric = number(value);
+    return numeric === null ? "—" : Math.round(numeric) + (suffix || "");
+  }
+  function weatherDescription(code, day) {
+    if (code === 0) return ["맑음", day === 0 ? "☾" : "☀"];
+    if (code === 1) return ["대체로 맑음", day === 0 ? "☾" : "☀"];
+    if (code === 2) return ["구름 조금", "⛅"];
+    if (code === 3) return ["흐림", "☁"];
+    if (code === 45 || code === 48) return ["안개", "🌫"];
+    if ([51, 53, 55, 56, 57].includes(code)) return ["이슬비", "🌦"];
+    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return ["비", "🌧"];
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return ["눈", "❄"];
+    if ([95, 96, 99].includes(code)) return ["뇌우", "⚡"];
+    return ["날씨 정보", "☁"];
+  }
+  function weatherTime(value, zone) {
+    const stamp = number(value);
+    if (stamp === null || stamp <= 0) return "";
+    try {
+      return new Intl.DateTimeFormat("en-US", { timeZone: zone || "America/Edmonton", hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(stamp));
+    } catch (_) { return ""; }
+  }
+  function renderWeather(weather) {
+    const section = document.querySelector(".home-live-weather");
+    if (!section) return;
+    const available = Boolean(weather && weather.available && weather.current);
+    const bridgeDisconnected = window.EdgeShared && typeof window.EdgeShared.isConnected === "function" && !window.EdgeShared.isConnected();
+    const stamp = number(weather && weather.updatedAt);
+    const stale = Boolean(weather && (weather.stale || bridgeDisconnected || (stamp && Date.now() - stamp > 20 * 60 * 1000)));
+    const current = available ? weather.current : {};
+    const today = available && weather.today ? weather.today : {};
+    const description = weatherDescription(number(current.weather_code), current.is_day);
+    setText("weather-icon", available ? description[1] : "☁");
+    setText("temperature", available ? rounded(current.temperature_2m) : "--");
+    setText("condition", available ? description[0] : "날씨 연결 대기");
+    setText("weather-feels", rounded(current.apparent_temperature, "°"));
+    setText("weather-high-low", rounded(today.temperature_2m_max, "°") + " / " + rounded(today.temperature_2m_min, "°"));
+    setText("weather-humidity", rounded(current.relative_humidity_2m, "%"));
+    const wind = number(current.wind_speed_10m);
+    setText("weather-wind", wind === null ? "—" : Math.round(wind) + " km/h");
+    const status = !available ? "날씨 정보를 기다리고 있어요" : stale ? "업데이트 대기" : "현재 날씨";
+    setText("weather-live-status", status);
+    section.dataset.state = !available ? "unavailable" : stale ? "stale" : "ready";
+    const updated = weatherTime(weather && weather.updatedAt, weather && weather.timezone);
+    setText("weather-updated", updated ? updated + " 갱신" : "");
+  }
+  function mediaStale(media) {
+    if (!media) return true;
+    const stamp = number(media.updatedAt);
+    return Boolean(media.stale || (stamp !== null && stamp > 0 && Date.now() - stamp > 12000));
+  }
+  function mediaProblem(media, stale) {
+    if (!media || media.bridge !== true || stale || ["helper_stopped", "helper_not_running", "helper_stale"].includes(media.reason)) {
+      return ["PC 연결 대기", "재생 정보 연결을 확인해 주세요", "연결 대기"];
+    }
+    if (media.reason === "starting") return ["재생 정보 연결 중", "잠시 기다려 주세요", "연결 중"];
+    if (["runtime_unavailable", "media_read_failed", "media_read_timeout", "media_properties_unavailable"].includes(media.reason)) {
+      return ["재생 정보를 읽을 수 없어요", "PC 연동을 확인해 주세요", "확인 필요"];
+    }
+    return ["Windows 재생 정보 없음", "음악 앱에서 재생해 주세요", "PC 연결됨"];
+  }
+  function durationText(value) {
+    const seconds = Math.max(0, Math.floor(number(value) || 0));
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainder = String(seconds % 60).padStart(2, "0");
+    return hours ? hours + ":" + String(minutes).padStart(2, "0") + ":" + remainder : minutes + ":" + remainder;
+  }
+  function renderArtwork(media, available) {
+    const image = byId("music-art-image");
+    const placeholder = byId("music-art-placeholder");
+    if (!image || !placeholder) return;
+    const version = available && typeof media.artworkVersion === "string" && /^[a-f0-9]{64}$/.test(media.artworkVersion) ? media.artworkVersion : "";
+    if (version === currentArtwork) return;
+    currentArtwork = version;
+    image.hidden = true;
+    placeholder.hidden = false;
+    if (!version) {
+      image.removeAttribute("src");
+      return;
+    }
+    image.onload = () => {
+      if (currentArtwork !== version) return;
+      image.hidden = false;
+      placeholder.hidden = true;
+    };
+    image.onerror = () => {
+      if (currentArtwork !== version) return;
+      image.hidden = true;
+      placeholder.hidden = false;
+    };
+    // Only the fixed local artwork endpoint is used; media data cannot choose an image URL.
+    image.src = "http://127.0.0.1:47831/media-art?v=" + version;
+  }
+  function renderMedia(media) {
+    const panel = byId("now-playing-card");
+    if (!panel) return;
+    const stale = mediaStale(media);
+    const available = Boolean(media && media.available);
+    const playing = Boolean(available && !stale && media.playing);
+    panel.classList.toggle("is-playing", playing);
+    panel.dataset.state = stale ? "stale" : available ? "ready" : "unavailable";
+    const connection = byId("music-connection");
+    const connected = Boolean(media && media.bridge === true && !stale && !media.reason);
+    if (connection) connection.classList.toggle("online", connected);
+    if (available) {
+      setText("music-connection", stale ? "업데이트 대기" : "PC 연결됨");
+      setText("music-state", stale ? "최근 재생 정보" : playing ? "지금 재생 중" : media.status === "Paused" ? "일시정지" : "재생 정지");
+      setText("music-title", media.title || "제목 정보 없음");
+      setText("music-artist", media.artist || "아티스트 정보 없음");
+      setText("music-album", media.album || "");
+      byId("music-title").title = String(media.title || "");
+    } else {
+      const problem = mediaProblem(media, stale);
+      setText("music-connection", problem[2]);
+      setText("music-state", "");
+      setText("music-title", problem[0]);
+      setText("music-artist", problem[1]);
+      setText("music-album", "");
+      byId("music-title").title = "";
+    }
+    const album = byId("music-album");
+    if (album) album.hidden = !available || !media.album;
+    const status = byId("music-state");
+    if (status) status.hidden = !available;
+    renderArtwork(media, available);
+    const duration = available ? Math.max(0, number(media.durationSeconds) || 0) : 0;
+    const position = Math.min(duration, available ? Math.max(0, number(media.positionSeconds) || 0) : 0);
+    const timeline = byId("music-timeline");
+    if (timeline) timeline.hidden = !available || duration <= 0;
+    setText("music-elapsed", durationText(position));
+    setText("music-duration", durationText(duration));
+    const track = byId("music-progress-track");
+    const fill = byId("music-progress-fill");
+    const percent = duration > 0 ? Math.min(100, position / duration * 100) : 0;
+    if (fill) fill.style.width = percent + "%";
+    if (track) track.setAttribute("aria-valuenow", String(Math.round(percent)));
+  }
+  function render() {
+    let live = {};
+    try {
+      if (window.EdgeShared && typeof window.EdgeShared.getLive === "function") live = window.EdgeShared.getLive() || {};
+    } catch (_) { /* Keep the unavailable state readable if the shared connection is not ready. */ }
+    renderWeather(live.weather);
+    renderMedia(live.media);
+  }
+  function start() {
+    if (started || !document.querySelector(".home-live-weather") || !document.querySelector(".home-live-media")) return;
+    started = true;
+    if (window.EdgeShared && typeof window.EdgeShared.subscribe === "function") window.EdgeShared.subscribe(render);
+    const refresh = byId("refresh-weather");
+    if (refresh) refresh.addEventListener("click", () => {
+      if (window.EdgeShared && typeof window.EdgeShared.refresh === "function") window.EdgeShared.refresh();
+      render();
+    });
+    // This only re-renders the shared snapshot; it never makes weather/media network requests.
+    setInterval(render, 2000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+    render();
+  }
+  window.EdgeHome = { render: render, start: start };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  else start();
+}());
+
+</script>
+<script>
 const initialPage={home:0,today:1,work:2,game:3}[new URLSearchParams(location.search).get("page")];if(initialPage!==undefined)document.querySelector('.page-tab[data-page="'+initialPage+'"]').click();
 </script></body></html>

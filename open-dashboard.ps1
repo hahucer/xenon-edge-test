@@ -3,6 +3,44 @@ $ErrorActionPreference = 'Stop'
 $baseUrl = 'http://127.0.0.1:47831'
 $dataDirectory = Join-Path $PSScriptRoot 'data'
 
+function Stop-OwnedMedia {
+    $recordPath = Join-Path $dataDirectory 'media.pid'
+    if (-not (Test-Path -LiteralPath $recordPath)) { return }
+    $record = [IO.File]::ReadAllText($recordPath) | ConvertFrom-Json
+    $mediaProcess = Get-Process -Id ([int]$record.id) -ErrorAction SilentlyContinue
+    if ($mediaProcess) {
+        if ($mediaProcess.Path -ine [string]$record.path -or $mediaProcess.StartTime.ToUniversalTime().Ticks -ne [long]$record.startedAtTicks) {
+            throw '음악 연동 실행 기록이 일치하지 않아 자동으로 종료하지 않았습니다.'
+        }
+        Stop-Process -Id $mediaProcess.Id -ErrorAction Stop
+        [void]$mediaProcess.WaitForExit(3000)
+    }
+}
+
+function Start-MediaReader {
+    $runtimeDirectory = Join-Path $PSScriptRoot '.media-runtime'
+    $pythonRecord = Join-Path $runtimeDirectory 'python.txt'
+    $helper = Join-Path $PSScriptRoot 'media-helper.py'
+    if (-not (Test-Path -LiteralPath $pythonRecord) -or -not (Test-Path -LiteralPath $helper)) { return }
+    $python = [IO.File]::ReadAllText($pythonRecord).Trim()
+    if (-not (Test-Path -LiteralPath $python -PathType Leaf)) { return }
+    $recordPath = Join-Path $dataDirectory 'media.pid'
+    if (Test-Path -LiteralPath $recordPath) {
+        $record = [IO.File]::ReadAllText($recordPath) | ConvertFrom-Json
+        $ownedProcess = Get-Process -Id ([int]$record.id) -ErrorAction SilentlyContinue
+        if ($ownedProcess) {
+            if ($ownedProcess.Path -ine [string]$record.path -or $ownedProcess.StartTime.ToUniversalTime().Ticks -ne [long]$record.startedAtTicks) {
+                throw '음악 연동 실행 기록이 일치하지 않습니다.'
+            }
+            return
+        }
+    }
+    $arguments = '"' + $helper + '" --runtime-dir "' + $runtimeDirectory + '" --data-dir "' + $dataDirectory + '" --interval 2'
+    $mediaProcess = Start-Process -FilePath $python -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $dataDirectory 'media-output.log') -RedirectStandardError (Join-Path $dataDirectory 'media-error.log')
+    $record = @{ id = $mediaProcess.Id; path = $python; startedAtTicks = $mediaProcess.StartTime.ToUniversalTime().Ticks }
+    [IO.File]::WriteAllText($recordPath, ($record | ConvertTo-Json -Compress))
+}
+
 function Test-DashboardBridge {
     try {
         $result = Invoke-RestMethod -Uri "$baseUrl/dashboard" -TimeoutSec 1
@@ -12,6 +50,7 @@ function Test-DashboardBridge {
 
 try {
     if ($Restart -or $StopOnly) {
+        Stop-OwnedMedia
         $pidFile = Join-Path $dataDirectory 'bridge.pid'
         if (Test-Path -LiteralPath $pidFile) {
             $oldId = 0
@@ -31,6 +70,8 @@ try {
         }
     }
     if ($StopOnly) { exit 0 }
+    New-Item -ItemType Directory -Path $dataDirectory -Force | Out-Null
+    Start-MediaReader
     if (-not (Test-DashboardBridge)) {
         New-Item -ItemType Directory -Path $dataDirectory -Force | Out-Null
         $engine = (Get-Process -Id $PID).Path
