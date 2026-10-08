@@ -302,7 +302,7 @@ function Advance-Weather {
     }
 }
 function Empty-MediaSnapshot([string]$Reason, [bool]$Helper = $false, [bool]$Stale = $false) {
-    return @{ schema = 1; updatedAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds(); bridge = $true; helper = $Helper; available = $false; playing = $false; status = 'Stopped'; title = ''; artist = ''; album = ''; source = ''; positionSeconds = [double]0; durationSeconds = [double]0; reason = $Reason; stale = $Stale; artworkVersion = ''; artworkMime = ''; artworkBytes = [long]0 }
+    return @{ schema = 1; updatedAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds(); bridge = $true; helper = $Helper; available = $false; playing = $false; status = 'Stopped'; title = ''; artist = ''; album = ''; source = ''; positionSeconds = [double]0; durationSeconds = [double]0; reason = $Reason; stale = $Stale; artworkVersion = ''; artworkMime = ''; artworkBytes = [long]0; trackToken = ''; controls = @{ play = $false; pause = $false; previous = $false; next = $false; seek = $false } }
 }
 function Read-BoundedLocalFile([string]$Path, [int]$Maximum) {
     $file = $null
@@ -339,6 +339,21 @@ function Normalize-MediaSnapshot($Value) {
     if ($snapshot.artworkBytes -gt 0) {
         if ($snapshot.artworkVersion -cnotmatch '^[a-f0-9]{64}$' -or $snapshot.artworkMime -cnotin @('image/png', 'image/jpeg', 'image/gif', 'image/webp')) { Invalid-Data 'invalid_media_artwork' }
     } elseif ($snapshot.artworkVersion -ne '' -or $snapshot.artworkMime -ne '') { Invalid-Data 'invalid_media_artwork' }
+    # Optional fields keep an older metadata-only helper readable during upgrade.
+    if (Has-Property $Value 'trackToken') {
+        $token = Valid-WidgetText (Property-Value $Value 'trackToken') 64
+        if ($token -ne '' -and $token -cnotmatch '^[a-f0-9]{64}$') { Invalid-Data 'invalid_media_track_token' }
+        $snapshot.trackToken = $token
+    }
+    if (Has-Property $Value 'controls') {
+        $controls = Property-Value $Value 'controls'
+        Require-Object $controls
+        foreach ($action in @('play', 'pause', 'previous', 'next', 'seek')) {
+            $flag = Property-Value $controls $action
+            if ($flag -isnot [bool]) { Invalid-Data 'invalid_media_control_flag' }
+            $snapshot.controls[$action] = $flag
+        }
+    }
     $age = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - $snapshot.updatedAt
     if ($age -lt -10000) { Invalid-Data 'invalid_media_timestamp' }
     if ($age -gt 15000) { $snapshot.stale = $true; $snapshot.playing = $false; $snapshot.reason = 'helper_snapshot_stale' }
@@ -364,6 +379,68 @@ function Artwork-Mime([byte[]]$Bytes) {
     if ($Bytes.Length -ge 6 -and [Text.Encoding]::ASCII.GetString($Bytes, 0, 6) -cin @('GIF87a', 'GIF89a')) { return 'image/gif' }
     if ($Bytes.Length -ge 12 -and [Text.Encoding]::ASCII.GetString($Bytes, 0, 4) -ceq 'RIFF' -and [Text.Encoding]::ASCII.GetString($Bytes, 8, 4) -ceq 'WEBP') { return 'image/webp' }
     return ''
+}
+function Media-ControlResult([string]$Id) {
+    # Only a fixed private results file is read; client IDs never become arbitrary paths.
+    $path = Join-Path $DataDirectory 'media-control-results.json'
+    if (-not [IO.File]::Exists($path)) { return $null }
+    try {
+        $data = ConvertFrom-Json -InputObject ($Utf8.GetString((Read-BoundedLocalFile $path 32768))) -ErrorAction Stop
+        Require-Object $data
+        [void](Valid-Integer (Property-Value $data 'schema') 1 1)
+        $results = Property-Value $data 'results'
+        if ($results -isnot [Array] -or $results.Count -gt 32) { return $null }
+        foreach ($item in $results) {
+            if ((Property-Value $item 'id') -cne $Id) { continue }
+            Require-Object $item
+            $ok = Property-Value $item 'ok'
+            if ($ok -isnot [bool]) { return $null }
+            return @{ id = $Id; ok = $ok; reason = Valid-String (Property-Value $item 'reason') 64; completedAt = Valid-Integer (Property-Value $item 'completedAt') 0 253402300799999 }
+        }
+    } catch { return $null }
+    return $null
+}
+function Media-ControlPending([string]$Id) {
+    $directory = Join-Path $DataDirectory 'media-commands'
+    return ([IO.File]::Exists((Join-Path $directory ($Id + '.json'))) -or [IO.File]::Exists((Join-Path $directory ($Id + '.working'))))
+}
+function Queue-MediaControl($Body) {
+    Require-Object $Body
+    $action = Valid-String (Property-Value $Body 'action') 8
+    if ($action -cnotin @('play', 'pause', 'previous', 'next', 'seek')) { Invalid-Data 'invalid_media_action' }
+    $allowedKeys = @('id', 'action', 'source', 'trackToken')
+    if ($action -ceq 'seek') { $allowedKeys += 'positionSeconds' }
+    foreach ($key in (Object-Keys $Body)) { if ($key -cnotin $allowedKeys) { Invalid-Data 'unknown_media_control_field' } }
+    $id = Valid-String (Property-Value $Body 'id') 32
+    if ($id -cnotmatch '^[a-f0-9]{32}$') { Invalid-Data 'invalid_media_command_id' }
+    $source = Valid-WidgetText (Property-Value $Body 'source') 1024
+    $token = Valid-String (Property-Value $Body 'trackToken') 64
+    if ($source.Length -eq 0 -or $token -cnotmatch '^[a-f0-9]{64}$') { Invalid-Data 'invalid_media_target' }
+    $position = if ($action -ceq 'seek') { Valid-Number (Property-Value $Body 'positionSeconds') 0 31536000 } else { [double]0 }
+    $result = Media-ControlResult $id
+    if ($null -ne $result) { return @{ status = 200; reason = 'OK'; body = $result } }
+    if (Media-ControlPending $id) { return @{ status = 202; reason = 'Accepted'; body = @{ id = $id; pending = $true } } }
+    $media = Get-NowPlaying
+    if (-not $media.available -or -not $media.helper -or $media.stale -or $media.trackToken -ceq '') { return @{ status = 409; reason = 'Conflict'; body = @{ error = 'media_control_unavailable' } } }
+    if ($media.source -cne $source -or $media.trackToken -cne $token) { return @{ status = 409; reason = 'Conflict'; body = @{ error = 'track_changed' } } }
+    # Play/pause flags may change before the next snapshot reaches a client.
+    # The helper checks fresh provider state and treats an already reached state as success.
+    $supported = if ($action -cin @('play', 'pause')) { $true } else { $media.controls[$action] }
+    if (-not $supported) { return @{ status = 409; reason = 'Conflict'; body = @{ error = 'unsupported' } } }
+    if ($action -ceq 'seek' -and ($media.durationSeconds -le 0 -or $position -gt $media.durationSeconds)) { Invalid-Data 'invalid_seek_position' }
+    $directory = Join-Path $DataDirectory 'media-commands'
+    [void][IO.Directory]::CreateDirectory($directory)
+    $entries = @([IO.Directory]::EnumerateFiles($directory) | Where-Object { [IO.Path]::GetFileName($_) -cmatch '^[a-f0-9]{32}\.(?:json|working)$' })
+    if ($entries.Count -ge 16) { return @{ status = 429; reason = 'Too Many Requests'; body = @{ error = 'media_control_busy' } } }
+    $command = @{ schema = 1; id = $id; action = $action; source = $source; trackToken = $token; createdAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() }
+    if ($action -ceq 'seek') { $command.positionSeconds = $position }
+    $target = Join-Path $directory ($id + '.json')
+    $temporary = Join-Path $directory ([Guid]::NewGuid().ToString('N') + '.tmp')
+    try {
+        [IO.File]::WriteAllBytes($temporary, $Utf8.GetBytes(($command | ConvertTo-Json -Depth 4 -Compress)))
+        [IO.File]::Move($temporary, $target)
+    } finally { if ([IO.File]::Exists($temporary)) { [IO.File]::Delete($temporary) } }
+    return @{ status = 202; reason = 'Accepted'; body = @{ id = $id; pending = $true } }
 }
 function Valid-State($Value) {
     Require-Object $Value
@@ -680,8 +757,19 @@ try {
     $script:DashboardState = Load-State
     Write-Output "Xenon Edge dashboard bridge: http://127.0.0.1:$Port (loopback only)"
     $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
+    $mediaSnapshotPath = Join-Path $DataDirectory 'media-state.json'
+    $observedMediaWrite = [long]0
+    $nextMediaPush = [DateTime]::MinValue
     while ($true) {
         Advance-Weather
+        # Song state changes are pushed as soon as the helper publishes them;
+        # the slower heartbeat remains a connection check for the other widgets.
+        $mediaWrite = [IO.File]::GetLastWriteTimeUtc($mediaSnapshotPath).Ticks
+        if ($mediaWrite -ne $observedMediaWrite -and [DateTime]::UtcNow -ge $nextMediaPush) {
+            $observedMediaWrite = $mediaWrite
+            Broadcast-Dashboard
+            $nextMediaPush = [DateTime]::UtcNow.AddMilliseconds(200)
+        }
         if ([DateTime]::UtcNow -ge $nextHeartbeat) {
             Broadcast-Dashboard
             $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
@@ -704,12 +792,13 @@ try {
             $origin = [string]$headers['Origin']
             if (-not $AllowedHosts.Contains([string]$headers['Host'])) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'host_not_allowed' }; continue }
             if ($headers.ContainsKey('Origin') -and -not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_not_allowed' }; continue }
-            $knownPath = $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/dashboard/events', '/now-playing', '/media-art')
+            $mediaResultPath = $request.path -cmatch '^/media-control/[a-f0-9]{32}$'
+            $knownPath = $mediaResultPath -or $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/dashboard/events', '/now-playing', '/media-art', '/media-control')
             if (-not $knownPath) { Write-JsonResponse $stream 404 'Not Found' @{ error = 'not_found' } $origin; continue }
             if ($request.method -ceq 'OPTIONS') {
                 if (-not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_required' }; continue }
                 $requestedMethod = [string]$headers['Access-Control-Request-Method']
-                if ($requestedMethod -cne 'GET' -and ($requestedMethod -cne 'POST' -or $request.path -cne '/dashboard')) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'method_not_allowed' } $origin; continue }
+                if ($requestedMethod -cne 'GET' -and ($requestedMethod -cne 'POST' -or $request.path -cnotin @('/dashboard', '/media-control'))) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'method_not_allowed' } $origin; continue }
                 $allowedHeaders = @('content-type', 'x-edge-request')
                 $invalidHeader = $false
                 if ($headers.ContainsKey('Access-Control-Request-Headers')) {
@@ -719,10 +808,16 @@ try {
                 Write-HttpResponse $stream 204 'No Content' ([byte[]]@()) 'application/json; charset=utf-8' $origin $true
                 continue
             }
-            if ($request.method -ceq 'POST' -and $request.path -ceq '/dashboard') {
+            if ($request.method -ceq 'POST' -and $request.path -cin @('/dashboard', '/media-control')) {
                 if (-not $AllowedOrigins.Contains($origin) -or $headers['X-Edge-Request'] -cne '1') { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'mutation_origin_or_header_required' } $origin; continue }
                 if ([string]$headers['Content-Type'] -inotmatch '^application/json(?:\s*;\s*charset\s*=\s*utf-8)?\s*$') { Write-JsonResponse $stream 415 'Unsupported Media Type' @{ error = 'json_required' } $origin; continue }
                 try { $body = ConvertFrom-Json -InputObject ($Utf8.GetString($request.bytes)) -ErrorAction Stop } catch { Invalid-Data 'invalid_json_or_utf8' }
+                if ($request.path -ceq '/media-control') {
+                    if ($request.bytes.Length -gt 8192) { Invalid-Data 'media_command_too_large' }
+                    $queued = Queue-MediaControl $body
+                    Write-JsonResponse $stream $queued.status $queued.reason $queued.body $origin
+                    continue
+                }
                 $operations = Valid-Batch $body
                 $result = Apply-Batch $operations
                 Broadcast-Dashboard
@@ -730,6 +825,14 @@ try {
                 continue
             }
             if ($request.method -cne 'GET') { Write-JsonResponse $stream 405 'Method Not Allowed' @{ error = 'method_not_allowed' } $origin; continue }
+            if ($mediaResultPath) {
+                $commandId = $request.path.Substring('/media-control/'.Length)
+                $result = Media-ControlResult $commandId
+                if ($null -ne $result) { Write-JsonResponse $stream 200 'OK' $result $origin }
+                elseif (Media-ControlPending $commandId) { Write-JsonResponse $stream 202 'Accepted' @{ id = $commandId; pending = $true } $origin }
+                else { Write-JsonResponse $stream 404 'Not Found' @{ error = 'media_command_not_found' } $origin }
+                continue
+            }
             switch -CaseSensitive ($request.path) {
                 '/dashboard/events' {
                     Prune-DashboardSubscribers
@@ -747,6 +850,7 @@ try {
                 }
                 '/dashboard' { Write-JsonResponse $stream 200 'OK' (Public-State $script:DashboardState) $origin }
                 '/now-playing' { Write-JsonResponse $stream 200 'OK' (Get-NowPlaying) $origin }
+                '/media-control' { Write-JsonResponse $stream 405 'Method Not Allowed' @{ error = 'method_not_allowed' } $origin }
                 '/media-art' {
                     $media = Get-NowPlaying
                     $artPath = Join-Path $DataDirectory 'media-art.bin'

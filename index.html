@@ -318,44 +318,53 @@ body{font-size:20px}
 }
 .home-live-weather .kicker,
 .home-live-media .kicker {
-  font-size: clamp(15px, 3.8cqw, 19px);
-  letter-spacing: .08em;
+  font-size: clamp(14px, 3cqw, 18px);
+  letter-spacing: .1em;
 }
 .home-live-weather .panel-title,
 .home-live-media .panel-title {
-  font-size: clamp(22px, 5.5cqw, 32px);
+  font-size: clamp(22px, 4.7cqw, 30px);
 }
 .home-live-weather .home-time-block {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
-  padding: 8px 0;
+  gap: 9px;
+  padding: 14px 0 4px;
 }
 .home-live-weather .home-clock {
   margin: 0;
-  font-size: clamp(40px, 15cqw, 86px);
+  font-size: clamp(42px, 13cqw, 88px);
+  line-height: 1.05;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .home-live-weather .home-date-sub {
-  font-size: clamp(17px, 4cqw, 22px);
+  margin: 0;
+  color: #aebbd7;
+  font-size: clamp(16px, 3.3cqw, 20px);
 }
 .home-weather-hero {
+  flex: 1;
+  min-height: 116px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(14px, 5cqw, 26px);
-  flex: 1;
-  min-height: 100px;
+  gap: clamp(16px, 5cqw, 38px);
+  padding: 16px 10px;
+  border-radius: 18px;
+  border: 1px solid #caffae18;
+  background: radial-gradient(ellipse at 24% 35%, #b5ff831a, transparent 68%), #10192d70;
 }
 .home-live-weather .home-weather-icon {
   margin: 0;
-  font-size: clamp(48px, 15cqw, 72px);
+  font-size: clamp(48px, 13cqw, 84px);
   line-height: 1;
 }
-.home-weather-reading { display: flex; flex-direction: column; gap: 7px; }
-.home-live-weather .home-temp { font-size: clamp(54px, 17cqw, 86px); }
+.home-weather-reading { display: flex; flex-direction: column; gap: 6px; }
+.home-live-weather .home-temp { font-size: clamp(50px, 13cqw, 82px); line-height: 1; }
 .home-live-weather .home-temp .home-temp-unit {
   position: static;
   inset: auto;
@@ -364,65 +373,91 @@ body{font-size:20px}
   flex: 0 0 auto;
   align-self: flex-start;
   margin: 7px 0 0 6px;
-  font-size: clamp(24px, 6cqw, 32px);
+  font-size: clamp(22px, 4.5cqw, 30px);
   line-height: 1;
 }
-.home-live-weather .home-condition { margin: 0; font-size: clamp(20px, 5cqw, 28px); }
-.weather-live-status { font-size: clamp(17px, 4cqw, 21px); font-weight: 750; color: #caffae; }
+.home-live-weather .home-condition { margin: 0; font-size: clamp(19px, 4cqw, 25px); line-height: 1.2; }
+.weather-live-status { font-size: clamp(15px, 3cqw, 18px); font-weight: 750; color: #caffae; }
 .home-live-weather[data-state="unavailable"] .weather-live-status,
 .home-live-weather[data-state="stale"] .weather-live-status { color: #ffd59b; }
-.weather-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.weather-details {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: .85fr 1.25fr .85fr 1.15fr;
+  gap: 0;
+  padding: 10px 0;
+  border-top: 1px solid #34426490;
+  border-bottom: 1px solid #34426490;
+}
 .weather-detail {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding: 11px 13px;
-  border: 1px solid #35436a;
-  border-radius: 11px;
-  background: #0b1328b0;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
-.weather-detail-label { font-size: clamp(16px, 3.8cqw, 19px); color: #aab7d4; font-weight: 750; }
-.weather-detail-value { font-size: clamp(21px, 5.5cqw, 29px); color: #f3f6ff; font-weight: 850; white-space: nowrap; }
-.weather-updated { min-height: 20px; color: #aab7d4; text-align: right; font-size: clamp(16px, 3.8cqw, 20px); font-weight: 650; }
+.weather-detail + .weather-detail { border-left: 1px solid #34426490; }
+.weather-detail-label { font-size: clamp(14px, 2.9cqw, 18px); color: #aab7d4; font-weight: 650; white-space: nowrap; }
+.weather-detail-value { font-size: clamp(17px, 3.6cqw, 24px); color: #f3f6ff; font-weight: 800; white-space: nowrap; }
+.weather-updated { flex: 0 0 auto; min-height: 18px; color: #98a9c8; text-align: right; font-size: clamp(13px, 2.7cqw, 17px); line-height: 1.1; }
 .home-live-weather .home-weather-refresh {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
   margin: 0;
   padding: 0;
   font-size: 25px;
 }
-.home-live-media .music-connection { font-size: clamp(16px, 3.8cqw, 20px); white-space: nowrap; }
+.home-live-media .music-connection { font-size: clamp(14px, 3cqw, 18px); white-space: nowrap; }
 .home-live-media .now-playing-card {
   min-height: 0;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(80px, .8fr) minmax(0, 1.6fr);
+  grid-template-rows: minmax(0, 1fr) auto auto minmax(24px, auto);
   align-items: center;
-  gap: 18px;
-  padding: 18px 12px;
-  text-align: center;
+  gap: 14px;
+  padding: 12px 4px 0;
+  text-align: left;
 }
 .home-live-media .now-playing-art {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(100px, 38cqw, 200px);
-  height: clamp(100px, 38cqw, 200px);
-  flex: 0 0 auto;
+  width: min(100%, 190px);
+  height: auto;
+  aspect-ratio: 1;
   border-radius: 18px;
   border: 1px solid #5c7552;
   background: radial-gradient(circle at 25% 15%, #b5ff8335, transparent 65%), #132132;
   overflow: hidden;
-  font-size: clamp(45px, 16cqw, 80px);
+  font-size: clamp(40px, 13cqw, 80px);
   color: #caffae;
 }
 .home-live-media .now-playing-art img { width: 100%; height: 100%; object-fit: cover; }
-.home-live-media .now-playing-art [hidden] { display: none !important; }
-.home-live-media .now-playing-copy { width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.home-live-media .now-playing-state { font-size: clamp(18px, 4.8cqw, 25px); font-weight: 850; color: #caffae; }
+.home-live-media .now-playing-art [hidden],
+.home-live-media .music-control svg[hidden] { display: none !important; }
+.home-live-media .now-playing-copy {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  text-align: left;
+}
+.home-live-media .now-playing-state { font-size: clamp(16px, 3.5cqw, 20px); font-weight: 800; color: #caffae; }
 .home-live-media .now-playing-state[hidden],
 .home-live-media .music-album[hidden],
 .home-live-media .music-timeline[hidden] { display: none !important; }
@@ -434,87 +469,152 @@ body{font-size:20px}
   overflow: hidden;
   white-space: normal;
   overflow-wrap: anywhere;
-  font-size: clamp(23px, 6.5cqw, 35px);
+  font-size: clamp(19px, 4cqw, 27px);
   line-height: 1.25;
   color: #f1f5ff;
 }
-.home-live-media .now-playing-artist { max-width: 100%; font-size: clamp(19px, 4.8cqw, 26px); line-height: 1.35; white-space: normal; overflow-wrap: anywhere; color: #c4cfea; }
-.home-live-media .music-album { max-width: 100%; font-size: clamp(17px, 4cqw, 22px); line-height: 1.3; color: #99abc9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.home-live-media .music-equalizer { height: 28px; margin: 0; }
-.home-live-media .music-equalizer i { width: 5px; }
-.music-timeline { width: 100%; padding: 0 4px; }
-.music-progress-track { height: 6px; border-radius: 99px; overflow: hidden; background: #2a3658; }
-.music-progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #b5ff83, #7be4b0); transition: width .2s linear; }
-.music-time-labels { display: flex; justify-content: space-between; margin-top: 8px; color: #b6c4de; font-size: clamp(17px, 4cqw, 21px); font-weight: 750; font-variant-numeric: tabular-nums; }
+.home-live-media .now-playing-artist { max-width: 100%; font-size: clamp(16px, 3.4cqw, 22px); line-height: 1.3; white-space: normal; overflow-wrap: anywhere; color: #c4cfea; }
+.home-live-media .music-album { max-width: 100%; font-size: clamp(14px, 2.8cqw, 18px); line-height: 1.3; color: #99abc9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.music-timeline { grid-column: 1 / -1; grid-row: 2; width: 100%; padding: 0; }
+.home-live-media .music-seek {
+  --music-progress: 0%;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.music-seek::-webkit-slider-runnable-track {
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(to right, #b5ff83 0%, #7be4b0 var(--music-progress), #2a3658 var(--music-progress), #2a3658 100%);
+}
+.music-seek::-moz-range-track { height: 7px; border-radius: 99px; background: #2a3658; }
+.music-seek::-moz-range-progress { height: 7px; border-radius: 99px; background: #b5ff83; }
+.music-seek::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -6.5px;
+  border: 2px solid #e6ffd5;
+  border-radius: 50%;
+  background: #b5ff83;
+  box-shadow: 0 0 12px #b5ff8335;
+}
+.music-seek::-moz-range-thumb { width: 17px; height: 17px; border: 2px solid #e6ffd5; border-radius: 50%; background: #b5ff83; }
+.music-seek:disabled { cursor: default; opacity: .6; }
+.music-seek:focus-visible { outline: 2px solid #b5ff83; outline-offset: 3px; border-radius: 8px; }
+.music-time-labels { display: flex; justify-content: space-between; color: #b6c4de; font-size: clamp(16px, 3.3cqw, 21px); line-height: 1.15; font-weight: 750; font-variant-numeric: tabular-nums; }
+.music-controls { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; justify-content: center; gap: 24px; padding: 0; }
+.home-live-media .music-control {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid #44547b;
+  border-radius: 50%;
+  background: #15223b;
+  color: #f1f5ff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.home-live-media .music-control svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.home-live-media .music-control.music-play { width: 68px; height: 68px; border-color: #caffae; color: #182219; background: #caffae; box-shadow: 0 0 20px #b5ff8315; }
+.home-live-media .music-play svg { width: 32px; height: 32px; }
+.home-live-media #music-play-icon path { fill: currentColor; stroke-width: 1.5; }
+.home-live-media #music-pause-icon path { fill: currentColor; stroke: none; }
+.music-control:hover:not(:disabled) { border-color: #b5ff83; background: #243b35; }
+.home-live-media .music-play:hover:not(:disabled) { background: #e4ffd4; }
+.music-control:active:not(:disabled) { transform: scale(.94); }
+.music-control:focus-visible { outline: 2px solid #b5ff83; outline-offset: 5px; }
+.home-live-media .music-control:disabled { opacity: .4; cursor: default; box-shadow: none; }
+.music-control-status { grid-column: 1 / -1; grid-row: 4; min-height: 22px; width: 100%; color: #aabbd7; text-align: center; font-size: clamp(13px, 2.7cqw, 17px); line-height: 1.25; }
 @media (max-height: 760px) {
-  .home-live-weather { gap: 8px; }
-  .home-live-weather .panel-head { flex: 0 0 auto; }
-  .home-live-weather .kicker { font-size: 16px; line-height: 1; }
-  .home-live-weather .panel-title { font-size: clamp(22px, 5cqw, 26px); line-height: 1.1; }
-  .home-live-weather .home-time-block { flex: 0 0 auto; padding: 0; gap: 0; min-height: 0; }
-  .home-live-weather .home-clock { font-size: clamp(48px, 11cqw, 60px); line-height: 1; }
-  .home-live-weather .home-date-sub { margin: 0; font-size: 17px; line-height: 1; }
-  .home-live-weather .home-weather-hero { min-height: 108px; }
-  .home-live-weather .home-weather-icon { font-size: 56px; }
-  .home-live-weather .home-weather-reading { gap: 4px; }
-  .home-live-weather .home-temp { font-size: clamp(50px, 11cqw, 60px); line-height: 1; }
-  .home-live-weather .home-temp .home-temp-unit { margin: 6px 0 0 6px; font-size: 27px; }
-  .home-live-weather .home-condition { font-size: 20px; line-height: 1.1; }
-  .home-live-weather .weather-live-status { font-size: 17px; line-height: 1.1; }
-  .home-live-weather .weather-details { flex: 0 0 auto; gap: 8px; }
-  .home-live-weather .weather-detail { padding: 6px 12px; gap: 2px; }
-  .home-live-weather .weather-detail-label { font-size: 18px; line-height: 1; white-space: nowrap; }
-  .home-live-weather .weather-detail-value { font-size: 24px; line-height: 1.1; }
-  .home-live-weather .weather-updated { flex: 0 0 auto; min-height: 20px; font-size: 17px; line-height: 20px; }
-  .home-live-media .now-playing-card {
-    display: grid;
-    grid-template-columns: minmax(90px, .8fr) minmax(0, 1.6fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 4px;
-    text-align: left;
-  }
-  .home-live-media .now-playing-art {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: center;
-    width: min(100%, 180px);
-    height: auto;
-    aspect-ratio: 1;
-  }
-  .home-live-media .now-playing-copy {
-    grid-column: 2;
-    grid-row: 1;
-    align-items: flex-start;
-    gap: 10px;
-    text-align: left;
-  }
-  .home-live-media .now-playing-title { font-size: clamp(26px, 5cqw, 32px); line-height: 1.2; }
-  .home-live-media .now-playing-artist { font-size: 22px; line-height: 1.25; }
-  .home-live-media .now-playing-state { font-size: 20px; line-height: 1.2; }
-  .home-live-media .music-album { font-size: 18px; line-height: 1.2; }
-  .home-live-media .music-equalizer { display: none; }
-  .home-live-media .music-timeline { grid-column: 1 / -1; grid-row: 2; width: 100%; padding: 0; }
-  .home-live-media .music-time-labels { font-size: 20px; line-height: 1.2; }
+  .home-live-weather, .home-live-media { gap: 10px; }
+  .home-live-weather .panel-head { flex: 0 0 auto; min-height: 0; margin: 0; }
+  .home-live-weather .kicker { margin: 0; font-size: 16px; line-height: 1.1; }
+  .home-live-weather .panel-title { margin: 3px 0 0; font-size: clamp(22px, 4.5cqw, 28px); line-height: 1.1; }
+  .home-live-weather .home-time-block { padding: 3px 0 1px; gap: 5px; }
+  .home-live-weather .home-clock { font-size: clamp(42px, 11cqw, 70px); line-height: 1; }
+  .home-live-weather .home-date-sub { font-size: 17px; line-height: 1.15; }
+  .home-live-weather .home-weather-hero { min-height: 150px; padding: 12px 8px; }
+  .home-live-weather .home-weather-reading { gap: 5px; }
+  .home-live-weather .home-temp { font-size: clamp(46px, 10cqw, 62px); line-height: 1; }
+  .home-live-weather .home-condition { font-size: 20px; line-height: 1.2; }
+  .home-live-weather .weather-live-status { font-size: 16px; line-height: 1.15; }
+  .home-live-weather .weather-details { padding: 9px 0; }
+  .home-live-weather .weather-detail { gap: 4px; }
+  .home-live-weather .weather-detail-label { font-size: 16px; line-height: 1.15; }
+  .home-live-weather .weather-detail-value { font-size: 22px; line-height: 1.15; }
+  .home-live-weather .weather-updated { min-height: 16px; font-size: 15px; line-height: 1.1; }
+  .home-live-media .now-playing-card { gap: 12px; padding-top: 4px; }
 }
 @media (max-height: 520px) {
   .home-live-weather, .home-live-media { gap: 8px; padding: 14px; }
-  .home-live-weather .home-clock { font-size: clamp(38px, 10cqw, 50px); }
-  .home-live-weather .home-temp { font-size: clamp(44px, 10cqw, 52px); }
-  .home-live-weather .home-weather-hero { min-height: 100px; }
-  .home-live-media .now-playing-card { gap: 10px; padding: 10px 8px; }
-  .home-live-media .now-playing-art { width: min(100%, 125px); height: auto; }
+  .home-live-weather .home-clock { font-size: clamp(38px, 10cqw, 58px); }
+  .home-live-weather .home-temp { font-size: clamp(40px, 10cqw, 60px); }
+  .home-live-weather .home-weather-hero { min-height: 138px; padding: 9px 8px; }
+  .home-live-media .now-playing-card { gap: 8px; padding: 0; }
+  .home-live-media .now-playing-art { width: min(100%, 125px); }
   .home-live-media .now-playing-copy { gap: 6px; }
+  .home-live-media .music-control.music-play { width: 58px; height: 58px; }
+  .home-live-media .music-control.music-skip { width: 46px; height: 46px; }
 }
+@container (max-width: 500px) {
+  .weather-details { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 0; padding: 10px 0; }
+  .weather-detail { flex-direction: row; justify-content: space-between; gap: 8px; padding: 0 10px; }
+  .weather-detail + .weather-detail { border-left: 0; }
+  .weather-detail:nth-child(even) { border-left: 1px solid #34426490; }
+  .home-live-weather .weather-detail-label { font-size: clamp(12px, 3.4cqw, 16px); }
+  .home-live-weather .weather-detail-value { font-size: clamp(15px, 4.2cqw, 20px); }
+  .home-live-media .now-playing-card { grid-template-columns: minmax(70px, .85fr) minmax(0, 1.65fr); gap: 10px; }
+  .home-live-media .music-control-status { font-size: 13px; }
+}
+@container (max-width: 320px) {
+  .home-live-weather .home-clock { font-size: clamp(24px, 11cqw, 38px); }
+  .home-live-weather .home-weather-icon { font-size: 40px; }
+  .home-live-weather .home-weather-hero { gap: 12px; }
+  .home-live-weather .home-temp { font-size: 42px; }
+  .home-live-weather .home-condition { font-size: 16px; }
+  .home-live-weather .weather-live-status { font-size: 13px; }
+  .home-live-weather .home-date-sub { font-size: 13px; }
+  .weather-detail { gap: 5px; padding: 0 6px; }
+  .home-live-weather .weather-detail-label { font-size: 11px; }
+  .home-live-weather .weather-detail-value { font-size: 13px; }
+  .home-live-media .now-playing-title { font-size: 18px; }
+  .home-live-media .now-playing-artist { font-size: 15px; }
+  .home-live-media .now-playing-state { font-size: 14px; }
+  .home-live-media .music-album { font-size: 13px; }
+  .home-live-media .music-controls { gap: 16px; }
+  .home-live-media .music-control.music-play { width: 58px; height: 58px; }
+  .home-live-media .music-control.music-skip { width: 46px; height: 46px; }
+}
+/* Keep the calendar scrollable without a visible scroll track. */
+.home-holiday-panel .holiday-list{scrollbar-width:none;-ms-overflow-style:none}
+.home-holiday-panel .holiday-list::-webkit-scrollbar{display:none;width:0;height:0}
+
+/* Moving pages keep their original grid and form elements. */
+.page-view.page-is-moving{will-change:transform,opacity;pointer-events:none}
+.app{overflow-x:clip}
+@media(prefers-reduced-motion:reduce){.page-view.page-is-moving{will-change:auto}}
 </style>
 </head>
 <body><div class="app">
 <header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div><nav class="page-tabs" id="page-tabs" aria-label="페이지 메뉴"><button class="page-tab active" data-page="0">Home</button><button class="page-tab" data-page="1">Today</button><button class="page-tab" data-page="2">Work</button><button class="page-tab" data-page="3">Game</button><span class="sync-status" id="shared-status" data-state="disconnected" role="status" aria-live="polite" aria-label="위젯 자동 동기화 · 연결 대기" title="위젯 자동 동기화 · 연결 대기"><i class="sync-dot" aria-hidden="true"></i>위젯 자동 동기화</span></nav></header>
-<main class="columns home-grid page-view active" data-view="0"><section class="panel home-panel home-clock-weather-panel home-live-weather" aria-label="에드먼튼 시간과 날씨" data-state="unavailable"><div class="panel-head"><div><div class="kicker">EDMONTON</div><h2 class="panel-title">현재 시간 · 날씨</h2></div><button class="icon-btn home-weather-refresh" id="refresh-weather" type="button" aria-label="최신 날씨 표시" title="최신 날씨 표시">↻</button></div><div class="home-time-block"><div class="home-clock" id="clock">--:-- AM</div><div class="home-date-sub" id="date">---</div></div><div class="home-weather-hero"><div class="home-weather-icon" id="weather-icon" aria-hidden="true">☁</div><div class="home-weather-reading"><div class="home-temp"><span id="temperature">--</span><span class="home-temp-unit">°C</span></div><div class="home-condition" id="condition">날씨 연결 대기</div><div class="weather-live-status" id="weather-live-status" role="status" aria-live="polite">날씨 정보를 기다리고 있어요</div></div></div><div class="weather-details"><div class="weather-detail"><span class="weather-detail-label">체감</span><strong class="weather-detail-value" id="weather-feels">—</strong></div><div class="weather-detail"><span class="weather-detail-label">최고 / 최저</span><strong class="weather-detail-value" id="weather-high-low">— / —</strong></div><div class="weather-detail"><span class="weather-detail-label">습도</span><strong class="weather-detail-value" id="weather-humidity">—</strong></div><div class="weather-detail"><span class="weather-detail-label">바람</span><strong class="weather-detail-value" id="weather-wind">—</strong></div></div><div class="weather-updated" id="weather-updated"></div></section><section class="panel home-panel home-holiday-panel" aria-label="앨버타·한국 캘린더"><div class="panel-head holiday-head"><div><div class="kicker">▦ ALBERTA · KOREA</div><h2 class="panel-title">캘린더</h2></div><div class="holiday-month-nav"><button class="icon-btn holiday-nav-btn" id="holiday-prev" type="button" aria-label="이전 달">‹</button><strong id="holiday-month">---</strong><button class="icon-btn holiday-nav-btn" id="holiday-next" type="button" aria-label="다음 달">›</button></div></div><div class="holiday-calendar" id="holiday-calendar"></div><div class="holiday-list" id="holiday-list"><div class="empty">공휴일을 불러오는 중이에요</div></div></section><section class="panel home-panel home-music-panel home-live-media" aria-label="PC에서 재생 중인 음악"><div class="panel-head"><div><div class="kicker">NOW PLAYING</div><h2 class="panel-title">지금 재생 중</h2></div><span class="music-connection" id="music-connection" role="status" aria-live="polite">연결 대기</span></div><div class="now-playing-card" id="now-playing-card" data-state="unavailable"><div class="now-playing-art" aria-hidden="true"><img id="music-art-image" alt="" hidden><span id="music-art-placeholder">♫</span></div><div class="now-playing-copy"><span class="now-playing-state" id="music-state" hidden></span><strong class="now-playing-title" id="music-title">PC 연결 대기</strong><span class="now-playing-artist" id="music-artist">재생 정보 연결을 확인해 주세요</span><span class="music-album" id="music-album" hidden></span></div><div class="music-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="music-timeline" id="music-timeline" hidden><div class="music-progress-track" id="music-progress-track" role="progressbar" aria-label="음악 재생 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="music-progress-fill" id="music-progress-fill"></div></div><div class="music-time-labels"><span id="music-elapsed">0:00</span><span id="music-duration">0:00</span></div></div></div></section></main>
+<main class="columns home-grid page-view active" data-view="0"><section class="panel home-panel home-clock-weather-panel home-live-weather" aria-label="에드먼튼 시간과 날씨" data-state="unavailable"><div class="panel-head"><div><div class="kicker">EDMONTON</div><h2 class="panel-title">현재 시간 · 날씨</h2></div><button class="icon-btn home-weather-refresh" id="refresh-weather" type="button" aria-label="최신 날씨 표시" title="최신 날씨 표시">↻</button></div><div class="home-time-block"><div class="home-clock" id="clock">--:-- AM</div><div class="home-date-sub" id="date">---</div></div><div class="home-weather-hero"><div class="home-weather-icon" id="weather-icon" aria-hidden="true">☁</div><div class="home-weather-reading"><div class="home-temp"><span id="temperature">--</span><span class="home-temp-unit">°C</span></div><div class="home-condition" id="condition">날씨 연결 대기</div><div class="weather-live-status" id="weather-live-status" role="status" aria-live="polite">날씨 정보를 기다리고 있어요</div></div></div><div class="weather-details"><div class="weather-detail"><span class="weather-detail-label">체감</span><strong class="weather-detail-value" id="weather-feels">—</strong></div><div class="weather-detail"><span class="weather-detail-label">최고 / 최저</span><strong class="weather-detail-value" id="weather-high-low">— / —</strong></div><div class="weather-detail"><span class="weather-detail-label">습도</span><strong class="weather-detail-value" id="weather-humidity">—</strong></div><div class="weather-detail"><span class="weather-detail-label">바람</span><strong class="weather-detail-value" id="weather-wind">—</strong></div></div><div class="weather-updated" id="weather-updated"></div></section><section class="panel home-panel home-holiday-panel" aria-label="앨버타·한국 캘린더"><div class="panel-head holiday-head"><div><div class="kicker">▦ ALBERTA · KOREA</div><h2 class="panel-title">캘린더</h2></div><div class="holiday-month-nav"><button class="icon-btn holiday-nav-btn" id="holiday-prev" type="button" aria-label="이전 달">‹</button><strong id="holiday-month">---</strong><button class="icon-btn holiday-nav-btn" id="holiday-next" type="button" aria-label="다음 달">›</button></div></div><div class="holiday-calendar" id="holiday-calendar"></div><div class="holiday-list" id="holiday-list"><div class="empty">공휴일을 불러오는 중이에요</div></div></section><section class="panel home-panel home-music-panel home-live-media" aria-label="PC에서 재생 중인 음악"><div class="panel-head"><div><div class="kicker">NOW PLAYING</div><h2 class="panel-title">지금 재생 중</h2></div><span class="music-connection" id="music-connection" role="status" aria-live="polite">연결 대기</span></div><div class="now-playing-card" id="now-playing-card" data-state="unavailable" aria-busy="false"><div class="now-playing-art" aria-hidden="true"><img id="music-art-image" alt="" hidden><span id="music-art-placeholder">♫</span></div><div class="now-playing-copy"><span class="now-playing-state" id="music-state" hidden></span><strong class="now-playing-title" id="music-title">PC 연결 대기</strong><span class="now-playing-artist" id="music-artist">재생 정보 연결을 확인해 주세요</span><span class="music-album" id="music-album" hidden></span></div><div class="music-timeline" id="music-timeline" hidden><input class="music-seek" id="music-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="음악 재생 위치" aria-valuetext="0:00 / 0:00" disabled><div class="music-time-labels"><span id="music-elapsed">0:00</span><span id="music-duration">0:00</span></div></div><div class="music-controls" aria-label="음악 재생 조작"><button class="music-control music-skip" id="music-previous" type="button" aria-label="이전 곡" title="이전 곡" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5l-10 7 10 7Z"/></svg></button><button class="music-control music-play" id="music-play" type="button" aria-pressed="false" aria-describedby="music-control-status" aria-label="재생" title="재생" disabled><svg id="music-play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7Z"/></svg><svg id="music-pause-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h4v14H7ZM14 5h4v14h-4Z"/></svg></button><button class="music-control music-skip" id="music-next" type="button" aria-label="다음 곡" title="다음 곡" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7Z"/></svg></button></div><div class="music-control-status" id="music-control-status" role="status" aria-live="polite"></div></div></section></main>
 <section class="columns page-view" data-view="1">
 <section class="panel tasks-panel" aria-label="오늘의 할 일"><div class="panel-head task-panel-head"><div><div class="kicker">✧ TODAY</div><h2 class="panel-title">오늘의 할 일</h2></div><span class="task-count" id="task-count">0 / 0</span></div><div class="task-progress-track" role="progressbar" aria-label="할 일 진행률" aria-valuemin="0" aria-valuemax="100"><div class="task-progress-fill" id="task-progress-fill" aria-valuenow="0"></div></div><form class="task-form" id="task-form"><input class="field" id="task-input" placeholder="할 일을 입력하세요" autocomplete="off" maxlength="160"><button class="add-btn" aria-label="할 일 추가">＋</button></form><div class="task-list" id="task-list"></div></section>
-<section class="panel timer-panel" aria-label="집중 타이머"><div class="panel-head"><div><div class="kicker">◷ FOCUS SESSION</div><h2 class="panel-title">집중 타이머</h2></div></div><div class="timer-content"><div class="timer-caption" id="timer-caption">5분</div><div class="timer-display" id="timer-display" role="timer" aria-label="집중 타이머 남은 시간">05:00</div><div class="timer-track"><div class="timer-progress" id="timer-progress"></div></div><div class="presets"><button type="button" class="preset is-selected" data-min="5" aria-pressed="true">5분</button><button type="button" class="preset" data-min="10" aria-pressed="false">10분</button></div><div class="timer-controls"><button type="button" class="control-btn primary" id="timer-start">시작</button><button type="button" class="control-btn" id="timer-reset">초기화</button></div></div></section>
+<section class="panel timer-panel" aria-label="집중 타이머"><div class="panel-head"><div><div class="kicker">◷ FOCUS SESSION</div><h2 class="panel-title">집중 타이머</h2></div></div><div class="timer-content"><div class="timer-caption" id="timer-caption">5분</div><div class="timer-display" id="timer-display" role="timer" aria-label="집중 타이머 남은 시간">05:00</div><div class="timer-track"><div class="timer-progress" id="timer-progress"></div></div><div class="presets"><button type="button" class="preset" data-min="5" aria-label="집중 시간에 5분 추가">+5분</button><button type="button" class="preset" data-min="10" aria-label="집중 시간에 10분 추가">+10분</button></div><div class="timer-controls"><button type="button" class="control-btn primary" id="timer-start">시작</button><button type="button" class="control-btn" id="timer-reset">초기화</button></div></div></section>
 <section class="panel events-panel" aria-label="일정 D-DAY"><div class="panel-head event-panel-head"><div><div class="kicker">▦ NEXT</div><h2 class="panel-title">일정 · D-DAY</h2></div><div class="event-head-actions"><span class="event-count" id="event-count">0 일정</span><button class="icon-btn event-add-toggle" id="event-add-toggle" type="button" aria-label="일정 추가" title="일정 추가">＋</button></div></div><div class="event-add-popover" id="event-add-popover" hidden><form class="event-form" id="event-form"><label class="sr-only" for="event-name">일정 이름</label><input class="field" id="event-name" placeholder="일정 이름" autocomplete="off" maxlength="120" required><label class="sr-only" for="event-date">날짜</label><input class="field" id="event-date" type="date" aria-label="일정 날짜" min="0001-01-01" max="9999-12-31" required><label class="sr-only" for="event-time">시간</label><input class="field" id="event-time" type="time" aria-label="일정 시간" value="09:00"><button class="add-btn" aria-label="일정 저장">＋</button></form></div><div class="event-list" id="event-list"></div></section>
 </section><section class="columns page-view work-grid" data-view="2"><section class="panel work-panel" aria-label="업무 메모"><div class="panel-head"><div><div class="kicker">✎ NOTES</div><h2 class="panel-title">메모</h2></div><span class="work-note-status" id="work-note-status" role="status">자동 저장</span></div><textarea class="work-memo" id="work-memo" placeholder="메모 입력" aria-label="업무 메모 내용"></textarea><div class="work-note-actions"><button class="control-btn work-note-icon" id="work-note-clear" type="button" aria-label="비우기" title="메모 비우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M5 6l1 14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-14M10 10v7M14 10v7"/></svg></button><button class="control-btn primary work-note-icon" id="work-note-save" type="button" aria-label="저장" title="메모 저장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h9"/></svg></button></div></section><section class="panel work-calc-panel" id="work-calc-panel" aria-label="계산기" tabindex="0"><div class="panel-head"><div><div class="kicker">▦ CALCULATOR</div><h2 class="panel-title">계산기</h2></div><button class="icon-btn work-calc-copy" id="work-calc-copy" type="button" aria-label="계산 결과 복사" title="계산 결과 복사"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div><div class="work-calc-screen"><div class="work-calc-expression" id="work-calc-expression"></div><output class="work-calc-result" id="work-calc-result" aria-live="polite" aria-atomic="true">0</output></div><div class="work-calc-keys" aria-label="계산기 키패드"><button type="button" class="work-calc-key work-calc-utility" data-work-calc="clear" aria-label="계산기 초기화">C</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="backspace" aria-label="마지막 숫자 지우기">⌫</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="percent" aria-label="퍼센트">%</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="/" aria-label="나누기">÷</button><button type="button" class="work-calc-key" data-work-calc="7">7</button><button type="button" class="work-calc-key" data-work-calc="8">8</button><button type="button" class="work-calc-key" data-work-calc="9">9</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="*" aria-label="곱하기">×</button><button type="button" class="work-calc-key" data-work-calc="4">4</button><button type="button" class="work-calc-key" data-work-calc="5">5</button><button type="button" class="work-calc-key" data-work-calc="6">6</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="-" aria-label="빼기">−</button><button type="button" class="work-calc-key" data-work-calc="1">1</button><button type="button" class="work-calc-key" data-work-calc="2">2</button><button type="button" class="work-calc-key" data-work-calc="3">3</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="+" aria-label="더하기">+</button><button type="button" class="work-calc-key" data-work-calc="sign" aria-label="양수 음수 전환">+/−</button><button type="button" class="work-calc-key" data-work-calc="0">0</button><button type="button" class="work-calc-key" data-work-calc="decimal" aria-label="소수점">.</button><button type="button" class="work-calc-key work-calc-equals" data-work-calc="equals" aria-label="계산 결과">=</button></div></section><section class="panel work-countdown-panel" id="work-countdown-panel" aria-label="카운트다운"><div class="panel-head"><div><div class="kicker">◷ COUNTDOWN</div><h2 class="panel-title">카운트다운</h2></div><button class="icon-btn wc-edit" id="wc-edit" type="button" aria-label="카운트다운 시간 편집" aria-expanded="false" aria-controls="wc-popover" title="카운트다운 시간 편집"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-13 13H3v-5Z"/><path d="m14 5 5 5"/></svg></button></div><div class="wc-popover" id="wc-popover" hidden><form id="wc-form" class="wc-form"><label for="wc-minutes-input">시간 설정</label><div class="wc-minutes-field"><input class="field" id="wc-minutes-input" type="number" min="1" max="1440" step="1" value="10" inputmode="numeric" required aria-label="카운트다운 시간 분"><span>분</span></div><div class="wc-form-actions"><button class="control-btn" id="wc-cancel" type="button">취소</button><button class="control-btn primary" type="submit">적용</button></div></form></div><div class="wc-content"><div class="wc-display" id="wc-display" role="timer" aria-label="카운트다운 남은 시간">10:00</div><div class="wc-track" aria-hidden="true"><div class="wc-fill" id="wc-fill"></div></div></div><div class="wc-timer-controls"><button class="wc-timer-start" id="wc-start" type="button" aria-label="시작" title="시작"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5a1 1 0 0 1 1.5-.87l10 6a1.6 1.6 0 0 1 0 2.74l-10 6A1 1 0 0 1 8 18.5Z"/></svg></button><button class="wc-timer-reset" id="wc-reset" type="button" aria-label="카운트다운 초기화" title="카운트다운 초기화"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.5 8.2M3 4v6h6"/></svg></button></div></section></section><section class="page-view game-view" data-view="3"><section class="game-widget" aria-label="롤체지지 M 위젯"><header class="game-widget-head"><div><div class="game-kicker">✦ TFT COMPANION</div><h2>롤체지지</h2></div><a class="lc-home" href="https://lolchess.gg/" target="_blank" rel="noopener noreferrer" aria-label="롤체지지 홈 · 새 창에서 열기" title="롤체지지 홈 · 새 창에서 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a></header><div class="lc-links"><a class="lc-builder" href="https://lolchess.gg/meta?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="추천 메타 · 새 창에서 열기"><div class="lc-board-wrap"><div class="lc-board-glow"></div><svg class="lc-board" viewBox="0 0 418 208" fill="none" aria-hidden="true"><polygon points="65.4,17.5 65.4,44.5 42.0,58.0 18.6,44.5 18.6,17.5 42.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,17.5 116.4,44.5 93.0,58.0 69.6,44.5 69.6,17.5 93.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,17.5 167.4,44.5 144.0,58.0 120.6,44.5 120.6,17.5 144.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="144" cy="31" r="8" fill="#cbffac"/><circle cx="144" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="218.4,17.5 218.4,44.5 195.0,58.0 171.6,44.5 171.6,17.5 195.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,17.5 269.4,44.5 246.0,58.0 222.6,44.5 222.6,17.5 246.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="246" cy="31" r="8" fill="#cbffac"/><circle cx="246" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="320.4,17.5 320.4,44.5 297.0,58.0 273.6,44.5 273.6,17.5 297.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,17.5 371.4,44.5 348.0,58.0 324.6,44.5 324.6,17.5 348.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,61.5 90.9,88.5 67.5,102.0 44.1,88.5 44.1,61.5 67.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,61.5 141.9,88.5 118.5,102.0 95.1,88.5 95.1,61.5 118.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="192.9,61.5 192.9,88.5 169.5,102.0 146.1,88.5 146.1,61.5 169.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,61.5 243.9,88.5 220.5,102.0 197.1,88.5 197.1,61.5 220.5,48.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="220.5" cy="75" r="8" fill="#cbffac"/><circle cx="220.5" cy="75" r="13" fill="none" stroke="#b5ff8333"/><polygon points="294.9,61.5 294.9,88.5 271.5,102.0 248.1,88.5 248.1,61.5 271.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,61.5 345.9,88.5 322.5,102.0 299.1,88.5 299.1,61.5 322.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="396.9,61.5 396.9,88.5 373.5,102.0 350.1,88.5 350.1,61.5 373.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="65.4,105.5 65.4,132.5 42.0,146.0 18.6,132.5 18.6,105.5 42.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,105.5 116.4,132.5 93.0,146.0 69.6,132.5 69.6,105.5 93.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,105.5 167.4,132.5 144.0,146.0 120.6,132.5 120.6,105.5 144.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="218.4,105.5 218.4,132.5 195.0,146.0 171.6,132.5 171.6,105.5 195.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,105.5 269.4,132.5 246.0,146.0 222.6,132.5 222.6,105.5 246.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="320.4,105.5 320.4,132.5 297.0,146.0 273.6,132.5 273.6,105.5 297.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,105.5 371.4,132.5 348.0,146.0 324.6,132.5 324.6,105.5 348.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,149.5 90.9,176.5 67.5,190.0 44.1,176.5 44.1,149.5 67.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,149.5 141.9,176.5 118.5,190.0 95.1,176.5 95.1,149.5 118.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="118.5" cy="163" r="8" fill="#cbffac"/><circle cx="118.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="192.9,149.5 192.9,176.5 169.5,190.0 146.1,176.5 146.1,149.5 169.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,149.5 243.9,176.5 220.5,190.0 197.1,176.5 197.1,149.5 220.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="294.9,149.5 294.9,176.5 271.5,190.0 248.1,176.5 248.1,149.5 271.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,149.5 345.9,176.5 322.5,190.0 299.1,176.5 299.1,149.5 322.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="322.5" cy="163" r="8" fill="#cbffac"/><circle cx="322.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="396.9,149.5 396.9,176.5 373.5,190.0 350.1,176.5 350.1,149.5 373.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/></svg></div><div class="lc-builder-copy"><span class="lc-domain">LOLCHESS.GG</span><strong>추천 메타</strong></div><span class="lc-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><div class="lc-secondary"><a class="lc-link" href="https://lolchess.gg/builder" target="_blank" rel="noopener noreferrer" aria-label="덱 빌더 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg></span><strong>덱 빌더</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><a class="lc-link" href="https://lolchess.gg/decks?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="덱 통계 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16v-5M12 16V5M18 16V8"/></svg></span><strong>덱 통계</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a></div></div></section></section></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
@@ -1020,7 +1120,7 @@ const TZ="America/Edmonton",WEATHER_URL="https://api.open-meteo.com/v1/forecast?
 function readList(key){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events"))return window.EdgeShared.getList(key);try{const value=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(value))return [];let changed=false;value.forEach(item=>{if(item&&!item.id){item.id="edge-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,14);changed=true}});if(changed)saveList(key,value);return value}catch{return []}}function saveList(key,value){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events")){window.EdgeShared.setList(key,value);return}try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
 function showToast(message){const t=document.getElementById("toast");t.textContent=message;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),1500)}
 function updateClock(){const now=new Date();document.getElementById("clock").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:true}).format(now);document.getElementById("date").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,month:"short",day:"numeric"}).format(now)}
-document.getElementById("page-tabs").addEventListener("click",event=>{const button=event.target.closest(".page-tab");if(!button)return;document.querySelectorAll(".page-tab").forEach(tab=>tab.classList.toggle("active",tab===button));document.querySelectorAll(".page-view").forEach(view=>view.classList.toggle("active",Number(view.dataset.view)===Number(button.dataset.page)))});
+
 function renderTasks(){const box=document.getElementById("task-list");box.replaceChildren();const all=readList("edge-tasks"),done=all.filter(item=>item.done).length,total=all.length,percent=total?Math.round(done/total*100):0;document.getElementById("task-count").textContent=done+" / "+total;const fill=document.getElementById("task-progress-fill");fill.style.width=percent+"%";fill.setAttribute("aria-valuenow",String(percent));if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="할 일을 추가해 보세요";box.append(empty);return}const toggle=id=>{const list=readList("edge-tasks"),item=list.find(entry=>entry.id===id);if(!item)return;item.done=!item.done;saveList("edge-tasks",list);renderTasks()};all.forEach(task=>{const row=document.createElement("div");row.className="task-row"+(task.done?" done":"");row.setAttribute("role","button");row.setAttribute("tabindex","0");row.setAttribute("aria-label",task.text+(task.done?" 완료됨":" 미완료"));row.onclick=event=>{if(!event.target.closest(".remove-btn"))toggle(task.id)};row.onkeydown=event=>{if((event.key==="Enter"||event.key===" ")&&event.target===row){event.preventDefault();toggle(task.id)}};const check=document.createElement("button");check.className="task-toggle"+(task.done?" is-done":"");check.type="button";check.textContent=task.done?"✓":"";check.setAttribute("aria-label",task.done?task.text+" 완료 해제":task.text+" 완료 표시");check.onclick=event=>{event.stopPropagation();toggle(task.id)};const text=document.createElement("span");text.className="task-text";text.textContent=task.text;const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",task.text+" 삭제");remove.onclick=event=>{event.stopPropagation();const list=readList("edge-tasks").filter(entry=>entry.id!==task.id);saveList("edge-tasks",list);renderTasks()};row.append(check,text,remove);box.append(row)})}
 document.getElementById("task-form").addEventListener("submit",event=>{event.preventDefault();const input=document.getElementById("task-input"),text=input.value.trim();if(!text)return;const list=readList("edge-tasks");list.push({text,done:false});saveList("edge-tasks",list);input.value="";renderTasks()});
 function renderEvents(){const box=document.getElementById("event-list");box.replaceChildren();const today=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date()),todayUTC=Date.parse(today+"T00:00:00Z"),all=readList("edge-events").map(item=>({...item,time:item.time||""}));const getDiff=item=>Math.round((Date.parse(item.date+"T00:00:00Z")-todayUTC)/86400000);all.sort((a,b)=>{const da=getDiff(a),db=getDiff(b);if((da>=0)!==(db>=0))return da>=0?-1:1;return a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")});document.getElementById("event-count").textContent=all.length+" 일정";if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="＋ 버튼으로 일정을 추가해 보세요";box.append(empty);return}all.forEach((item,index)=>{const diff=getDiff(item),date=new Date(item.date+"T00:00:00Z"),month=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric"}).format(date),day=new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",day:"2-digit"}).format(date),row=document.createElement("div");row.className="event-card "+(index===0?"featured":"compact")+(diff<0?" past":"");const dateText=item.date.split("-").join(".");const dateTag=document.createElement("div");dateTag.className="event-date";const dayNumber=document.createElement("strong");dayNumber.textContent=day;const monthLabel=document.createElement("span");monthLabel.textContent=month;dateTag.append(dayNumber,monthLabel);const info=document.createElement("div");const name=document.createElement("div");name.className="event-name";name.textContent=item.name;const fullDate=document.createElement("div");fullDate.className="event-full-date";fullDate.textContent=dateText+(index===0?"":" · "+(item.time||"시간 미정"));info.append(name);if(index===0){const time=document.createElement("div");time.className="event-time";time.textContent=item.time||"시간 미정";info.append(time,fullDate)}else info.append(fullDate);const badge=document.createElement("span");badge.className="dday-badge";badge.textContent=diff===0?"D-DAY":diff>0?"D-"+diff:"D+"+Math.abs(diff);const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",item.name+" 삭제");remove.onclick=()=>{const items=readList("edge-events"),removeIndex=items.findIndex(entry=>entry.id===item.id);if(removeIndex>=0)items.splice(removeIndex,1);saveList("edge-events",items);renderEvents()};if(index===0)row.append(dateTag,info,badge,remove);else{const accent=document.createElement("i");accent.className="event-accent";row.append(accent,info,badge,remove)}box.append(row)})}
@@ -1101,11 +1201,6 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
       if (elements.icon) elements.start.innerHTML = active ? pauseIcon : playIcon;
       else elements.start.textContent = active ? '일시정지' : remaining > 0 && remaining < state.durationSeconds ? '재개' : '시작';
       if (elements.caption) elements.caption.textContent = Math.round(state.durationSeconds / 60) + '분';
-      if (elements.presets) elements.presets.forEach(button => {
-        const selected = Number(button.dataset.min) * 60 === state.durationSeconds;
-        button.classList.toggle('is-selected', selected);
-        button.setAttribute('aria-pressed', String(selected));
-      });
       if (active) witnessedTarget = state.endAt;
       if (state.running && !remaining && witnessedTarget === state.endAt && completionTarget !== state.endAt) {
         completionTarget = state.endAt;
@@ -1140,15 +1235,35 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
         completionTarget = null;
         const duration = Math.floor(minutes) * 60;
         write({ durationSeconds: duration, remainingSeconds: duration, running: false, endAt: null });
+      },
+      addMinutes: minutes => {
+        const requested = Math.floor(Number(minutes)) * 60;
+        if (!Number.isFinite(requested) || requested <= 0) return;
+        const remaining = left();
+        const added = Math.min(requested, 86400 - remaining);
+        if (added <= 0) { notify('집중 시간은 최대 24시간까지 설정할 수 있어요'); return; }
+        witnessedTarget = null;
+        completionTarget = null;
+        if (!remaining) {
+          write({ durationSeconds: added, remainingSeconds: added, running: false, endAt: null });
+        } else {
+          write({
+            ...state,
+            durationSeconds: Math.min(86400, state.durationSeconds + added),
+            remainingSeconds: remaining + added,
+            endAt: state.running ? state.endAt + added * 1000 : null
+          });
+        }
+        if (added < requested) notify('집중 시간은 최대 24시간까지 설정할 수 있어요');
       }
     };
   }
 
   const focusPresets = Array.from(document.querySelectorAll('.timer-panel [data-min]'));
   const focus = attachTimer('focus', { durationSeconds: 300, remainingSeconds: 300, running: false, endAt: null }, {
-    display: $('timer-display'), start: $('timer-start'), reset: $('timer-reset'), progress: $('timer-progress'), caption: $('timer-caption'), presets: focusPresets
+    display: $('timer-display'), start: $('timer-start'), reset: $('timer-reset'), progress: $('timer-progress'), caption: $('timer-caption')
   });
-  if (focus) focusPresets.forEach(button => button.addEventListener('click', () => focus.setMinutes(Number(button.dataset.min))));
+  if (focus) focusPresets.forEach(button => button.addEventListener('click', () => focus.addMinutes(Number(button.dataset.min))));
 
   const countdown = attachTimer('countdown', { durationSeconds: 600, remainingSeconds: 600, running: false, endAt: null }, {
     display: $('wc-display'), start: $('wc-start'), reset: $('wc-reset'), progress: $('wc-fill'), icon: true
@@ -1336,6 +1451,16 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
 
   let started = false;
   let currentArtwork = "";
+  let currentMedia = null;
+  let commandPending = false;
+  let playbackPreview = null;
+  let positionPreview = null;
+  let playbackSupportGrace = null;
+  let seekGesture = null;
+  let seekCancelled = false;
+  let controlMessage = "";
+  let messageUntil = 0;
+  const mediaEndpoint = "http://127.0.0.1:47831/media-control";
   const byId = id => document.getElementById(id);
   const number = value => typeof value === "number" && Number.isFinite(value) ? value : null;
   function setText(id, value) {
@@ -1392,7 +1517,7 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   function mediaStale(media) {
     if (!media) return true;
     const stamp = number(media.updatedAt);
-    return Boolean(media.stale || (stamp !== null && stamp > 0 && Date.now() - stamp > 12000));
+    return Boolean(media.stale || stamp === null || stamp <= 0 || Date.now() - stamp > 12000);
   }
   function mediaProblem(media, stale) {
     if (!media || media.bridge !== true || stale || ["helper_stopped", "helper_not_running", "helper_stale"].includes(media.reason)) {
@@ -1410,6 +1535,279 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainder = String(seconds % 60).padStart(2, "0");
     return hours ? hours + ":" + String(minutes).padStart(2, "0") + ":" + remainder : minutes + ":" + remainder;
+  }
+  function sharedConnected() {
+    return Boolean(window.EdgeShared && typeof window.EdgeShared.isConnected === "function" && window.EdgeShared.isConnected());
+  }
+  function controlReady(media) {
+    return Boolean(media && media.available && !mediaStale(media) && sharedConnected() &&
+      typeof media.source === "string" && media.source && typeof media.trackToken === "string" && /^[a-f0-9]{64}$/.test(media.trackToken) && media.controls);
+  }
+  function canControl(action, media) {
+    if (!controlReady(media)) return false;
+    if (action === "play" || action === "pause") {
+      return media.controls.play === true || media.controls.pause === true || media.controls.toggle === true ||
+        Boolean(sameTrack(playbackSupportGrace, media) && playbackSupportGrace.expiresAt > Date.now());
+    }
+    return media.controls[action] === true;
+  }
+  function sameTrack(preview, media) {
+    return Boolean(preview && media && media.available && preview.source === media.source && preview.trackToken === media.trackToken);
+  }
+  function effectivePlaying(media) {
+    return sameTrack(playbackPreview, media) ? playbackPreview.playing : Boolean(media && media.playing);
+  }
+  function actualPosition(media, now) {
+    const duration = Math.max(0, number(media && media.durationSeconds) || 0);
+    const elapsed = media && media.playing && !mediaStale(media) ? Math.min(5, Math.max(0, (now - (number(media.updatedAt) || now)) / 1000)) : 0;
+    return Math.min(duration, Math.max(0, number(media && media.positionSeconds) || 0) + elapsed);
+  }
+  function previewPosition(preview, now) {
+    // Pending values show the user's selection. Only acknowledged playback advances its preview clock.
+    const elapsed = preview.phase === "acknowledged" && preview.playing ? Math.max(0, (now - preview.positionAt) / 1000) : 0;
+    return Math.max(0, preview.position + elapsed);
+  }
+  function displayedPosition(media, now) {
+    const preview = sameTrack(positionPreview, media) ? positionPreview : sameTrack(playbackPreview, media) ? playbackPreview : null;
+    const position = preview ? previewPosition(preview, now) : actualPosition(media, now);
+    return Math.min(Math.max(0, number(media && media.durationSeconds) || 0), position);
+  }
+  function beginPreview(action, request, media) {
+    const now = Date.now();
+    const playing = effectivePlaying(media);
+    const position = displayedPosition(media, now);
+    const preview = {
+      id: request.id, source: request.source, trackToken: request.trackToken,
+      basedUpdatedAt: number(media.updatedAt) || 0, createdAt: now,
+      phase: "pending", expiresAt: 0, positionAt: now,
+      playing: playing, position: position
+    };
+    if (action === "seek") {
+      positionPreview = Object.assign(preview, { position: request.positionSeconds });
+    } else if (action === "play" || action === "pause") {
+      const desired = action === "play";
+      playbackPreview = Object.assign(preview, { playing: desired });
+      if (sameTrack(positionPreview, media)) {
+        positionPreview.position = position;
+        positionPreview.positionAt = now;
+        positionPreview.playing = desired;
+      }
+    } else {
+      playbackPreview = null;
+      positionPreview = null;
+      playbackSupportGrace = null;
+    }
+  }
+  function acknowledgePreview(request, result) {
+    const now = Date.now();
+    const completed = Math.min(now, Math.max(number(result.completedAt) || now, 0));
+    if (request.action === "play" || request.action === "pause") {
+      playbackSupportGrace = { source: request.source, trackToken: request.trackToken, expiresAt: now + 3500 };
+    }
+    for (const preview of [playbackPreview, positionPreview]) {
+      if (!preview || preview.id !== request.id) continue;
+      preview.phase = "acknowledged";
+      preview.positionAt = Math.max(preview.createdAt, completed);
+      preview.expiresAt = now + 3500;
+    }
+    controlMessage = "";
+    if (window.EdgeShared && typeof window.EdgeShared.refresh === "function") window.EdgeShared.refresh();
+  }
+  function discardPreview(id) {
+    if (playbackPreview && playbackPreview.id === id) {
+      playbackPreview = null;
+      // A failed play/pause request also invalidates any seek clock re-anchored to its desired state.
+      positionPreview = null;
+    }
+    if (positionPreview && positionPreview.id === id) positionPreview = null;
+  }
+  function reconcilePreviews(media) {
+    const now = Date.now();
+    if (playbackSupportGrace && (!sameTrack(playbackSupportGrace, media) || mediaStale(media) || playbackSupportGrace.expiresAt <= now)) playbackSupportGrace = null;
+    const stamp = number(media && media.updatedAt) || 0;
+    let expired = false;
+    for (const kind of ["playback", "position"]) {
+      const preview = kind === "playback" ? playbackPreview : positionPreview;
+      if (!preview) continue;
+      let clear = !sameTrack(preview, media) || mediaStale(media);
+      if (!clear && preview.phase === "acknowledged") {
+        const fresh = stamp > preview.basedUpdatedAt && stamp >= preview.createdAt;
+        const matches = kind === "playback" ? Boolean(media.playing) === preview.playing :
+          Math.abs(actualPosition(media, now) - Math.min(number(media.durationSeconds) || 0, previewPosition(preview, now))) <= 2;
+        clear = fresh && matches;
+        if (!clear && now >= preview.expiresAt) { clear = true; expired = true; }
+      }
+      if (clear) {
+        if (kind === "playback") playbackPreview = null;
+        else positionPreview = null;
+      }
+    }
+    if (expired && window.EdgeShared && typeof window.EdgeShared.refresh === "function") window.EdgeShared.refresh();
+  }
+  function message(text) {
+    controlMessage = text;
+    messageUntil = Date.now() + 6000;
+    renderMedia(currentMedia);
+  }
+  function actionFailure(reason) {
+    const explanations = {
+      unsupported: "음악 앱에서 지원하지 않는 기능이에요",
+      not_supported: "음악 앱에서 지원하지 않는 기능이에요",
+      action_disabled: "음악 앱에서 지원하지 않는 기능이에요",
+      command_rejected: "음악 앱에서 요청을 처리하지 못했어요",
+      rejected: "음악 앱에서 요청을 처리하지 못했어요",
+      track_changed: "곡이 바뀌었어요. 다시 조작해 주세요",
+      session_changed: "재생 앱이 바뀌었어요. 다시 조작해 주세요",
+      media_control_unavailable: "공유 프로그램과 음악 앱을 확인해 주세요",
+      no_session: "음악 앱에서 먼저 재생해 주세요",
+      expired: "요청 시간이 지났어요. 다시 눌러 주세요",
+      helper_not_running: "공유 프로그램을 다시 열어 주세요",
+      media_control_timeout: "음악 앱의 응답이 늦어요",
+      media_control_failed: "음악 앱에서 요청을 처리하지 못했어요"
+    };
+    return explanations[reason] || "음악 앱에 명령을 전달하지 못했어요";
+  }
+  async function requestJson(url, options) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    try {
+      const response = await fetch(url, Object.assign({ cache: "no-store", signal: controller.signal }, options || {}));
+      let value = null;
+      try { value = await response.json(); } catch (_) { /* A malformed result is treated as a failed request. */ }
+      return { response: response, value: value };
+    } finally { clearTimeout(timeout); }
+  }
+  function commandId() {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("");
+  }
+  async function control(action, target, position) {
+    if (commandPending) return;
+    const media = currentMedia;
+    if (!canControl(action, media)) { message("음악 앱에서 지원하지 않는 기능이에요"); return; }
+    if (target && (target.source !== media.source || target.trackToken !== media.trackToken)) {
+      message("곡이 바뀌었어요. 다시 조작해 주세요"); return;
+    }
+    const request = { id: commandId(), action: action, source: media.source, trackToken: media.trackToken };
+    if (action === "seek") {
+      const duration = number(media.durationSeconds) || 0;
+      if (duration <= 0 || number(position) === null) return;
+      request.positionSeconds = Math.max(0, Math.min(duration, position));
+    }
+    commandPending = true;
+    controlMessage = "";
+    beginPreview(action, request, media);
+    renderMedia(currentMedia);
+    try {
+      let accepted = null;
+      try {
+        accepted = await requestJson(mediaEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Edge-Request": "1" },
+          body: JSON.stringify(request)
+        });
+      } catch (_) {
+        // The PC may have accepted a request whose response was lost. Only poll this ID; never resend it.
+      }
+      if (accepted && accepted.response.status === 200 && accepted.value && accepted.value.id === request.id) {
+        if (accepted.value.ok !== true) throw new Error(actionFailure(accepted.value.reason));
+        acknowledgePreview(request, accepted.value);
+        return;
+      }
+      if (accepted && (accepted.response.status !== 202 || !accepted.value || accepted.value.id !== request.id)) {
+        throw new Error(actionFailure(accepted.value && (accepted.value.reason || accepted.value.error)));
+      }
+      const deadline = Date.now() + 20000;
+      while (Date.now() < deadline) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        let result = null;
+        try { result = await requestJson(mediaEndpoint + "/" + request.id); } catch (_) { continue; }
+        if (result.response.status !== 200 || !result.value || result.value.id !== request.id) continue;
+        if (result.value.ok !== true) throw new Error(actionFailure(result.value.reason));
+        // A short acknowledged preview bridges the gap until the next authoritative PC snapshot.
+        acknowledgePreview(request, result.value);
+        return;
+      }
+      throw new Error("응답이 늦어요. PC 음악 앱을 확인해 주세요");
+    } catch (error) {
+      discardPreview(request.id);
+      message(error && error.name === "AbortError" ? "연결이 늦어요. PC 음악 앱을 확인해 주세요" : error && error.message || "PC 연결을 확인해 주세요");
+    } finally {
+      commandPending = false;
+      renderMedia(currentMedia);
+    }
+  }
+  function renderControls(media) {
+    const ready = controlReady(media);
+    const playing = effectivePlaying(media);
+    const play = byId("music-play");
+    const playIcon = byId("music-play-icon");
+    const pauseIcon = byId("music-pause-icon");
+    if (play) {
+      const label = playing ? "일시정지" : "재생";
+      play.setAttribute("aria-label", label);
+      play.title = label;
+      play.setAttribute("aria-pressed", playing ? "true" : "false");
+      play.disabled = commandPending || !canControl(playing ? "pause" : "play", media);
+    }
+    if (playIcon) playIcon.toggleAttribute("hidden", playing);
+    if (pauseIcon) pauseIcon.toggleAttribute("hidden", !playing);
+    for (const action of ["previous", "next"]) {
+      const button = byId("music-" + action);
+      if (button) button.disabled = commandPending || !canControl(action, media);
+    }
+    const seek = byId("music-seek");
+    if (seek) seek.disabled = commandPending || !canControl("seek", media) || !(number(media && media.durationSeconds) > 0);
+    const card = byId("now-playing-card");
+    if (card) card.setAttribute("aria-busy", commandPending ? "true" : "false");
+    let status = "";
+    if (commandPending) status = "음악 앱에 전달 중…";
+    else if (controlMessage && Date.now() < messageUntil) status = controlMessage;
+    else if (sameTrack(playbackPreview, media)) status = "재생 상태 반영 중…";
+    else if (sameTrack(positionPreview, media)) status = "재생 위치 반영 중…";
+    else if (sameTrack(playbackSupportGrace, media) && playbackSupportGrace.expiresAt > Date.now()) status = "";
+    else if (media && media.available && !mediaStale(media) && sharedConnected()) {
+      if (!ready) status = "공유 프로그램을 다시 열어 주세요";
+      else if (!["play", "pause", "toggle", "previous", "next", "seek"].some(action => media.controls[action] === true)) status = "이 앱은 재생 조작을 지원하지 않아요";
+      else if (!media.controls.seek) status = "이 앱은 재생 위치 이동을 지원하지 않아요";
+    }
+    setText("music-control-status", status);
+  }
+  function beginSeek() {
+    if (commandPending || !canControl("seek", currentMedia)) return;
+    seekGesture = { source: currentMedia.source, trackToken: currentMedia.trackToken, duration: number(currentMedia.durationSeconds) || 0 };
+  }
+  function bindControls() {
+    const play = byId("music-play");
+    if (play) play.addEventListener("click", () => control(effectivePlaying(currentMedia) ? "pause" : "play"));
+    for (const action of ["previous", "next"]) {
+      const button = byId("music-" + action);
+      if (button) button.addEventListener("click", () => control(action));
+    }
+    const seek = byId("music-seek");
+    if (!seek) return;
+    seek.addEventListener("pointerdown", beginSeek);
+    seek.addEventListener("input", () => {
+      if (seekCancelled) return;
+      if (!seekGesture) beginSeek();
+      if (!seekGesture) return;
+      const value = Math.max(0, Math.min(seekGesture.duration, Number(seek.value) || 0));
+      seek.style.setProperty("--music-progress", (seekGesture.duration ? value / seekGesture.duration * 100 : 0) + "%");
+      seek.setAttribute("aria-valuetext", durationText(value) + " / " + durationText(seekGesture.duration));
+      setText("music-elapsed", durationText(value));
+    });
+    seek.addEventListener("change", () => {
+      if (seekCancelled) { seekCancelled = false; seekGesture = null; renderMedia(currentMedia); return; }
+      const target = seekGesture;
+      const value = Number(seek.value);
+      seekGesture = null;
+      if (target) control("seek", target, value);
+    });
+    seek.addEventListener("pointerdown", () => { seekCancelled = false; });
+    seek.addEventListener("pointerup", () => { setTimeout(() => { if (seekGesture) { seekGesture = null; renderMedia(currentMedia); } seekCancelled = false; }, 0); });
+    seek.addEventListener("pointercancel", () => { seekGesture = null; seekCancelled = false; renderMedia(currentMedia); });
+    seek.addEventListener("blur", () => { if (seekGesture || seekCancelled) { seekGesture = null; seekCancelled = false; renderMedia(currentMedia); } });
   }
   function renderArtwork(media, available) {
     const image = byId("music-art-image");
@@ -1438,9 +1836,11 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     image.src = "http://127.0.0.1:47831/media-art?v=" + version;
   }
   function renderMedia(media) {
+    currentMedia = media || null;
+    reconcilePreviews(media);
     const panel = byId("now-playing-card");
     if (!panel) return;
-    const stale = mediaStale(media);
+    const stale = mediaStale(media) || !sharedConnected();
     const available = Boolean(media && media.available);
     const playing = Boolean(available && !stale && media.playing);
     panel.classList.toggle("is-playing", playing);
@@ -1450,7 +1850,9 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     if (connection) connection.classList.toggle("online", connected);
     if (available) {
       setText("music-connection", stale ? "업데이트 대기" : "PC 연결됨");
-      setText("music-state", stale ? "최근 재생 정보" : playing ? "지금 재생 중" : media.status === "Paused" ? "일시정지" : "재생 정지");
+      const preview = sameTrack(playbackPreview, media) ? playbackPreview : null;
+      const requested = preview ? (preview.playing ? "재생" : "일시정지") + (preview.phase === "pending" ? " 요청 중" : " 반영 중") : "";
+      setText("music-state", stale ? "최근 재생 정보" : requested || (playing ? "지금 재생 중" : media.status === "Paused" ? "일시정지" : "재생 정지"));
       setText("music-title", media.title || "제목 정보 없음");
       setText("music-artist", media.artist || "아티스트 정보 없음");
       setText("music-album", media.album || "");
@@ -1470,16 +1872,27 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     if (status) status.hidden = !available;
     renderArtwork(media, available);
     const duration = available ? Math.max(0, number(media.durationSeconds) || 0) : 0;
-    const position = Math.min(duration, available ? Math.max(0, number(media.positionSeconds) || 0) : 0);
+    const position = available ? displayedPosition(media, Date.now()) : 0;
     const timeline = byId("music-timeline");
     if (timeline) timeline.hidden = !available || duration <= 0;
-    setText("music-elapsed", durationText(position));
-    setText("music-duration", durationText(duration));
-    const track = byId("music-progress-track");
-    const fill = byId("music-progress-fill");
-    const percent = duration > 0 ? Math.min(100, position / duration * 100) : 0;
-    if (fill) fill.style.width = percent + "%";
-    if (track) track.setAttribute("aria-valuenow", String(Math.round(percent)));
+    if (seekGesture && (!available || stale || seekGesture.source !== media.source || seekGesture.trackToken !== media.trackToken)) {
+      seekGesture = null;
+      seekCancelled = true;
+      controlMessage = "곡이 바뀌었어요. 다시 조작해 주세요";
+      messageUntil = Date.now() + 6000;
+    }
+    if (!seekGesture) {
+      setText("music-elapsed", durationText(position));
+      setText("music-duration", durationText(duration));
+      const seek = byId("music-seek");
+      if (seek) {
+        seek.max = String(duration > 0 ? duration : 1);
+        seek.value = String(position);
+        seek.style.setProperty("--music-progress", (duration > 0 ? Math.min(100, position / duration * 100) : 0) + "%");
+        seek.setAttribute("aria-valuetext", durationText(position) + " / " + durationText(duration));
+      }
+    }
+    renderControls(media);
   }
   function render() {
     let live = {};
@@ -1492,6 +1905,7 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   function start() {
     if (started || !document.querySelector(".home-live-weather") || !document.querySelector(".home-live-media")) return;
     started = true;
+    bindControls();
     if (window.EdgeShared && typeof window.EdgeShared.subscribe === "function") window.EdgeShared.subscribe(render);
     const refresh = byId("refresh-weather");
     if (refresh) refresh.addEventListener("click", () => {
@@ -1500,6 +1914,8 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     });
     // This only re-renders the shared snapshot; it never makes weather/media network requests.
     setInterval(render, 2000);
+    // Smooth only the displayed clock; this never sends extra requests or changes shared PC state.
+    setInterval(() => { if (!document.hidden) renderMedia(currentMedia); }, 250);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
     render();
   }
@@ -1507,6 +1923,121 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 }());
+
+</script>
+<script>
+/* One live page at a time, with a short directional transition. */
+(() => {
+  'use strict';
+  const menu = document.getElementById('page-tabs');
+  if (!menu) return;
+  const tabs = Array.from(menu.querySelectorAll('.page-tab'));
+  const views = Array.from(document.querySelectorAll('.page-view'));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let activeIndex = Number((views.find(view => view.classList.contains('active')) || views[0]).dataset.view);
+  let transitionVersion = 0;
+  let currentAnimation = null;
+  let mayAnimate = false;
+
+  menu.setAttribute('role', 'tablist');
+  tabs.forEach(tab => {
+    tab.id = 'edge-tab-' + tab.dataset.page;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', 'edge-page-' + tab.dataset.page);
+  });
+  views.forEach(view => {
+    view.id = 'edge-page-' + view.dataset.view;
+    view.setAttribute('role', 'tabpanel');
+    view.setAttribute('aria-labelledby', 'edge-tab-' + view.dataset.view);
+  });
+
+  function markTabs(index) {
+    tabs.forEach(tab => {
+      const selected = Number(tab.dataset.page) === index;
+      tab.classList.toggle('active', selected);
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+    });
+  }
+
+  function show(index) {
+    activeIndex = index;
+    markTabs(index);
+    views.forEach(view => {
+      const selected = Number(view.dataset.view) === index;
+      view.classList.toggle('active', selected);
+      view.setAttribute('aria-hidden', String(!selected));
+      view.toggleAttribute('inert', !selected);
+    });
+  }
+
+  function cancelAnimation() {
+    if (currentAnimation) { currentAnimation.cancel(); currentAnimation = null; }
+    views.forEach(view => view.classList.remove('page-is-moving'));
+  }
+
+  async function move(view, frames, duration, version) {
+    view.classList.add('page-is-moving');
+    const animation = view.animate(frames, { duration, easing: 'cubic-bezier(.22,.68,.25,1)', fill: 'none' });
+    currentAnimation = animation;
+    try { await animation.finished; } catch {}
+    if (currentAnimation === animation) {
+      currentAnimation = null;
+      view.classList.remove('page-is-moving');
+    }
+    return version === transitionVersion;
+  }
+
+  async function navigate(index) {
+    const next = views.find(view => Number(view.dataset.view) === index);
+    const tab = tabs.find(button => Number(button.dataset.page) === index);
+    if (!next || !tab) return;
+    const version = ++transitionVersion;
+    cancelAnimation();
+    const previous = views.find(view => Number(view.dataset.view) === activeIndex);
+    if (previous && previous.contains(document.activeElement)) tab.focus({ preventScroll: true });
+    if (index === activeIndex) { show(index); return; }
+    if (!mayAnimate || reducedMotion.matches || typeof next.animate !== 'function') { show(index); return; }
+    const direction = index > activeIndex ? 1 : -1;
+    markTabs(index);
+    if (previous && !await move(previous, [
+      { transform: 'translate3d(0,0,0)', opacity: 1 },
+      { transform: 'translate3d(' + (-direction * 28) + 'px,0,0)', opacity: 0 }
+    ], 110, version)) return;
+    if (version !== transitionVersion) return;
+    show(index);
+    await move(next, [
+      { transform: 'translate3d(' + (direction * 36) + 'px,0,0)', opacity: 0 },
+      { transform: 'translate3d(0,0,0)', opacity: 1 }
+    ], 170, version);
+  }
+
+  menu.addEventListener('click', event => {
+    const tab = event.target.closest('.page-tab');
+    if (tab && menu.contains(tab)) navigate(Number(tab.dataset.page));
+  });
+  menu.addEventListener('keydown', event => {
+    const tab = event.target.closest('.page-tab');
+    if (!tab) return;
+    const current = tabs.indexOf(tab);
+    let target = null;
+    if (event.key === 'ArrowRight') target = tabs[(current + 1) % tabs.length];
+    else if (event.key === 'ArrowLeft') target = tabs[(current - 1 + tabs.length) % tabs.length];
+    else if (event.key === 'Home') target = tabs[0];
+    else if (event.key === 'End') target = tabs[tabs.length - 1];
+    if (target) { event.preventDefault(); target.focus({ preventScroll: true }); navigate(Number(target.dataset.page)); }
+  });
+  reducedMotion.addEventListener('change', () => {
+    if (!reducedMotion.matches) return;
+    const selected = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
+    ++transitionVersion;
+    cancelAnimation();
+    show(selected ? Number(selected.dataset.page) : activeIndex);
+  });
+  show(activeIndex);
+  // The final initial-page script runs before the first frame.
+  requestAnimationFrame(() => { mayAnimate = true; });
+})();
 
 </script>
 <script>

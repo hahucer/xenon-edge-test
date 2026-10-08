@@ -35,7 +35,7 @@ function Start-MediaReader {
             return
         }
     }
-    $arguments = '"' + $helper + '" --runtime-dir "' + $runtimeDirectory + '" --data-dir "' + $dataDirectory + '" --interval 2'
+    $arguments = '"' + $helper + '" --runtime-dir "' + $runtimeDirectory + '" --data-dir "' + $dataDirectory + '" --interval 1'
     $mediaProcess = Start-Process -FilePath $python -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $dataDirectory 'media-output.log') -RedirectStandardError (Join-Path $dataDirectory 'media-error.log')
     $record = @{ id = $mediaProcess.Id; path = $python; startedAtTicks = $mediaProcess.StartTime.ToUniversalTime().Ticks }
     [IO.File]::WriteAllText($recordPath, ($record | ConvertTo-Json -Compress))
