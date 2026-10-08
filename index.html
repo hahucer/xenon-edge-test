@@ -268,31 +268,385 @@ body{font-size:20px}
   .wc-detail{padding:10px 7px}
   .wc-controls .control-btn{font-size:12px;padding:11px 2px}
 }
+#shared-status .sync-dot {
+  background: #ff7388;
+  box-shadow: 0 0 8px #ff738855;
+}
+#shared-status[data-state="connected"] .sync-dot {
+  background: #b5ff83;
+  box-shadow: 0 0 8px #b5ff8380;
+}
+html[data-mode="edge"] .tasks-panel #task-form,
+html[data-mode="edge"] .events-panel #event-add-toggle,
+html[data-mode="edge"] .events-panel #event-add-popover,
+html[data-mode="edge"] .tasks-panel .remove-btn,
+html[data-mode="edge"] .events-panel .remove-btn {
+  display: none !important;
+}
 </style>
 </head>
 <body><div class="app">
-<header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div><nav class="page-tabs" id="page-tabs" aria-label="페이지 메뉴"><button class="page-tab active" data-page="0">Home</button><button class="page-tab" data-page="1">Today</button><button class="page-tab" data-page="2">Work</button><button class="page-tab" data-page="3">Game</button><span class="sync-status"><i class="sync-dot"></i>위젯 자동 동기화</span></nav></header>
+<header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div><nav class="page-tabs" id="page-tabs" aria-label="페이지 메뉴"><button class="page-tab active" data-page="0">Home</button><button class="page-tab" data-page="1">Today</button><button class="page-tab" data-page="2">Work</button><button class="page-tab" data-page="3">Game</button><span class="sync-status" id="shared-status" data-state="disconnected" role="status" aria-live="polite" aria-label="위젯 자동 동기화 · 연결 대기" title="위젯 자동 동기화 · 연결 대기"><i class="sync-dot" aria-hidden="true"></i>위젯 자동 동기화</span></nav></header>
 <main class="columns home-grid page-view active" data-view="0"><section class="panel home-panel home-clock-weather-panel" aria-label="에드먼튼 시간과 날씨"><div class="kicker">◷ EDMONTON · LOCAL</div><h2 class="panel-title">현재 시간 · 날씨</h2><div class="home-time-weather-content"><div class="home-time-block"><div class="home-location">EDMONTON, AB</div><div class="home-clock" id="clock">--:-- p.m.</div><div class="home-date-sub" id="date">---</div></div><div class="home-weather-block"><div class="home-weather-icon" id="weather-icon">☁️</div><div class="home-temp"><span id="temperature">--</span><span class="home-temp-unit">°C</span></div><div class="home-condition" id="condition">날씨 연결 중</div><button class="control-btn home-weather-refresh" id="refresh-weather" type="button">↻ 새로고침</button></div></div></section><section class="panel home-panel home-holiday-panel" aria-label="앨버타·한국 캘린더"><div class="panel-head holiday-head"><div><div class="kicker">▦ ALBERTA · KOREA</div><h2 class="panel-title">캘린더</h2></div><div class="holiday-month-nav"><button class="icon-btn holiday-nav-btn" id="holiday-prev" type="button" aria-label="이전 달">‹</button><strong id="holiday-month">---</strong><button class="icon-btn holiday-nav-btn" id="holiday-next" type="button" aria-label="다음 달">›</button></div></div><div class="holiday-calendar" id="holiday-calendar"></div><div class="holiday-list" id="holiday-list"><div class="empty">공휴일을 불러오는 중이에요</div></div></section><section class="panel home-panel home-music-panel" aria-label="PC에서 재생 중인 음악"><div class="panel-head"><div><div class="kicker">♫ NOW PLAYING</div><h2 class="panel-title">지금 재생 중</h2></div><span class="music-connection" id="music-connection">연결 확인 중</span></div><div class="now-playing-card" id="now-playing-card"><div class="now-playing-art" aria-hidden="true">♫</div><div class="now-playing-copy"><span class="now-playing-state" id="music-state" hidden></span><strong class="now-playing-title" id="music-title">재생 정보를 확인하고 있어요</strong><span class="now-playing-artist" id="music-artist"></span></div><div class="music-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div></section></main>
 <section class="columns page-view" data-view="1">
-<section class="panel tasks-panel" aria-label="오늘의 할 일"><div class="panel-head task-panel-head"><div><div class="kicker">✧ TODAY</div><h2 class="panel-title">오늘의 할 일</h2></div><span class="task-count" id="task-count">0 / 0</span></div><div class="task-progress-track" role="progressbar" aria-label="할 일 진행률" aria-valuemin="0" aria-valuemax="100"><div class="task-progress-fill" id="task-progress-fill" aria-valuenow="0"></div></div><form class="task-form" id="task-form"><input class="field" id="task-input" placeholder="할 일을 입력하세요" autocomplete="off"><button class="add-btn" aria-label="할 일 추가">＋</button></form><div class="task-list" id="task-list"></div></section>
+<section class="panel tasks-panel" aria-label="오늘의 할 일"><div class="panel-head task-panel-head"><div><div class="kicker">✧ TODAY</div><h2 class="panel-title">오늘의 할 일</h2></div><span class="task-count" id="task-count">0 / 0</span></div><div class="task-progress-track" role="progressbar" aria-label="할 일 진행률" aria-valuemin="0" aria-valuemax="100"><div class="task-progress-fill" id="task-progress-fill" aria-valuenow="0"></div></div><form class="task-form" id="task-form"><input class="field" id="task-input" placeholder="할 일을 입력하세요" autocomplete="off" maxlength="160"><button class="add-btn" aria-label="할 일 추가">＋</button></form><div class="task-list" id="task-list"></div></section>
 <section class="panel timer-panel" aria-label="집중 타이머"><div class="panel-head"><div><div class="kicker">◷ FOCUS SESSION</div><h2 class="panel-title">집중 타이머</h2></div><span class="subtle">집중하고, 잠깐 쉬어가요</span></div><div class="timer-content"><div class="timer-caption" id="timer-caption">FOCUS TIME</div><div class="timer-display" id="timer-display">25:00</div><div class="timer-track"><div class="timer-progress" id="timer-progress"></div></div><div class="timer-controls"><button class="control-btn primary" id="timer-start">시작</button><button class="control-btn" id="timer-reset">초기화</button></div><div class="presets"><button class="preset" data-min="25">25분 집중</button><button class="preset" data-min="5">5분 휴식</button></div><form class="timer-custom-form" id="timer-custom-form"><label for="timer-custom-minutes">직접 설정</label><input class="field" id="timer-custom-minutes" type="number" min="1" max="180" step="1" value="25" inputmode="numeric" aria-label="집중 시간 분"><span>분</span><button class="control-btn" type="submit">적용</button></form></div></section>
-<section class="panel events-panel" aria-label="일정 D-DAY"><div class="panel-head event-panel-head"><div><div class="kicker">▦ NEXT</div><h2 class="panel-title">일정 · D-DAY</h2></div><div class="event-head-actions"><span class="event-count" id="event-count">0 일정</span><button class="icon-btn event-add-toggle" id="event-add-toggle" type="button" aria-label="일정 추가" title="일정 추가">＋</button></div></div><div class="event-add-popover" id="event-add-popover" hidden><form class="event-form" id="event-form"><label class="sr-only" for="event-name">일정 이름</label><input class="field" id="event-name" placeholder="일정 이름" autocomplete="off" required><label class="sr-only" for="event-date">날짜</label><input class="field" id="event-date" type="date" aria-label="일정 날짜" required><label class="sr-only" for="event-time">시간</label><input class="field" id="event-time" type="time" aria-label="일정 시간" value="09:00"><button class="add-btn" aria-label="일정 저장">＋</button></form></div><div class="event-list" id="event-list"></div></section>
+<section class="panel events-panel" aria-label="일정 D-DAY"><div class="panel-head event-panel-head"><div><div class="kicker">▦ NEXT</div><h2 class="panel-title">일정 · D-DAY</h2></div><div class="event-head-actions"><span class="event-count" id="event-count">0 일정</span><button class="icon-btn event-add-toggle" id="event-add-toggle" type="button" aria-label="일정 추가" title="일정 추가">＋</button></div></div><div class="event-add-popover" id="event-add-popover" hidden><form class="event-form" id="event-form"><label class="sr-only" for="event-name">일정 이름</label><input class="field" id="event-name" placeholder="일정 이름" autocomplete="off" maxlength="120" required><label class="sr-only" for="event-date">날짜</label><input class="field" id="event-date" type="date" aria-label="일정 날짜" min="0001-01-01" max="9999-12-31" required><label class="sr-only" for="event-time">시간</label><input class="field" id="event-time" type="time" aria-label="일정 시간" value="09:00"><button class="add-btn" aria-label="일정 저장">＋</button></form></div><div class="event-list" id="event-list"></div></section>
 </section><section class="columns page-view work-grid" data-view="2"><section class="panel work-panel" aria-label="업무 메모"><div class="panel-head"><div><div class="kicker">✎ NOTES</div><h2 class="panel-title">메모</h2></div><span class="work-note-status" id="work-note-status" role="status">자동 저장</span></div><textarea class="work-memo" id="work-memo" placeholder="메모 입력" aria-label="업무 메모 내용"></textarea><div class="work-note-actions"><button class="control-btn work-note-icon" id="work-note-clear" type="button" aria-label="비우기" title="메모 비우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M5 6l1 14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-14M10 10v7M14 10v7"/></svg></button><button class="control-btn primary work-note-icon" id="work-note-save" type="button" aria-label="저장" title="메모 저장"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h9"/></svg></button></div></section><section class="panel work-calc-panel" id="work-calc-panel" aria-label="업무 계산기" tabindex="0"><div class="panel-head"><div><div class="kicker">▦ CALCULATOR</div><h2 class="panel-title">업무 계산기</h2></div></div><div class="work-calc-screen"><div class="work-calc-expression" id="work-calc-expression"></div><output class="work-calc-result" id="work-calc-result" aria-live="polite" aria-atomic="true">0</output></div><div class="work-calc-keys" aria-label="계산기 키패드"><button type="button" class="work-calc-key work-calc-utility" data-work-calc="clear" aria-label="계산기 초기화">C</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="backspace" aria-label="마지막 숫자 지우기">⌫</button><button type="button" class="work-calc-key work-calc-utility" data-work-calc="percent" aria-label="퍼센트">%</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="/" aria-label="나누기">÷</button><button type="button" class="work-calc-key" data-work-calc="7">7</button><button type="button" class="work-calc-key" data-work-calc="8">8</button><button type="button" class="work-calc-key" data-work-calc="9">9</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="*" aria-label="곱하기">×</button><button type="button" class="work-calc-key" data-work-calc="4">4</button><button type="button" class="work-calc-key" data-work-calc="5">5</button><button type="button" class="work-calc-key" data-work-calc="6">6</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="-" aria-label="빼기">−</button><button type="button" class="work-calc-key" data-work-calc="1">1</button><button type="button" class="work-calc-key" data-work-calc="2">2</button><button type="button" class="work-calc-key" data-work-calc="3">3</button><button type="button" class="work-calc-key work-calc-operation" data-work-calc="+" aria-label="더하기">+</button><button type="button" class="work-calc-key" data-work-calc="sign" aria-label="양수 음수 전환">+/−</button><button type="button" class="work-calc-key" data-work-calc="0">0</button><button type="button" class="work-calc-key" data-work-calc="decimal" aria-label="소수점">.</button><button type="button" class="work-calc-key work-calc-equals" data-work-calc="equals" aria-label="계산 결과">=</button></div></section><section class="panel work-countdown-panel" id="work-countdown-panel" aria-label="업무 카운트다운"><div class="panel-head"><div><div class="kicker">◷ COUNTDOWN</div><h2 class="panel-title">카운트다운</h2></div><button class="icon-btn wc-edit" id="wc-edit" type="button" aria-label="카운트다운 설정" aria-expanded="false" aria-controls="wc-popover" title="카운트다운 설정">✎</button></div><div class="wc-popover" id="wc-popover" hidden><form id="wc-form" class="wc-form"><label for="wc-name-input">일정 이름</label><input class="field" id="wc-name-input" type="text" placeholder="예: 다음 회의" maxlength="60" autocomplete="off"><label for="wc-date-input">목표 날짜 · 시간</label><input class="field" id="wc-date-input" type="datetime-local" min="2000-01-01T00:00" max="9999-12-31T23:59" required><div class="wc-form-actions"><button class="control-btn" id="wc-cancel" type="button">취소</button><button class="control-btn primary" type="submit">설정</button></div></form></div><div class="wc-content"><div class="wc-name" id="wc-name">다음 일정</div><div class="wc-display" id="wc-display" role="timer" aria-label="남은 시간">00:00:00</div><div class="wc-status" id="wc-status" role="status">일정 미설정</div><div class="wc-track" aria-hidden="true"><div class="wc-fill" id="wc-fill"></div></div></div><div class="wc-detail"><span>목표 시간</span><strong id="wc-target">—</strong></div><div class="wc-controls"><button class="control-btn wc-quick" type="button" data-wc-minutes="15">+15분</button><button class="control-btn wc-quick" type="button" data-wc-minutes="30">+30분</button><button class="control-btn wc-quick" type="button" data-wc-minutes="60">+60분</button></div><button class="control-btn wc-reset" id="wc-reset" type="button">↺ 초기화</button></section></section><section class="page-view game-view" data-view="3"><section class="game-widget" aria-label="롤체지지 M 위젯"><header class="game-widget-head"><div><div class="game-kicker">✦ TFT COMPANION</div><h2>롤체지지</h2></div><a class="lc-home" href="https://lolchess.gg/" target="_blank" rel="noopener noreferrer" aria-label="롤체지지 홈 · 새 창에서 열기" title="롤체지지 홈 · 새 창에서 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a></header><div class="lc-links"><a class="lc-builder" href="https://lolchess.gg/meta?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="추천 메타 · 새 창에서 열기"><div class="lc-board-wrap"><div class="lc-board-glow"></div><svg class="lc-board" viewBox="0 0 418 208" fill="none" aria-hidden="true"><polygon points="65.4,17.5 65.4,44.5 42.0,58.0 18.6,44.5 18.6,17.5 42.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,17.5 116.4,44.5 93.0,58.0 69.6,44.5 69.6,17.5 93.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,17.5 167.4,44.5 144.0,58.0 120.6,44.5 120.6,17.5 144.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="144" cy="31" r="8" fill="#cbffac"/><circle cx="144" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="218.4,17.5 218.4,44.5 195.0,58.0 171.6,44.5 171.6,17.5 195.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,17.5 269.4,44.5 246.0,58.0 222.6,44.5 222.6,17.5 246.0,4.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="246" cy="31" r="8" fill="#cbffac"/><circle cx="246" cy="31" r="13" fill="none" stroke="#b5ff8333"/><polygon points="320.4,17.5 320.4,44.5 297.0,58.0 273.6,44.5 273.6,17.5 297.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,17.5 371.4,44.5 348.0,58.0 324.6,44.5 324.6,17.5 348.0,4.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,61.5 90.9,88.5 67.5,102.0 44.1,88.5 44.1,61.5 67.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,61.5 141.9,88.5 118.5,102.0 95.1,88.5 95.1,61.5 118.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="192.9,61.5 192.9,88.5 169.5,102.0 146.1,88.5 146.1,61.5 169.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,61.5 243.9,88.5 220.5,102.0 197.1,88.5 197.1,61.5 220.5,48.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="220.5" cy="75" r="8" fill="#cbffac"/><circle cx="220.5" cy="75" r="13" fill="none" stroke="#b5ff8333"/><polygon points="294.9,61.5 294.9,88.5 271.5,102.0 248.1,88.5 248.1,61.5 271.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,61.5 345.9,88.5 322.5,102.0 299.1,88.5 299.1,61.5 322.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="396.9,61.5 396.9,88.5 373.5,102.0 350.1,88.5 350.1,61.5 373.5,48.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="65.4,105.5 65.4,132.5 42.0,146.0 18.6,132.5 18.6,105.5 42.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="116.4,105.5 116.4,132.5 93.0,146.0 69.6,132.5 69.6,105.5 93.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="167.4,105.5 167.4,132.5 144.0,146.0 120.6,132.5 120.6,105.5 144.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="218.4,105.5 218.4,132.5 195.0,146.0 171.6,132.5 171.6,105.5 195.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="269.4,105.5 269.4,132.5 246.0,146.0 222.6,132.5 222.6,105.5 246.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="320.4,105.5 320.4,132.5 297.0,146.0 273.6,132.5 273.6,105.5 297.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="371.4,105.5 371.4,132.5 348.0,146.0 324.6,132.5 324.6,105.5 348.0,92.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="90.9,149.5 90.9,176.5 67.5,190.0 44.1,176.5 44.1,149.5 67.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="141.9,149.5 141.9,176.5 118.5,190.0 95.1,176.5 95.1,149.5 118.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="118.5" cy="163" r="8" fill="#cbffac"/><circle cx="118.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="192.9,149.5 192.9,176.5 169.5,190.0 146.1,176.5 146.1,149.5 169.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="243.9,149.5 243.9,176.5 220.5,190.0 197.1,176.5 197.1,149.5 220.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="294.9,149.5 294.9,176.5 271.5,190.0 248.1,176.5 248.1,149.5 271.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/><polygon points="345.9,149.5 345.9,176.5 322.5,190.0 299.1,176.5 299.1,149.5 322.5,136.0" fill="#b5ff8326" stroke="#b5ff8399" stroke-width="1.5"/><circle cx="322.5" cy="163" r="8" fill="#cbffac"/><circle cx="322.5" cy="163" r="13" fill="none" stroke="#b5ff8333"/><polygon points="396.9,149.5 396.9,176.5 373.5,190.0 350.1,176.5 350.1,149.5 373.5,136.0" fill="#b7a6ee08" stroke="#aa95d52b" stroke-width="1.5"/></svg></div><div class="lc-builder-copy"><span class="lc-domain">LOLCHESS.GG</span><strong>추천 메타</strong></div><span class="lc-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><div class="lc-secondary"><a class="lc-link" href="https://lolchess.gg/builder" target="_blank" rel="noopener noreferrer" aria-label="덱 빌더 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/></svg></span><strong>덱 빌더</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a><a class="lc-link" href="https://lolchess.gg/decks?hl=ko" target="_blank" rel="noopener noreferrer" aria-label="덱 통계 · 새 창에서 열기"><span class="lc-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16v-5M12 16V5M18 16V8"/></svg></span><strong>덱 통계</strong><span class="lc-small-external"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M21 3 10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></span></a></div></div></section></section></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
+(function () {
+  "use strict";
+
+  const KEYS = {
+    cache: "edge-shared-state-v1",
+    pending: "edge-shared-pending-v1",
+    legacy: "edge-shared-legacy-v1",
+    imported: "edge-shared-imported-v1"
+  };
+  const POLL_MS = 1500;
+  const FRESH_MS = 6000;
+  const BATCH_SIZE = 50;
+  const MAX_BODY_BYTES = 120 * 1024;
+  const listeners = new Set();
+  let storageFailed = false;
+  let started = false;
+  let inFlight = false;
+  let timer = null;
+  let runAgain = false;
+  let contactedServer = false;
+  let lastSuccess = 0;
+  let lastError = "연결 대기";
+
+  function clone(value) { return JSON.parse(JSON.stringify(value)); }
+  function newId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    return "edge-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 14);
+  }
+  function readJSON(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch (_) { storageFailed = true; return fallback; }
+  }
+  function writeJSON(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); }
+    catch (_) { storageFailed = true; }
+  }
+  function validId(value) { return typeof value === "string" && value.length > 0 && value.length <= 80; }
+  function validDate(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value) || value.slice(0, 4) === "0000") return false;
+    const date = new Date(value + "T00:00:00Z");
+    return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  }
+  function validTime(value) { return value === "" || (typeof value === "string" && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value)); }
+  function taskItem(item, allowNewId) {
+    if (!item || typeof item.text !== "string") return null;
+    const text = item.text.trim().slice(0, 160);
+    if (!text || (!validId(item.id) && !allowNewId)) return null;
+    return { id: validId(item.id) ? item.id : newId(), text: text, done: item.done === true };
+  }
+  function eventItem(item, allowNewId) {
+    if (!item || typeof item.name !== "string") return null;
+    const name = item.name.trim().slice(0, 120);
+    const time = item.time || "";
+    if (!name || !validDate(item.date) || !validTime(time) || (!validId(item.id) && !allowNewId)) return null;
+    return { id: validId(item.id) ? item.id : newId(), name: name, date: item.date, time: time };
+  }
+  function normalizeList(items, normalizer) {
+    if (!Array.isArray(items)) return [];
+    const ids = new Set();
+    return items.map(item => normalizer(item, true)).filter(item => {
+      if (!item) return false;
+      if (ids.has(item.id)) item.id = newId();
+      ids.add(item.id);
+      return true;
+    });
+  }
+  function checkedState(value) {
+    if (!value || value.schema !== 1 || !validId(value.storeId) ||
+        !Number.isSafeInteger(value.revision) || value.revision < 0 ||
+        !Array.isArray(value.tasks) || !Array.isArray(value.events)) throw new Error("저장소 응답 오류");
+    const tasks = value.tasks.map(item => taskItem(item, false));
+    const events = value.events.map(item => eventItem(item, false));
+    const strictTask = (item, index) => item && item.text === value.tasks[index].text && typeof value.tasks[index].done === "boolean";
+    const strictEvent = (item, index) => item && item.name === value.events[index].name && item.time === (value.events[index].time || "");
+    if (!tasks.every(strictTask) || !events.every(strictEvent) ||
+        new Set(tasks.map(item => item.id)).size !== tasks.length ||
+        new Set(events.map(item => item.id)).size !== events.length) throw new Error("저장소 항목 오류");
+    return { schema: 1, storeId: value.storeId, revision: value.revision, tasks: tasks, events: events };
+  }
+  function checkedOperation(op) {
+    if (!op || !validId(op.opId)) return null;
+    if (op.kind === "task.add") {
+      const item = taskItem(op.item, false);
+      return item ? { opId: op.opId, kind: op.kind, item: item } : null;
+    }
+    if (op.kind === "event.add") {
+      const item = eventItem(op.item, false);
+      return item ? { opId: op.opId, kind: op.kind, item: item } : null;
+    }
+    if (op.kind === "task.set" && validId(op.id) && typeof op.done === "boolean") return { opId: op.opId, kind: op.kind, id: op.id, done: op.done };
+    if ((op.kind === "task.remove" || op.kind === "event.remove") && validId(op.id)) return { opId: op.opId, kind: op.kind, id: op.id };
+    if (op.kind === "import" && Array.isArray(op.tasks) && Array.isArray(op.events)) {
+      const tasks = op.tasks.map(item => taskItem(item, false));
+      const events = op.events.map(item => eventItem(item, false));
+      if (tasks.every(Boolean) && events.every(Boolean)) return { opId: op.opId, kind: op.kind, tasks: tasks, events: events };
+    }
+    return null;
+  }
+
+  let base = null;
+  const cached = readJSON(KEYS.cache, null);
+  if (cached) { try { base = checkedState(cached); } catch (_) { storageFailed = true; } }
+  const savedLegacy = readJSON(KEYS.legacy, null);
+  const legacy = {
+    tasks: normalizeList(savedLegacy ? savedLegacy.tasks : readJSON("edge-tasks", []), taskItem),
+    events: normalizeList(savedLegacy ? savedLegacy.events : readJSON("edge-events", []), eventItem)
+  };
+  // Keep the migration source separate from the evolving cache, so deleted rows are not re-imported.
+  writeJSON(KEYS.legacy, legacy);
+  let imported = readJSON(KEYS.imported, {});
+  if (!imported || typeof imported !== "object" || Array.isArray(imported)) imported = {};
+  const savedPending = readJSON(KEYS.pending, []);
+  let pending = Array.isArray(savedPending) ? savedPending.map(checkedOperation).filter(Boolean) : [];
+  if (!Array.isArray(savedPending) || pending.length !== savedPending.length) storageFailed = true;
+  pending = pending.filter((op, index, all) => all.findIndex(item => item.opId === op.opId) === index);
+  let view = { tasks: [], events: [] };
+  let viewSignature = "";
+
+  const taskContent = item => item.text;
+  const eventContent = item => JSON.stringify([item.name, item.date, item.time || ""]);
+  function addUnique(items, item, content) {
+    if (!items.some(existing => existing.id === item.id || (content && content(existing) === content(item)))) items.push(clone(item));
+  }
+  function optimisticView() {
+    const result = base ? { tasks: clone(base.tasks), events: clone(base.events) } : clone(legacy);
+    pending.forEach(op => {
+      if (op.kind === "import") {
+        op.tasks.forEach(item => addUnique(result.tasks, item, taskContent));
+        op.events.forEach(item => addUnique(result.events, item, eventContent));
+      } else if (op.kind === "task.add") addUnique(result.tasks, op.item);
+      else if (op.kind === "event.add") addUnique(result.events, op.item);
+      else if (op.kind === "task.set") {
+        const item = result.tasks.find(task => task.id === op.id);
+        if (item) item.done = op.done;
+      } else if (op.kind === "task.remove") result.tasks = result.tasks.filter(item => item.id !== op.id);
+      else if (op.kind === "event.remove") result.events = result.events.filter(item => item.id !== op.id);
+    });
+    return result;
+  }
+  function paintStatus() {
+    const badge = document.getElementById("shared-status");
+    if (!badge) return;
+    const connected = contactedServer && !storageFailed && !lastError && pending.length === 0 && Date.now() - lastSuccess <= FRESH_MS;
+    const reason = storageFailed ? "브라우저 저장을 사용할 수 없음" : pending.length ? "변경 사항 전송 대기" : lastError || "연결 확인 대기";
+    const label = "위젯 자동 동기화 · " + (connected ? "연결됨" : reason);
+    badge.dataset.state = connected ? "connected" : "disconnected";
+    if (badge.getAttribute("aria-label") !== label) {
+      badge.setAttribute("aria-label", label);
+      badge.title = label;
+    }
+  }
+  function publish() {
+    const next = optimisticView();
+    const signature = JSON.stringify(next);
+    if (signature !== viewSignature) {
+      view = next;
+      viewSignature = signature;
+      writeJSON("edge-tasks", view.tasks);
+      writeJSON("edge-events", view.events);
+      listeners.forEach(listener => { try { listener(); } catch (error) { console.error(error); } });
+    }
+    paintStatus();
+  }
+  function persistPending() { writeJSON(KEYS.pending, pending); }
+  function legacyImportOperations() {
+    const operations = [];
+    const chunkSize = 50;
+    for (let offset = 0; offset < Math.max(legacy.tasks.length, legacy.events.length); offset += chunkSize) {
+      operations.push({
+        opId: newId(), kind: "import",
+        tasks: clone(legacy.tasks.slice(offset, offset + chunkSize)),
+        events: clone(legacy.events.slice(offset, offset + chunkSize))
+      });
+    }
+    return operations;
+  }
+  function nextBatch() {
+    const batch = [];
+    for (const op of pending.slice(0, BATCH_SIZE)) {
+      const candidate = batch.concat(op);
+      const bytes = new TextEncoder().encode(JSON.stringify({ operations: candidate })).length;
+      if (bytes > MAX_BODY_BYTES) break;
+      batch.push(clone(op));
+    }
+    if (!batch.length && pending.length) throw new Error("전송 항목 크기 오류");
+    return batch;
+  }
+  function remapPending(state) {
+    // An import may meet an existing row with the same content and a different server ID.
+    const knownTasks = [...legacy.tasks];
+    const knownEvents = [...legacy.events];
+    pending.forEach(op => {
+      if (op.kind === "import") { knownTasks.push(...op.tasks); knownEvents.push(...op.events); }
+    });
+    const taskIds = new Map();
+    const eventIds = new Map();
+    knownTasks.forEach(item => {
+      const match = state.tasks.find(serverItem => serverItem.id === item.id) || state.tasks.find(serverItem => taskContent(serverItem) === taskContent(item));
+      if (match) taskIds.set(item.id, match.id);
+    });
+    knownEvents.forEach(item => {
+      const match = state.events.find(serverItem => serverItem.id === item.id) || state.events.find(serverItem => eventContent(serverItem) === eventContent(item));
+      if (match) eventIds.set(item.id, match.id);
+    });
+    pending.forEach(op => {
+      if (op.kind === "task.set" || op.kind === "task.remove") op.id = taskIds.get(op.id) || op.id;
+      else if (op.kind === "event.remove") op.id = eventIds.get(op.id) || op.id;
+      else if (op.kind === "task.add") op.item.id = taskIds.get(op.item.id) || op.item.id;
+      else if (op.kind === "event.add") op.item.id = eventIds.get(op.item.id) || op.item.id;
+      else if (op.kind === "import") {
+        op.tasks.forEach(item => { item.id = taskIds.get(item.id) || item.id; });
+        op.events.forEach(item => { item.id = eventIds.get(item.id) || item.id; });
+      }
+    });
+    persistPending();
+  }
+  function acceptState(state) {
+    if (base && base.storeId === state.storeId && state.revision < base.revision) throw new Error("저장소 응답 순서 오류");
+    remapPending(state);
+    base = state;
+    writeJSON(KEYS.cache, base);
+    if (!imported[state.storeId] && !pending.some(op => op.kind === "import")) {
+      if (legacy.tasks.length || legacy.events.length) {
+        // Import before offline edits: removing a legacy row must stay removed after migration.
+        pending.unshift(...legacyImportOperations());
+        remapPending(state);
+      } else {
+        imported[state.storeId] = true;
+        writeJSON(KEYS.imported, imported);
+      }
+    }
+    contactedServer = true;
+    lastSuccess = Date.now();
+    lastError = "";
+    publish();
+  }
+  function listName(key) { return key === "edge-tasks" ? "tasks" : key === "edge-events" ? "events" : null; }
+  function getList(key) { const name = listName(key); return name ? clone(view[name]) : []; }
+  function setList(key, items) {
+    const name = listName(key);
+    if (!name || !Array.isArray(items)) return;
+    const next = normalizeList(items, name === "tasks" ? taskItem : eventItem);
+    const current = view[name];
+    const operations = [];
+    current.forEach(item => {
+      if (!next.some(candidate => candidate.id === item.id)) operations.push({ opId: newId(), kind: name === "tasks" ? "task.remove" : "event.remove", id: item.id });
+    });
+    next.forEach(item => {
+      const previous = current.find(candidate => candidate.id === item.id);
+      if (!previous) operations.push({ opId: newId(), kind: name === "tasks" ? "task.add" : "event.add", item: item });
+      else if (name === "tasks" && previous.done !== item.done) operations.push({ opId: newId(), kind: "task.set", id: item.id, done: item.done });
+    });
+    if (!operations.length) return;
+    pending.push(...operations);
+    persistPending();
+    publish();
+    schedule(0);
+  }
+
+  const host = window.location.hostname;
+  const loopback = (host === "127.0.0.1" || host === "localhost") && window.location.port === "47831";
+  const endpoint = loopback ? new URL("/dashboard", window.location.origin).href : "http://127.0.0.1:47831/dashboard";
+  async function request(batch) {
+    const abort = new AbortController();
+    const timeout = setTimeout(() => abort.abort(), 3000);
+    try {
+      const options = { method: batch ? "POST" : "GET", credentials: "omit", cache: "no-store", signal: abort.signal };
+      if (batch) {
+        options.headers = { "Content-Type": "application/json", "X-Edge-Request": "1" };
+        options.body = JSON.stringify({ operations: batch });
+      }
+      const response = await fetch(endpoint, options);
+      if (!response.ok) {
+        let detail = "";
+        try { detail = String((await response.json()).error || ""); } catch (_) {}
+        throw new Error("연동 프로그램 연결 오류 " + response.status + (detail ? " · " + detail : ""));
+      }
+      return checkedState(await response.json());
+    } finally { clearTimeout(timeout); }
+  }
+  function schedule(delay) {
+    if (!started) return;
+    if (inFlight) { runAgain = true; return; }
+    clearTimeout(timer);
+    timer = setTimeout(syncOnce, delay);
+  }
+  async function syncOnce() {
+    if (!started || inFlight) return;
+    inFlight = true;
+    runAgain = false;
+    try {
+      const batch = contactedServer && pending.length ? nextBatch() : null;
+      const state = await request(batch);
+      if (base && base.storeId === state.storeId && state.revision < base.revision) throw new Error("저장소 응답 순서 오류");
+      if (batch) {
+        // A successful POST acknowledges this batch only; newer edits remain durable and optimistic.
+        const acknowledged = new Set(batch.map(op => op.opId));
+        pending = pending.filter(op => !acknowledged.has(op.opId));
+        persistPending();
+        if (batch.some(op => op.kind === "import") && !pending.some(op => op.kind === "import")) {
+          imported[state.storeId] = true;
+          writeJSON(KEYS.imported, imported);
+        }
+      }
+      acceptState(state);
+    } catch (error) {
+      if (lastError !== (error && error.message)) console.warn("Edge Desk 동기화:", error && error.message);
+      contactedServer = false;
+      lastError = error && error.name === "AbortError" ? "연결 확인 대기" : error && error.message || "연동 프로그램 연결 안 됨";
+      paintStatus();
+    } finally {
+      inFlight = false;
+      schedule(runAgain || (contactedServer && pending.length) ? 0 : POLL_MS);
+    }
+  }
+  function start() {
+    if (started) return;
+    started = true;
+    if (new URLSearchParams(window.location.search).get("mode") === "edge") document.documentElement.dataset.mode = "edge";
+    publish();
+    setInterval(paintStatus, 1000);
+    window.addEventListener("online", () => schedule(0));
+    window.addEventListener("focus", () => schedule(0));
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) schedule(0); });
+    schedule(0);
+  }
+  publish();
+  window.EdgeShared = {
+    getList: getList,
+    setList: setList,
+    subscribe: function (listener) { listeners.add(listener); return () => listeners.delete(listener); },
+    start: start
+  };
+}());
+
+</script>
+<script>
 const TZ="America/Edmonton",WEATHER_URL="https://api.open-meteo.com/v1/forecast?latitude=53.5461&longitude=-113.4938&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=America%2FEdmonton&forecast_days=1";
-function readList(key){try{const value=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(value)?value:[]}catch{return []}}function saveList(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function readList(key){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events"))return window.EdgeShared.getList(key);try{const value=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(value))return [];let changed=false;value.forEach(item=>{if(item&&!item.id){item.id="edge-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,14);changed=true}});if(changed)saveList(key,value);return value}catch{return []}}function saveList(key,value){if(window.EdgeShared&&(key==="edge-tasks"||key==="edge-events")){window.EdgeShared.setList(key,value);return}try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
 function showToast(message){const t=document.getElementById("toast");t.textContent=message;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),1500)}
 function updateClock(){const now=new Date();document.getElementById("clock").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:true}).format(now);document.getElementById("date").textContent=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,month:"short",day:"numeric"}).format(now)}
 function weatherText(code){if(code===0)return["맑음","☀️"];if(code<=3)return["구름 조금","🌤️"];if(code===45||code===48)return["안개","🌫️"];if(code<60)return["이슬비","🌦️"];if(code<70)return["비","🌧️"];if(code<80)return["눈","❄️"];if(code<90)return["소나기","🌦️"];return["뇌우","⛈️"]}
 async function loadWeather(){try{const response=await fetch(WEATHER_URL,{cache:"no-store"});if(!response.ok)throw Error();const data=await response.json(),summary=weatherText(data.current.weather_code);document.getElementById("temperature").textContent=Math.round(data.current.temperature_2m);document.getElementById("condition").textContent=summary[0];document.getElementById("weather-icon").textContent=summary[1]}catch{document.getElementById("condition").textContent="날씨 연결 대기"}}
 document.getElementById("refresh-weather").addEventListener("click",loadWeather);const NOW_PLAYING_URL="http://127.0.0.1:47831/now-playing";const musicPanel=document.getElementById("now-playing-card");function renderNowPlaying(data){const connection=document.getElementById("music-connection"),state=document.getElementById("music-state");connection.classList.toggle("online",Boolean(data.bridge));connection.textContent=data.bridge?"PC 연결됨":"연결 끊김";musicPanel.classList.toggle("is-playing",Boolean(data.playing));if(!data.available){state.textContent=data.bridge?"재생 중인 미디어 없음":"";state.hidden=!data.bridge;document.getElementById("music-title").textContent=data.bridge?"재생 중인 음악이 없습니다":"PC 재생 정보 연결 대기";document.getElementById("music-artist").textContent=data.bridge?"음악을 재생하면 여기에 표시됩니다":"Xenon Edge 로컬 브리지 필요";return}state.hidden=false;state.textContent=data.playing?"지금 재생 중":data.status==="Paused"?"일시정지":"재생 상태";document.getElementById("music-title").textContent=data.title||"제목 정보 없음";document.getElementById("music-artist").textContent=data.artist||data.album||"아티스트 정보 없음";}async function refreshNowPlaying(){try{const response=await fetch(NOW_PLAYING_URL,{cache:"no-store"});if(!response.ok)throw Error();renderNowPlaying(await response.json())}catch{renderNowPlaying({bridge:false,available:false,playing:false})}}refreshNowPlaying();setInterval(refreshNowPlaying,3000);
 document.getElementById("page-tabs").addEventListener("click",event=>{const button=event.target.closest(".page-tab");if(!button)return;document.querySelectorAll(".page-tab").forEach(tab=>tab.classList.toggle("active",tab===button));document.querySelectorAll(".page-view").forEach(view=>view.classList.toggle("active",Number(view.dataset.view)===Number(button.dataset.page)))});
-function renderTasks(){const box=document.getElementById("task-list");box.replaceChildren();const all=readList("edge-tasks"),done=all.filter(item=>item.done).length,total=all.length,percent=total?Math.round(done/total*100):0;document.getElementById("task-count").textContent=done+" / "+total;const fill=document.getElementById("task-progress-fill");fill.style.width=percent+"%";fill.setAttribute("aria-valuenow",String(percent));if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="할 일을 추가해 보세요";box.append(empty);return}const toggle=index=>{const list=readList("edge-tasks"),completing=!list[index].done;list[index].done=completing;saveList("edge-tasks",list);renderTasks()};all.forEach((task,index)=>{const row=document.createElement("div");row.className="task-row"+(task.done?" done":"");row.setAttribute("role","button");row.setAttribute("tabindex","0");row.setAttribute("aria-label",task.text+(task.done?" 완료됨":" 미완료"));row.onclick=event=>{if(!event.target.closest(".remove-btn"))toggle(index)};row.onkeydown=event=>{if((event.key==="Enter"||event.key===" ")&&event.target===row){event.preventDefault();toggle(index)}};const check=document.createElement("button");check.className="task-toggle"+(task.done?" is-done":"");check.type="button";check.textContent=task.done?"✓":"";check.setAttribute("aria-label",task.done?task.text+" 완료 해제":task.text+" 완료 표시");check.onclick=event=>{event.stopPropagation();toggle(index)};const text=document.createElement("span");text.className="task-text";text.textContent=task.text;const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",task.text+" 삭제");remove.onclick=event=>{event.stopPropagation();const list=readList("edge-tasks");list.splice(index,1);saveList("edge-tasks",list);renderTasks()};row.append(check,text,remove);box.append(row)})}
+function renderTasks(){const box=document.getElementById("task-list");box.replaceChildren();const all=readList("edge-tasks"),done=all.filter(item=>item.done).length,total=all.length,percent=total?Math.round(done/total*100):0;document.getElementById("task-count").textContent=done+" / "+total;const fill=document.getElementById("task-progress-fill");fill.style.width=percent+"%";fill.setAttribute("aria-valuenow",String(percent));if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="할 일을 추가해 보세요";box.append(empty);return}const toggle=id=>{const list=readList("edge-tasks"),item=list.find(entry=>entry.id===id);if(!item)return;item.done=!item.done;saveList("edge-tasks",list);renderTasks()};all.forEach(task=>{const row=document.createElement("div");row.className="task-row"+(task.done?" done":"");row.setAttribute("role","button");row.setAttribute("tabindex","0");row.setAttribute("aria-label",task.text+(task.done?" 완료됨":" 미완료"));row.onclick=event=>{if(!event.target.closest(".remove-btn"))toggle(task.id)};row.onkeydown=event=>{if((event.key==="Enter"||event.key===" ")&&event.target===row){event.preventDefault();toggle(task.id)}};const check=document.createElement("button");check.className="task-toggle"+(task.done?" is-done":"");check.type="button";check.textContent=task.done?"✓":"";check.setAttribute("aria-label",task.done?task.text+" 완료 해제":task.text+" 완료 표시");check.onclick=event=>{event.stopPropagation();toggle(task.id)};const text=document.createElement("span");text.className="task-text";text.textContent=task.text;const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",task.text+" 삭제");remove.onclick=event=>{event.stopPropagation();const list=readList("edge-tasks").filter(entry=>entry.id!==task.id);saveList("edge-tasks",list);renderTasks()};row.append(check,text,remove);box.append(row)})}
 document.getElementById("task-form").addEventListener("submit",event=>{event.preventDefault();const input=document.getElementById("task-input"),text=input.value.trim();if(!text)return;const list=readList("edge-tasks");list.push({text,done:false});saveList("edge-tasks",list);input.value="";renderTasks()});
 let seconds=1500,totalSeconds=1500,interval=null;function paintTimer(){const m=Math.floor(seconds/60),s=seconds%60;document.getElementById("timer-display").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");document.getElementById("timer-progress").style.width=(totalSeconds?seconds/totalSeconds*100:0)+"%"}function stopTimer(){clearInterval(interval);interval=null;document.getElementById("timer-start").textContent="시작"}document.getElementById("timer-start").onclick=()=>{if(interval){stopTimer();return}document.getElementById("timer-start").textContent="일시정지";interval=setInterval(()=>{seconds=Math.max(0,seconds-1);paintTimer();if(seconds===0){stopTimer();showToast("집중 시간이 끝났어요")}},1000)};const timerCustomInput=document.getElementById("timer-custom-minutes");document.getElementById("timer-reset").onclick=()=>{stopTimer();seconds=totalSeconds=1500;timerCustomInput.value="25";document.getElementById("timer-caption").textContent="FOCUS TIME";paintTimer()};document.querySelectorAll(".preset").forEach(button=>button.onclick=()=>{stopTimer();const minutes=Number(button.dataset.min);totalSeconds=seconds=minutes*60;timerCustomInput.value=String(minutes);document.getElementById("timer-caption").textContent=minutes===5?"SHORT BREAK":"FOCUS TIME";paintTimer()});document.getElementById("timer-custom-form").addEventListener("submit",event=>{event.preventDefault();const minutes=Math.floor(Number(timerCustomInput.value));if(!Number.isFinite(minutes)||minutes<1||minutes>180){showToast("1분에서 180분 사이로 설정해 주세요");return}stopTimer();totalSeconds=seconds=minutes*60;timerCustomInput.value=String(minutes);document.getElementById("timer-caption").textContent="CUSTOM FOCUS";paintTimer();showToast(minutes+"분 타이머로 설정했어요")});
-function renderEvents(){const box=document.getElementById("event-list");box.replaceChildren();const today=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date()),todayUTC=Date.parse(today+"T00:00:00Z"),all=readList("edge-events").map(item=>({...item,time:item.time||""}));const getDiff=item=>Math.round((Date.parse(item.date+"T00:00:00Z")-todayUTC)/86400000);all.sort((a,b)=>{const da=getDiff(a),db=getDiff(b);if((da>=0)!==(db>=0))return da>=0?-1:1;return a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")});document.getElementById("event-count").textContent=all.length+" 일정";if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="＋ 버튼으로 일정을 추가해 보세요";box.append(empty);return}all.forEach((item,index)=>{const diff=getDiff(item),date=new Date(item.date+"T00:00:00Z"),month=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric"}).format(date)+"월",day=new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",day:"2-digit"}).format(date),row=document.createElement("div");row.className="event-card "+(index===0?"featured":"compact")+(diff<0?" past":"");const dateText=item.date.split("-").join(".");const dateTag=document.createElement("div");dateTag.className="event-date";const dayNumber=document.createElement("strong");dayNumber.textContent=day;const monthLabel=document.createElement("span");monthLabel.textContent=month;dateTag.append(dayNumber,monthLabel);const info=document.createElement("div");const name=document.createElement("div");name.className="event-name";name.textContent=item.name;const fullDate=document.createElement("div");fullDate.className="event-full-date";fullDate.textContent=dateText+(index===0?"":" · "+(item.time||"시간 미정"));info.append(name);if(index===0){const time=document.createElement("div");time.className="event-time";time.textContent=item.time||"시간 미정";info.append(time,fullDate)}else info.append(fullDate);const badge=document.createElement("span");badge.className="dday-badge";badge.textContent=diff===0?"D-DAY":diff>0?"D-"+diff:"D+"+Math.abs(diff);const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",item.name+" 삭제");remove.onclick=()=>{const items=readList("edge-events"),removeIndex=items.findIndex(entry=>entry.name===item.name&&entry.date===item.date&&(entry.time||"")===(item.time||""));if(removeIndex>=0)items.splice(removeIndex,1);saveList("edge-events",items);renderEvents()};if(index===0)row.append(dateTag,info,badge,remove);else{const accent=document.createElement("i");accent.className="event-accent";row.append(accent,info,badge,remove)}box.append(row)})}
+function renderEvents(){const box=document.getElementById("event-list");box.replaceChildren();const today=new Intl.DateTimeFormat("en-CA",{timeZone:TZ}).format(new Date()),todayUTC=Date.parse(today+"T00:00:00Z"),all=readList("edge-events").map(item=>({...item,time:item.time||""}));const getDiff=item=>Math.round((Date.parse(item.date+"T00:00:00Z")-todayUTC)/86400000);all.sort((a,b)=>{const da=getDiff(a),db=getDiff(b);if((da>=0)!==(db>=0))return da>=0?-1:1;return a.date.localeCompare(b.date)||(a.time||"").localeCompare(b.time||"")});document.getElementById("event-count").textContent=all.length+" 일정";if(!all.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="＋ 버튼으로 일정을 추가해 보세요";box.append(empty);return}all.forEach((item,index)=>{const diff=getDiff(item),date=new Date(item.date+"T00:00:00Z"),month=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric"}).format(date),day=new Intl.DateTimeFormat("en-CA",{timeZone:"UTC",day:"2-digit"}).format(date),row=document.createElement("div");row.className="event-card "+(index===0?"featured":"compact")+(diff<0?" past":"");const dateText=item.date.split("-").join(".");const dateTag=document.createElement("div");dateTag.className="event-date";const dayNumber=document.createElement("strong");dayNumber.textContent=day;const monthLabel=document.createElement("span");monthLabel.textContent=month;dateTag.append(dayNumber,monthLabel);const info=document.createElement("div");const name=document.createElement("div");name.className="event-name";name.textContent=item.name;const fullDate=document.createElement("div");fullDate.className="event-full-date";fullDate.textContent=dateText+(index===0?"":" · "+(item.time||"시간 미정"));info.append(name);if(index===0){const time=document.createElement("div");time.className="event-time";time.textContent=item.time||"시간 미정";info.append(time,fullDate)}else info.append(fullDate);const badge=document.createElement("span");badge.className="dday-badge";badge.textContent=diff===0?"D-DAY":diff>0?"D-"+diff:"D+"+Math.abs(diff);const remove=document.createElement("button");remove.className="remove-btn";remove.type="button";remove.textContent="×";remove.setAttribute("aria-label",item.name+" 삭제");remove.onclick=()=>{const items=readList("edge-events"),removeIndex=items.findIndex(entry=>entry.id===item.id);if(removeIndex>=0)items.splice(removeIndex,1);saveList("edge-events",items);renderEvents()};if(index===0)row.append(dateTag,info,badge,remove);else{const accent=document.createElement("i");accent.className="event-accent";row.append(accent,info,badge,remove)}box.append(row)})}
 document.getElementById("event-add-toggle").addEventListener("click",()=>{const popover=document.getElementById("event-add-popover");popover.hidden=!popover.hidden;if(!popover.hidden)document.getElementById("event-name").focus()});document.addEventListener("click",event=>{const popover=document.getElementById("event-add-popover"),button=document.getElementById("event-add-toggle");if(!popover.hidden&&!popover.contains(event.target)&&!button.contains(event.target))popover.hidden=true});document.getElementById("event-form").addEventListener("submit",event=>{event.preventDefault();const name=document.getElementById("event-name"),date=document.getElementById("event-date"),time=document.getElementById("event-time");if(!name.value.trim()||!date.value)return;const list=readList("edge-events");list.push({name:name.value.trim(),date:date.value,time:time.value});saveList("edge-events",list);name.value="";date.value="";time.value="09:00";document.getElementById("event-add-popover").hidden=true;renderEvents()});
-let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",year:"numeric",month:"long"});function holidayDateKey(year,month,day){return year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0")}async function loadHolidayYear(year){if(holidayDataByYear[year])return holidayDataByYear[year];try{const [caResponse,krResponse]=await Promise.all([fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/CA",{cache:"force-cache"}),fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/KR",{cache:"force-cache"})]);if(!caResponse.ok||!krResponse.ok)throw Error();const [caRecords,krRecords]=await Promise.all([caResponse.json(),krResponse.json()]);holidayDataByYear[year]=[...caRecords.filter(item=>item.global||(item.counties||[]).includes("CA-AB")).map(item=>({...item,region:"CA"})),...krRecords.map(item=>({...item,region:"KR"}))];return holidayDataByYear[year]}catch{return []}}function renderHolidayCalendar(){const year=holidayView.getFullYear(),month=holidayView.getMonth(),firstDay=new Date(Date.UTC(year,month,1)).getUTCDay(),daysInMonth=new Date(Date.UTC(year,month+1,0)).getUTCDate(),calendar=document.getElementById("holiday-calendar"),heading=document.getElementById("holiday-month");heading.textContent=holidayMonthFormatter.format(new Date(Date.UTC(year,month,1)));calendar.replaceChildren();["일","월","화","수","목","금","토"].forEach(label=>{const cell=document.createElement("div");cell.className="holiday-weekday";cell.textContent=label;calendar.append(cell)});const holidays=holidayDataByYear[year]||[],holidayByDate=new Map(holidays.map(item=>[item.date,item]));const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());for(let index=0;index<42;index++){const day=index-firstDay+1,cell=document.createElement("div"),date=new Date(Date.UTC(year,month,day)),key=holidayDateKey(year,month,day),holiday=holidayByDate.get(key);cell.className="holiday-day"+(day<1||day>daysInMonth?" outside":"")+(key===todayKey?" today":"")+(holiday?" is-holiday":"");cell.textContent=String(date.getUTCDate());if(holiday)cell.title=holiday.localName||holiday.name;calendar.append(cell)}const list=document.getElementById("holiday-list");list.replaceChildren();const monthHolidays=holidays.filter(item=>item.date.startsWith(holidayDateKey(year,month,1).slice(0,7))).sort((a,b)=>a.date.localeCompare(b.date));if(!monthHolidays.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="이번 달에는 표시할 공휴일이 없어요";list.append(empty);return}monthHolidays.forEach(item=>{const row=document.createElement("div"),date=document.createElement("span"),name=document.createElement("span");row.className="holiday-item";date.className="holiday-item-date";date.textContent=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric",day:"numeric"}).format(new Date(item.date+"T00:00:00Z"));name.className="holiday-item-name";name.textContent=item.localName||item.name;row.append(date,name);list.append(row)})}document.getElementById("holiday-prev").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()-1,1);renderHolidayCalendar()});document.getElementById("holiday-next").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()+1,1);renderHolidayCalendar()});updateClock();setInterval(updateClock,30000);loadWeather();setInterval(loadWeather,900000);renderHolidayCalendar();loadHolidayYear(holidayView.getFullYear()).then(renderHolidayCalendar);renderTasks();renderEvents();paintTimer();
+let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",year:"numeric",month:"long"});function holidayDateKey(year,month,day){return year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0")}async function loadHolidayYear(year){if(holidayDataByYear[year])return holidayDataByYear[year];try{const [caResponse,krResponse]=await Promise.all([fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/CA",{cache:"force-cache"}),fetch("https://date.nager.at/api/v3/PublicHolidays/"+year+"/KR",{cache:"force-cache"})]);if(!caResponse.ok||!krResponse.ok)throw Error();const [caRecords,krRecords]=await Promise.all([caResponse.json(),krResponse.json()]);holidayDataByYear[year]=[...caRecords.filter(item=>item.global||(item.counties||[]).includes("CA-AB")).map(item=>({...item,region:"CA"})),...krRecords.map(item=>({...item,region:"KR"}))];return holidayDataByYear[year]}catch{return []}}function renderHolidayCalendar(){const year=holidayView.getFullYear(),month=holidayView.getMonth(),firstDay=new Date(Date.UTC(year,month,1)).getUTCDay(),daysInMonth=new Date(Date.UTC(year,month+1,0)).getUTCDate(),calendar=document.getElementById("holiday-calendar"),heading=document.getElementById("holiday-month");heading.textContent=holidayMonthFormatter.format(new Date(Date.UTC(year,month,1)));calendar.replaceChildren();["일","월","화","수","목","금","토"].forEach(label=>{const cell=document.createElement("div");cell.className="holiday-weekday";cell.textContent=label;calendar.append(cell)});const holidays=holidayDataByYear[year]||[],holidayByDate=new Map(holidays.map(item=>[item.date,item]));const todayKey=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());for(let index=0;index<42;index++){const day=index-firstDay+1,cell=document.createElement("div"),date=new Date(Date.UTC(year,month,day)),key=holidayDateKey(year,month,day),holiday=holidayByDate.get(key);cell.className="holiday-day"+(day<1||day>daysInMonth?" outside":"")+(key===todayKey?" today":"")+(holiday?" is-holiday":"");cell.textContent=String(date.getUTCDate());if(holiday)cell.title=holiday.localName||holiday.name;calendar.append(cell)}const list=document.getElementById("holiday-list");list.replaceChildren();const monthHolidays=holidays.filter(item=>item.date.startsWith(holidayDateKey(year,month,1).slice(0,7))).sort((a,b)=>a.date.localeCompare(b.date));if(!monthHolidays.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="이번 달에는 표시할 공휴일이 없어요";list.append(empty);return}monthHolidays.forEach(item=>{const row=document.createElement("div"),date=document.createElement("span"),name=document.createElement("span");row.className="holiday-item";date.className="holiday-item-date";date.textContent=new Intl.DateTimeFormat("ko-KR",{timeZone:"UTC",month:"numeric",day:"numeric"}).format(new Date(item.date+"T00:00:00Z"));name.className="holiday-item-name";name.textContent=item.localName||item.name;row.append(date,name);list.append(row)})}document.getElementById("holiday-prev").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()-1,1);renderHolidayCalendar()});document.getElementById("holiday-next").addEventListener("click",()=>{holidayView=new Date(holidayView.getFullYear(),holidayView.getMonth()+1,1);renderHolidayCalendar()});updateClock();setInterval(updateClock,30000);loadWeather();setInterval(loadWeather,900000);renderHolidayCalendar();loadHolidayYear(holidayView.getFullYear()).then(renderHolidayCalendar);renderTasks();renderEvents();paintTimer();if(window.EdgeShared){window.EdgeShared.subscribe(()=>{renderTasks();renderEvents()});window.EdgeShared.start();}
 
 (()=>{const memo=document.getElementById("work-memo"),status=document.getElementById("work-note-status");try{memo.value=localStorage.getItem("edge-work-memo")||""}catch{status.textContent="자동 저장을 사용할 수 없어요"}const save=()=>{try{localStorage.setItem("edge-work-memo",memo.value);status.textContent="저장됨";return true}catch{status.textContent="저장하지 못했어요";return false}};memo.addEventListener("input",save);document.getElementById("work-note-save").addEventListener("click",()=>showToast(save()?"메모를 저장했어요":"브라우저 저장 공간을 확인해 주세요"));document.getElementById("work-note-clear").addEventListener("click",()=>{if(memo.value&&!confirm("메모 내용을 모두 비울까요?"))return;memo.value="";save();memo.focus()})})();
 (()=>{
@@ -340,5 +694,5 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   paint();
 })();(()=>{const panel=document.getElementById('work-countdown-panel');if(!panel)return;const key='edge-work-countdown',display=document.getElementById('wc-display'),nameText=document.getElementById('wc-name'),status=document.getElementById('wc-status'),targetText=document.getElementById('wc-target'),fill=document.getElementById('wc-fill'),edit=document.getElementById('wc-edit'),popover=document.getElementById('wc-popover'),nameInput=document.getElementById('wc-name-input'),dateInput=document.getElementById('wc-date-input');let state=null;const toast=message=>{if(typeof showToast==='function')showToast(message)};try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&typeof saved.target==='number'&&Number.isFinite(saved.target)&&saved.target>0&&!Number.isNaN(new Date(saved.target).getTime())){state={name:typeof saved.name==='string'?saved.name.slice(0,60):'다음 일정',target:saved.target,createdAt:typeof saved.createdAt==='number'&&Number.isFinite(saved.createdAt)&&saved.createdAt<saved.target?saved.createdAt:saved.target-60000,notified:saved.notified===true}}}catch{}function persist(){try{if(state)localStorage.setItem(key,JSON.stringify(state));else localStorage.removeItem(key);return true}catch{toast('이 브라우저에서는 카운트다운을 저장할 수 없어요');return false}}function pad(value){return String(value).padStart(2,'0')}function inputDate(target){const date=new Date(target);return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate())+'T'+pad(date.getHours())+':'+pad(date.getMinutes())}const dateFormatter=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'}),timeFormatter=new Intl.DateTimeFormat('en-US',{hour:'numeric',minute:'2-digit',hour12:true});function paint(){if(!state){nameText.textContent='다음 일정';nameText.title='';display.textContent='00:00:00';display.classList.remove('wc-long');status.textContent='일정 미설정';targetText.textContent='—';fill.style.width='0%';panel.classList.remove('wc-ended');return}const remaining=Math.max(0,state.target-Date.now()),seconds=Math.ceil(remaining/1000),hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60),secs=seconds%60;nameText.textContent=state.name||'다음 일정';nameText.title=state.name||'다음 일정';display.textContent=pad(hours)+':'+pad(minutes)+':'+pad(secs);display.classList.toggle('wc-long',hours>99);status.textContent=remaining>0?'일정까지 남은 시간':'카운트다운 종료';targetText.textContent=dateFormatter.format(new Date(state.target))+' · '+timeFormatter.format(new Date(state.target));fill.style.width=(Math.min(100,Math.max(0,remaining/Math.max(1,state.target-state.createdAt)*100)))+'%';panel.classList.toggle('wc-ended',remaining===0);if(remaining===0&&!state.notified){state.notified=true;persist();toast((state.name||'일정')+' 카운트다운이 끝났어요')}}function closeSettings(){popover.hidden=true;edit.setAttribute('aria-expanded','false')}edit.addEventListener('click',()=>{if(!popover.hidden){closeSettings();return}nameInput.value=state?state.name:'';dateInput.value=inputDate(state&&state.target>Date.now()?state.target:Date.now()+1800000);popover.hidden=false;edit.setAttribute('aria-expanded','true');nameInput.focus()});document.getElementById('wc-cancel').addEventListener('click',()=>{closeSettings();edit.focus()});panel.addEventListener('keydown',event=>{if(event.key==='Escape'&&!popover.hidden){closeSettings();edit.focus()}});document.addEventListener('click',event=>{if(!popover.hidden&&!popover.contains(event.target)&&!edit.contains(event.target))closeSettings()});document.getElementById('wc-form').addEventListener('submit',event=>{event.preventDefault();const target=new Date(dateInput.value).getTime();if(!dateInput.value||!Number.isFinite(target)||target<=Date.now()){toast('지금보다 이후의 날짜와 시간을 선택해 주세요');dateInput.focus();return}state={name:nameInput.value.trim().slice(0,60)||'다음 일정',target,createdAt:Date.now(),notified:false};const stored=persist();closeSettings();paint();if(stored)toast('카운트다운을 설정했어요');edit.focus()});panel.querySelectorAll('[data-wc-minutes]').forEach(button=>button.addEventListener('click',()=>{const minutes=Number(button.dataset.wcMinutes),now=Date.now(),active=state&&state.target>now;state={name:active?state.name:'다음 일정',target:(active?state.target:now)+minutes*60000,createdAt:active?state.createdAt:now,notified:false};const stored=persist();closeSettings();paint();if(stored)toast(minutes+'분을 추가했어요')}));document.getElementById('wc-reset').addEventListener('click',()=>{state=null;const stored=persist();closeSettings();paint();if(stored)toast('카운트다운을 초기화했어요')});window.addEventListener('storage',event=>{if(event.key!==key)return;try{const saved=JSON.parse(event.newValue||'null');if(!saved)state=null;else if(typeof saved.target==='number'&&Number.isFinite(saved.target)&&saved.target>0&&!Number.isNaN(new Date(saved.target).getTime()))state={name:typeof saved.name==='string'?saved.name.slice(0,60):'다음 일정',target:saved.target,createdAt:typeof saved.createdAt==='number'&&Number.isFinite(saved.createdAt)&&saved.createdAt<saved.target?saved.createdAt:saved.target-60000,notified:saved.notified===true};paint()}catch{}});paint();setInterval(paint,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)paint()})})();
 
-if(new URLSearchParams(location.search).get("page")==="game")document.querySelector('.page-tab[data-page="3"]').click();
+const initialPage={home:0,today:1,work:2,game:3}[new URLSearchParams(location.search).get("page")];if(initialPage!==undefined)document.querySelector('.page-tab[data-page="'+initialPage+'"]').click();
 </script></body></html>
