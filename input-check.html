@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Xenon Edge · 입력 확인</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { background: #090e1b; color: #edf5ff; }
+    body { margin: 0; min-height: 100vh; min-height: 100dvh; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { width: min(100%, 1600px); margin: 0 auto; padding: clamp(18px, 3vw, 42px); }
+    h1 { margin: 0 0 14px; font-size: clamp(30px, 3vw, 48px); line-height: 1.15; }
+    .instructions { margin: 0 0 24px; color: #c8d5e9; font-size: clamp(24px, 2vw, 28px); line-height: 1.5; }
+    label { display: block; margin-bottom: 12px; color: #d5ffbc; font-size: 24px; font-weight: 700; }
+    input { display: block; width: 100%; min-height: 94px; padding: 20px 24px; border: 2px solid #586880; border-radius: 16px; background: #121c30; color: #fff; font: inherit; font-size: clamp(40px, 3vw, 48px); }
+    input::placeholder { color: #899bb5; }
+    input:focus { outline: 3px solid #b5ff83; outline-offset: 4px; border-color: #b5ff83; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 28px 0 22px; }
+    .metric { min-width: 0; padding: 18px 20px; border: 1px solid #35445e; border-radius: 14px; background: #111b2d; }
+    .metric dt { margin-bottom: 10px; color: #c5d3e7; font-size: 24px; line-height: 1.3; }
+    .metric dd { margin: 0; color: #caffae; font-size: clamp(28px, 2.6vw, 40px); font-weight: 750; font-variant-numeric: tabular-nums; }
+    button { min-height: 56px; padding: 12px 26px; border: 1px solid #b5ff83; border-radius: 12px; background: #b5ff83; color: #13210d; font: inherit; font-size: 24px; font-weight: 750; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #edf5ff; outline-offset: 4px; }
+    .note { margin: 18px 0 0; color: #acbbd2; font-size: 24px; line-height: 1.5; }
+    @media (max-width: 640px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .metric { padding: 14px 12px; }
+      input { padding: 16px; }
+    }
+    @media (max-width: 320px) {
+      .metrics { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>키보드 입력 확인</h1>
+    <p class="instructions">아래 칸을 누른 뒤 키보드로 글자를 입력해 주세요.</p>
+    <label for="check-input">입력 확인</label>
+    <input id="check-input" type="text" aria-label="입력 확인" placeholder="여기에 입력" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <dl class="metrics" aria-label="입력 상태">
+      <div class="metric"><dt>입력칸 누름</dt><dd id="pointer-count">0</dd></div>
+      <div class="metric"><dt>키보드 신호</dt><dd id="key-count">0</dd></div>
+      <div class="metric"><dt>글자 입력</dt><dd id="input-count">0</dd></div>
+      <div class="metric"><dt>입력칸 선택됨</dt><dd id="input-focus">아니오</dd></div>
+      <div class="metric"><dt>웹 화면 활성</dt><dd id="document-focus">아니오</dd></div>
+      <div class="metric"><dt>한글 조합 중</dt><dd id="composing">아니오</dd></div>
+    </dl>
+    <button id="reset" type="button">초기화</button>
+    <p class="note">입력 내용과 누른 키는 저장하거나 전송하지 않습니다.</p>
+  </main>
+  <script>
+    (() => {
+      const input = document.getElementById('check-input');
+      const display = {
+        pointer: document.getElementById('pointer-count'),
+        key: document.getElementById('key-count'),
+        input: document.getElementById('input-count'),
+        inputFocus: document.getElementById('input-focus'),
+        documentFocus: document.getElementById('document-focus'),
+        composing: document.getElementById('composing')
+      };
+      let pointerCount = 0;
+      let keyCount = 0;
+      let inputCount = 0;
+      let composing = false;
+
+      function render() {
+        display.pointer.textContent = String(pointerCount);
+        display.key.textContent = String(keyCount);
+        display.input.textContent = String(inputCount);
+        display.inputFocus.textContent = document.activeElement === input ? '예' : '아니오';
+        display.documentFocus.textContent = document.hasFocus() ? '예' : '아니오';
+        display.composing.textContent = composing ? '예' : '아니오';
+      }
+
+      input.addEventListener('pointerdown', () => { pointerCount += 1; render(); });
+      input.addEventListener('keydown', () => { keyCount += 1; render(); });
+      input.addEventListener('input', renderInputEvent);
+      function renderInputEvent() { inputCount += 1; render(); }
+      input.addEventListener('compositionstart', () => { composing = true; render(); });
+      input.addEventListener('compositionend', () => { composing = false; render(); });
+      input.addEventListener('blur', () => { composing = false; render(); });
+      document.addEventListener('focusin', render);
+      document.addEventListener('focusout', render);
+      window.addEventListener('focus', render);
+      window.addEventListener('blur', render);
+      document.getElementById('reset').addEventListener('click', () => {
+        input.value = '';
+        pointerCount = 0;
+        keyCount = 0;
+        inputCount = 0;
+        composing = false;
+        render();
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
