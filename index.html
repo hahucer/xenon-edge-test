@@ -166,7 +166,11 @@ body{font-size:20px}
 .event-card.compact .event-name{font-size:clamp(18px,2.7cqw,23px)}
 .dday-badge,.event-card.compact .dday-badge{min-width:70px;font-size:clamp(16px,2.3cqw,20px);padding:9px 11px}
 .event-add-popover{top:84px;width:min(560px,calc(100% - 32px));padding:16px}
-.event-form{grid-template-columns:minmax(0,1fr) 145px 125px 46px}
+.event-form{grid-template-columns:minmax(0,1fr) minmax(90px,.8fr) 46px;gap:8px}
+.event-form #event-name{grid-column:1/-1;grid-row:1}
+.event-form #event-date{grid-column:1;grid-row:2}
+.event-form #event-time{grid-column:2;grid-row:2}
+.event-form .add-btn{grid-column:3;grid-row:2}
 .event-form .field{font-size:18px;padding:10px}
 .work-memo{line-height:1.6;padding:16px}
 .work-note-icon{width:50px;height:50px}
@@ -248,7 +252,7 @@ body{font-size:20px}
   .event-form{grid-template-columns:minmax(0,1fr) 36px}
   .event-form #event-date{grid-column:1;grid-row:2}
   .event-form #event-time{grid-column:1;grid-row:3}
-  .event-form .add-btn{grid-column:2;grid-row:1/span 3}
+  .event-form .add-btn{grid-column:2;grid-row:2/span 2}
   .event-form .field,.wc-form .field{font-size:16px}
   .work-note-icon{width:40px;height:42px}
   .work-note-icon svg{width:23px;height:23px}
