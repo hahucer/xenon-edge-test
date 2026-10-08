@@ -324,6 +324,64 @@ function Write-JsonResponse($Stream, [int]$Status, [string]$Reason, $Value, [str
     $bytes = $Utf8.GetBytes(($Value | ConvertTo-Json -Depth 10 -Compress))
     Write-HttpResponse $Stream $Status $Reason $bytes 'application/json; charset=utf-8' $Origin
 }
+function Write-EventStreamHeaders($Stream, [string]$Origin) {
+    $headers = [Collections.Generic.List[string]]::new()
+    $headers.Add('HTTP/1.1 200 OK')
+    $headers.Add('Content-Type: text/event-stream; charset=utf-8')
+    $headers.Add('Cache-Control: no-store, max-age=0')
+    $headers.Add('X-Content-Type-Options: nosniff')
+    $headers.Add('X-Accel-Buffering: no')
+    $headers.Add('Connection: keep-alive')
+    $headers.Add('Transfer-Encoding: chunked')
+    if ($AllowedOrigins.Contains($Origin)) {
+        $headers.Add("Access-Control-Allow-Origin: $Origin")
+        $headers.Add('Vary: Origin')
+    }
+    $bytes = [Text.Encoding]::ASCII.GetBytes(($headers -join "`r`n") + "`r`n`r`n")
+    $Stream.Write($bytes, 0, $bytes.Length)
+}
+function Dashboard-EventBytes {
+    $json = (Public-State $script:DashboardState) | ConvertTo-Json -Depth 10 -Compress
+    return ,($Utf8.GetBytes("event: dashboard`ndata: $json`n`n"))
+}
+function Write-EventStreamChunk($Stream, [byte[]]$Payload) {
+    # One complete HTTP chunk per write; SSE receives the unchunked UTF-8 event.
+    $prefix = [Text.Encoding]::ASCII.GetBytes(('{0:X}' -f $Payload.Length) + "`r`n")
+    $bytes = [byte[]]::new($prefix.Length + $Payload.Length + 2)
+    [Buffer]::BlockCopy($prefix, 0, $bytes, 0, $prefix.Length)
+    [Buffer]::BlockCopy($Payload, 0, $bytes, $prefix.Length, $Payload.Length)
+    $bytes[$bytes.Length - 2] = 13
+    $bytes[$bytes.Length - 1] = 10
+    $Stream.Write($bytes, 0, $bytes.Length)
+}
+function Remove-DashboardSubscriber([int]$Index) {
+    $subscriber = $script:DashboardSubscribers[$Index]
+    try { $subscriber.stream.Dispose() } catch {}
+    try { $subscriber.client.Close() } catch {}
+    $script:DashboardSubscribers.RemoveAt($Index)
+}
+function Test-DashboardSubscriber($Subscriber) {
+    try {
+        if (-not $Subscriber.client.Connected) { return $false }
+        if ($Subscriber.client.Client.Poll(0, [Net.Sockets.SelectMode]::SelectRead) -and $Subscriber.client.Available -eq 0) { return $false }
+        return $true
+    } catch { return $false }
+}
+function Prune-DashboardSubscribers {
+    for ($i = $script:DashboardSubscribers.Count - 1; $i -ge 0; $i--) {
+        if (-not (Test-DashboardSubscriber $script:DashboardSubscribers[$i])) { Remove-DashboardSubscriber $i }
+    }
+}
+function Broadcast-Dashboard {
+    if ($script:DashboardSubscribers.Count -eq 0) { return }
+    $bytes = Dashboard-EventBytes
+    for ($i = $script:DashboardSubscribers.Count - 1; $i -ge 0; $i--) {
+        $subscriber = $script:DashboardSubscribers[$i]
+        if (-not (Test-DashboardSubscriber $subscriber)) { Remove-DashboardSubscriber $i; continue }
+        try { Write-EventStreamChunk $subscriber.stream $bytes }
+        catch { Remove-DashboardSubscriber $i }
+    }
+}
 function Is-RequestTimeout($Exception) {
     while ($null -ne $Exception) {
         if ($Exception -is [TimeoutException]) { return $true }
@@ -333,16 +391,25 @@ function Is-RequestTimeout($Exception) {
     return $false
 }
 
+$script:DashboardSubscribers = [Collections.Generic.List[object]]::new()
 $listener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, $Port)
 $listener.Start()
 try {
     # Only the process that owns the loopback listener may initialize the store.
     $script:DashboardState = Load-State
     Write-Output "Xenon Edge dashboard bridge: http://127.0.0.1:$Port (loopback only)"
+    $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
     while ($true) {
+        if ([DateTime]::UtcNow -ge $nextHeartbeat) {
+            Broadcast-Dashboard
+            $nextHeartbeat = [DateTime]::UtcNow.AddSeconds(3)
+        }
+        if (-not $listener.Pending()) { Start-Sleep -Milliseconds 50; continue }
         $client = $listener.AcceptTcpClient()
         $stream = $null
         $origin = ''
+        $persistent = $false
+        $eventStreamStarted = $false
         try {
             # Browsers may open idle preconnections. Do not let one block ready requests.
             if (-not $client.Client.Poll(200000, [Net.Sockets.SelectMode]::SelectRead) -or $client.Available -eq 0) {
@@ -355,7 +422,7 @@ try {
             $origin = [string]$headers['Origin']
             if (-not $AllowedHosts.Contains([string]$headers['Host'])) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'host_not_allowed' }; continue }
             if ($headers.ContainsKey('Origin') -and -not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_not_allowed' }; continue }
-            $knownPath = $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/now-playing')
+            $knownPath = $request.path -cin @('/', '/index.html', '/game.html', '/dashboard', '/dashboard/events', '/now-playing')
             if (-not $knownPath) { Write-JsonResponse $stream 404 'Not Found' @{ error = 'not_found' } $origin; continue }
             if ($request.method -ceq 'OPTIONS') {
                 if (-not $AllowedOrigins.Contains($origin)) { Write-JsonResponse $stream 403 'Forbidden' @{ error = 'origin_required' }; continue }
@@ -376,11 +443,26 @@ try {
                 try { $body = ConvertFrom-Json -InputObject ($Utf8.GetString($request.bytes)) -ErrorAction Stop } catch { Invalid-Data 'invalid_json_or_utf8' }
                 $operations = Valid-Batch $body
                 $result = Apply-Batch $operations
+                Broadcast-Dashboard
                 Write-JsonResponse $stream 200 'OK' $result $origin
                 continue
             }
             if ($request.method -cne 'GET') { Write-JsonResponse $stream 405 'Method Not Allowed' @{ error = 'method_not_allowed' } $origin; continue }
             switch -CaseSensitive ($request.path) {
+                '/dashboard/events' {
+                    Prune-DashboardSubscribers
+                    if ($script:DashboardSubscribers.Count -ge 16) {
+                        Write-JsonResponse $stream 503 'Service Unavailable' @{ error = 'event_stream_limit' } $origin
+                    } else {
+                        $client.NoDelay = $true
+                        $stream.WriteTimeout = 100
+                        $eventStreamStarted = $true
+                        Write-EventStreamHeaders $stream $origin
+                        Write-EventStreamChunk $stream (Dashboard-EventBytes)
+                        $script:DashboardSubscribers.Add(@{ client = $client; stream = $stream })
+                        $persistent = $true
+                    }
+                }
                 '/dashboard' { Write-JsonResponse $stream 200 'OK' (Public-State $script:DashboardState) $origin }
                 '/now-playing' { Write-JsonResponse $stream 200 'OK' (Get-NowPlaying) $origin }
                 default {
@@ -391,13 +473,21 @@ try {
                 }
             }
         } catch {
-            if ($null -ne $stream) {
+            if ($null -ne $stream -and -not $eventStreamStarted) {
                 try {
                     if ($_.Exception -is [ArgumentException]) { Write-JsonResponse $stream 400 'Bad Request' @{ error = $_.Exception.Message } $origin }
                     elseif (Is-RequestTimeout $_.Exception) { Write-JsonResponse $stream 408 'Request Timeout' @{ error = 'request_timeout' } $origin }
                     else { Write-JsonResponse $stream 500 'Internal Server Error' @{ error = 'request_failed'; message = 'Reload /dashboard to check the current saved state.' } $origin }
                 } catch {}
             }
-        } finally { if ($null -ne $stream) { $stream.Dispose() }; $client.Close() }
+        } finally {
+            if (-not $persistent) {
+                if ($null -ne $stream) { $stream.Dispose() }
+                $client.Close()
+            }
+        }
     }
-} finally { $listener.Stop() }
+} finally {
+    for ($i = $script:DashboardSubscribers.Count - 1; $i -ge 0; $i--) { Remove-DashboardSubscriber $i }
+    $listener.Stop()
+}

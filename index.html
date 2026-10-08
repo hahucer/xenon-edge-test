@@ -316,6 +316,10 @@ html[data-mode="edge"] .events-panel .remove-btn {
   let contactedServer = false;
   let lastSuccess = 0;
   let lastError = "연결 대기";
+  let pushConnection = null;
+  let lastPush = 0;
+  let pushSerial = 0;
+  let renderRetry = false;
 
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
   function newId() {
@@ -442,6 +446,7 @@ html[data-mode="edge"] .events-panel .remove-btn {
     const reason = storageFailed ? "브라우저 저장을 사용할 수 없음" : pending.length ? "변경 사항 전송 대기" : lastError || "연결 확인 대기";
     const label = "위젯 자동 동기화 · " + (connected ? "연결됨" : reason);
     badge.dataset.state = connected ? "connected" : "disconnected";
+    badge.dataset.transport = lastPush && Date.now() - lastPush <= FRESH_MS ? "push" : "poll";
     if (badge.getAttribute("aria-label") !== label) {
       badge.setAttribute("aria-label", label);
       badge.title = label;
@@ -450,12 +455,16 @@ html[data-mode="edge"] .events-panel .remove-btn {
   function publish() {
     const next = optimisticView();
     const signature = JSON.stringify(next);
-    if (signature !== viewSignature) {
+    if (signature !== viewSignature || renderRetry) {
       view = next;
       viewSignature = signature;
       writeJSON("edge-tasks", view.tasks);
       writeJSON("edge-events", view.events);
-      listeners.forEach(listener => { try { listener(); } catch (error) { console.error(error); } });
+      renderRetry = false;
+      listeners.forEach(listener => {
+        try { listener(); }
+        catch (error) { renderRetry = true; console.error(error); }
+      });
     }
     paintStatus();
   }
@@ -501,6 +510,7 @@ html[data-mode="edge"] .events-panel .remove-btn {
       if (match) eventIds.set(item.id, match.id);
     });
     pending.forEach(op => {
+      const previousPayload = JSON.stringify(op);
       if (op.kind === "task.set" || op.kind === "task.remove") op.id = taskIds.get(op.id) || op.id;
       else if (op.kind === "event.remove") op.id = eventIds.get(op.id) || op.id;
       else if (op.kind === "task.add") op.item.id = taskIds.get(op.item.id) || op.item.id;
@@ -509,6 +519,8 @@ html[data-mode="edge"] .events-panel .remove-btn {
         op.tasks.forEach(item => { item.id = taskIds.get(item.id) || item.id; });
         op.events.forEach(item => { item.id = eventIds.get(item.id) || item.id; });
       }
+      // A response for the old payload must not acknowledge a newly remapped operation.
+      if (JSON.stringify(op) !== previousPayload) op.opId = newId();
     });
     persistPending();
   }
@@ -558,6 +570,31 @@ html[data-mode="edge"] .events-panel .remove-btn {
   const host = window.location.hostname;
   const loopback = (host === "127.0.0.1" || host === "localhost") && window.location.port === "47831";
   const endpoint = loopback ? new URL("/dashboard", window.location.origin).href : "http://127.0.0.1:47831/dashboard";
+  function receivePush(state) {
+    if (base && base.storeId === state.storeId && state.revision < base.revision) return;
+    lastPush = Date.now();
+    pushSerial += 1;
+    // Keep pending edits over the snapshot; only POST responses acknowledge operations.
+    acceptState(state);
+    if (pending.length) schedule(0);
+  }
+  function openPushConnection() {
+    if (!started || pushConnection || typeof window.EventSource !== "function") return;
+    try {
+      // Network events deliver changes without waiting for embedded-browser timers.
+      pushConnection = new EventSource(endpoint + "/events", { withCredentials: false });
+      pushConnection.addEventListener("dashboard", event => {
+        try { receivePush(checkedState(JSON.parse(event.data))); }
+        catch (error) { console.warn("Edge Desk 실시간 연결:", error && error.message); }
+      });
+      pushConnection.addEventListener("error", () => {
+        lastPush = 0;
+        paintStatus();
+        // EventSource reconnects automatically. Keep ordinary reads as a fallback.
+        schedule(0);
+      });
+    } catch (_) { pushConnection = null; }
+  }
   async function request(batch) {
     const abort = new AbortController();
     const timeout = setTimeout(() => abort.abort(), 3000);
@@ -586,10 +623,15 @@ html[data-mode="edge"] .events-panel .remove-btn {
     if (!started || inFlight) return;
     inFlight = true;
     runAgain = false;
+    const requestPushSerial = pushSerial;
     try {
       const batch = contactedServer && pending.length ? nextBatch() : null;
-      const state = await request(batch);
-      if (base && base.storeId === state.storeId && state.revision < base.revision) throw new Error("저장소 응답 순서 오류");
+      let state = await request(batch);
+      if (base && pushSerial > requestPushSerial && state.storeId !== base.storeId) return;
+      if (base && base.storeId === state.storeId && state.revision < base.revision) {
+        if (pushSerial > requestPushSerial) state = base;
+        else throw new Error("저장소 응답 순서 오류");
+      }
       if (batch) {
         // A successful POST acknowledges this batch only; newer edits remain durable and optimistic.
         const acknowledged = new Set(batch.map(op => op.opId));
@@ -603,8 +645,10 @@ html[data-mode="edge"] .events-panel .remove-btn {
       acceptState(state);
     } catch (error) {
       if (lastError !== (error && error.message)) console.warn("Edge Desk 동기화:", error && error.message);
-      contactedServer = false;
-      lastError = error && error.name === "AbortError" ? "연결 확인 대기" : error && error.message || "연동 프로그램 연결 안 됨";
+      if (!(contactedServer && pushSerial > requestPushSerial && Date.now() - lastPush <= FRESH_MS)) {
+        contactedServer = false;
+        lastError = error && error.name === "AbortError" ? "연결 확인 대기" : error && error.message || "연동 프로그램 연결 안 됨";
+      }
       paintStatus();
     } finally {
       inFlight = false;
@@ -619,7 +663,10 @@ html[data-mode="edge"] .events-panel .remove-btn {
     setInterval(paintStatus, 1000);
     window.addEventListener("online", () => schedule(0));
     window.addEventListener("focus", () => schedule(0));
+    window.addEventListener("pageshow", () => { openPushConnection(); syncOnce(); });
+    document.addEventListener("pointerdown", () => syncOnce(), { passive: true });
     document.addEventListener("visibilitychange", () => { if (!document.hidden) schedule(0); });
+    openPushConnection();
     schedule(0);
   }
   publish();
