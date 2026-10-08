@@ -19,8 +19,9 @@ button,input{font:inherit}button{color:inherit;cursor:pointer}.app{width:100%;mi
 .work-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:12px;min-height:360px}.work-panel{background:radial-gradient(ellipse at 15% 0%,#29345f55,transparent 55%),linear-gradient(145deg,#111831,#0b1022)}.work-memo{flex:1;min-height:170px;width:100%;resize:none;padding:clamp(14px,1.4vw,22px);border:1px solid #344064;border-radius:12px;background:#090f22;color:#eef2ff;font:clamp(13px,1vw,18px)/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;outline:none}.work-memo::placeholder{color:#7582a1}.work-memo:focus{border-color:#78916b;box-shadow:0 0 0 2px #b5ff8314}.work-note-status{color:#9ba8c6;font-size:10px;white-space:nowrap}.work-note-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.work-note-actions button{min-height:40px}.work-grid button:focus-visible{outline:2px solid #b5ff83;outline-offset:2px}@media(max-width:700px){.work-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(350px,auto))}.work-memo{min-height:230px}}
 .work-note-icon{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;padding:0}.work-note-icon svg{width:20px;height:20px}
 .work-calc-panel{background:radial-gradient(ellipse at 50% 0%,#214b4166,transparent 58%),linear-gradient(145deg,#111831,#0b1022);outline:none}.work-calc-panel:focus-visible{border-color:#b5ff83;box-shadow:0 0 0 2px #b5ff8329}.work-calc-panel .panel-head{margin-bottom:11px}.work-calc-screen{flex:0 0 auto;min-height:84px;display:flex;flex-direction:column;justify-content:center;gap:8px;margin-bottom:10px;padding:12px 16px;border:1px solid #344064;border-radius:12px;background:linear-gradient(120deg,#152a283d,#080d1df0);text-align:right;overflow:hidden}.work-calc-expression{min-height:14px;overflow:hidden;color:#9ba8c6;font-size:10px;font-weight:750;white-space:nowrap;text-overflow:ellipsis}.work-calc-result{display:block;overflow:hidden;color:#f4f6ff;font-size:clamp(28px,3.3vw,48px);font-weight:850;line-height:1.06;letter-spacing:-.035em;font-variant-numeric:tabular-nums;white-space:nowrap;text-overflow:ellipsis}.work-calc-result.is-error{color:#ffbecd;font-size:clamp(17px,1.5vw,23px);letter-spacing:0}.work-calc-keys{min-height:0;flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(5,minmax(30px,1fr));gap:7px}.work-calc-key{min-width:0;min-height:30px;border:1px solid #35436e;border-radius:10px;background:linear-gradient(135deg,#182143,#11182f);color:#edf2ff;font-size:clamp(13px,1.2vw,18px);font-weight:850;touch-action:manipulation;transition:background .12s,border-color .12s,transform .12s}.work-calc-key:hover{border-color:#7181ba;background:#223056}.work-calc-key:active{transform:scale(.97)}.work-calc-key:focus-visible{outline:2px solid #b5ff83;outline-offset:1px}.work-calc-utility{color:#c8d5f9}.work-calc-operation{border-color:#526345;background:linear-gradient(135deg,#b5ff8326,#477d6526);color:#e1ffd0}.work-calc-equals{border-color:#c9ffad;background:#d9ffc3;color:#15210e;box-shadow:0 0 15px #b5ff831c}.work-calc-equals:hover{border-color:#eaffdc;background:#edffe2}.work-calc-hint{margin-top:9px;color:#7785a5;font-size:9px;text-align:center}@media(max-width:700px){.work-calc-panel{min-height:370px}.work-calc-keys{grid-template-rows:repeat(5,minmax(40px,1fr))}.work-calc-result{font-size:38px}}/* Work countdown */.work-countdown-panel{position:relative;container-type:inline-size;background:radial-gradient(ellipse at 75% 0%,#2b3c6355,transparent 58%),linear-gradient(145deg,#111831,#0b1022)}.wc-edit{color:#d6ffbb;flex:0 0 auto}.wc-content{flex:1;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px 0}.wc-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#d6ffbb;font-size:12px;font-weight:850}.wc-display{margin:16px 0 12px;font-size:clamp(28px,4vw,86px);font-size:clamp(28px,14cqw,86px);font-weight:850;line-height:1;letter-spacing:-.055em;font-variant-numeric:tabular-nums;color:#f4f6ff;text-shadow:0 0 32px #9fc5ff24;white-space:nowrap}.wc-display.wc-long{font-size:clamp(24px,3vw,66px);font-size:clamp(24px,10cqw,66px)}.wc-status{color:#9ba8c6;font-size:10px;font-weight:750;min-height:15px}.work-countdown-panel.wc-ended .wc-status{color:#caffae}.wc-track{height:4px;overflow:hidden;border-radius:99px;background:#283353;width:80%;margin-top:22px}.wc-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#b5ff83,#99edc4);transition:width .4s linear}.wc-detail{display:flex;flex-direction:column;gap:6px;padding:11px 12px;margin-bottom:10px;border:1px solid #303d64;border-radius:10px;background:#0b1227;min-width:0}.wc-detail span{color:#8491af;font-size:9px;font-weight:800;letter-spacing:.06em}.wc-detail strong{color:#e5ecff;font-size:11px;font-weight:750;overflow-wrap:anywhere}.wc-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.wc-controls .control-btn{padding:10px 5px;border-color:#7b8cac;background:#0b1227;color:#e5ecff}.wc-controls .control-btn:hover{border-color:#b5ff83;background:#b5ff8312}.wc-reset{margin-top:8px;background:transparent;color:#9ba8c6;border-color:#344064}.wc-reset:hover{color:#d6ffbb;border-color:#768b65}.wc-popover{position:absolute;z-index:4;top:58px;right:16px;width:min(330px,calc(100% - 32px));padding:14px;border:1px solid #526345;border-radius:12px;background:#0d1427f5;box-shadow:0 14px 38px #0009,0 0 18px #b5ff8318;backdrop-filter:blur(12px)}.wc-popover[hidden]{display:none}.wc-form{display:flex;flex-direction:column;gap:7px}.wc-form label{color:#c5d1e8;font-size:10px;font-weight:800}.wc-form .field{width:100%;font-size:12px}.wc-form label:not(:first-child){margin-top:5px}.wc-form-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:5px}.wc-edit:focus-visible,.wc-controls button:focus-visible,.wc-reset:focus-visible{outline:2px solid #b5ff83;outline-offset:2px}@media(max-width:700px){.wc-content{min-height:200px}.work-countdown-panel{min-height:380px}}
-/* All three dashboard tabs keep equal side-by-side panels. */
-.app{height:100vh;height:100dvh;grid-template-rows:auto minmax(0,1fr)}
+/* Fit the actual iframe and leave a safe inset around all four pages. */
+html,body{width:100%;height:100%;min-width:0;min-height:0;margin:0;overflow:hidden}
+.app{width:100%;max-width:100%;height:100%;min-width:0;min-height:0;padding:16px 24px 24px;grid-template-rows:auto minmax(0,1fr)}
 .home-grid,.columns[data-view="1"],.work-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:12px;min-height:360px;height:100%}
 .columns>.panel{container-type:inline-size;min-height:0;padding:clamp(8px,1.1vw,22px)}
 .home-holiday-panel .panel-head,.home-music-panel .panel-head{flex-wrap:wrap}
@@ -416,11 +417,16 @@ body{font-size:20px}
 }
 .home-live-media .music-connection { font-size: clamp(14px, 3cqw, 18px); white-space: nowrap; }
 .home-live-media .now-playing-card {
+  --music-art-limit: 190px;
+  --music-card-inline-padding: 8px;
+  --music-card-gap: 14px;
+  --music-art-column-share: .333333;
+  --music-art-column-min: 80px;
   min-height: 0;
   flex: 1;
   display: grid;
   grid-template-columns: minmax(80px, .8fr) minmax(0, 1.6fr);
-  grid-template-rows: minmax(0, 1fr) auto auto minmax(24px, auto);
+  grid-template-rows: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 14px;
   padding: 12px 4px 0;
@@ -433,8 +439,11 @@ body{font-size:20px}
   position: relative;
   display: grid;
   place-items: center;
-  width: min(100%, 190px);
-  height: auto;
+  width: auto;
+  height: min(100%, var(--music-art-limit), max(var(--music-art-column-min), calc((100cqw - var(--music-card-inline-padding) - var(--music-card-gap)) * var(--music-art-column-share))));
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
   aspect-ratio: 1;
   border-radius: 18px;
   border: 1px solid #5c7552;
@@ -539,6 +548,7 @@ body{font-size:20px}
 .music-control:focus-visible { outline: 2px solid #b5ff83; outline-offset: 5px; }
 .home-live-media .music-control:disabled { opacity: .4; cursor: default; box-shadow: none; }
 .music-control-status { grid-column: 1 / -1; grid-row: 4; min-height: 22px; width: 100%; color: #aabbd7; text-align: center; font-size: clamp(13px, 2.7cqw, 17px); line-height: 1.25; }
+.home-live-media .music-control-status:empty { display: none; }
 @media (max-height: 760px) {
   .home-live-weather, .home-live-media { gap: 10px; }
   .home-live-weather .panel-head { flex: 0 0 auto; min-height: 0; margin: 0; }
@@ -557,15 +567,14 @@ body{font-size:20px}
   .home-live-weather .weather-detail-label { font-size: 16px; line-height: 1.15; }
   .home-live-weather .weather-detail-value { font-size: 22px; line-height: 1.15; }
   .home-live-weather .weather-updated { min-height: 16px; font-size: 15px; line-height: 1.1; }
-  .home-live-media .now-playing-card { gap: 12px; padding-top: 4px; }
+  .home-live-media .now-playing-card { --music-card-gap: 12px; gap: 12px; padding-top: 4px; }
 }
 @media (max-height: 520px) {
   .home-live-weather, .home-live-media { gap: 8px; padding: 14px; }
   .home-live-weather .home-clock { font-size: clamp(38px, 10cqw, 58px); }
   .home-live-weather .home-temp { font-size: clamp(40px, 10cqw, 60px); }
   .home-live-weather .home-weather-hero { min-height: 138px; padding: 9px 8px; }
-  .home-live-media .now-playing-card { gap: 8px; padding: 0; }
-  .home-live-media .now-playing-art { width: min(100%, 125px); }
+  .home-live-media .now-playing-card { --music-art-limit: 125px; --music-card-inline-padding: 0px; --music-card-gap: 8px; gap: 8px; padding: 0; }
   .home-live-media .now-playing-copy { gap: 6px; }
   .home-live-media .music-control.music-play { width: 58px; height: 58px; }
   .home-live-media .music-control.music-skip { width: 46px; height: 46px; }
@@ -577,7 +586,7 @@ body{font-size:20px}
   .weather-detail:nth-child(even) { border-left: 1px solid #34426490; }
   .home-live-weather .weather-detail-label { font-size: clamp(12px, 3.4cqw, 16px); }
   .home-live-weather .weather-detail-value { font-size: clamp(15px, 4.2cqw, 20px); }
-  .home-live-media .now-playing-card { grid-template-columns: minmax(70px, .85fr) minmax(0, 1.65fr); gap: 10px; }
+  .home-live-media .now-playing-card { --music-card-gap: 10px; --music-art-column-share: .34; --music-art-column-min: 70px; grid-template-columns: minmax(70px, .85fr) minmax(0, 1.65fr); gap: 10px; }
   .home-live-media .music-control-status { font-size: 13px; }
 }
 @container (max-width: 320px) {
@@ -604,11 +613,16 @@ body{font-size:20px}
 .home-holiday-panel .holiday-list::-webkit-scrollbar{display:none;width:0;height:0}
 
 /* Four original pages sit beside one another inside a fixed viewport. */
-.page-viewport{position:relative;min-width:0;min-height:0;width:100%;height:100%;overflow:hidden;isolation:isolate}
+.page-viewport{position:relative;min-width:0;min-height:0;width:100%;height:100%;overflow:hidden;isolation:isolate;touch-action:pan-y pinch-zoom}
 .page-rail{display:flex;align-items:stretch;width:100%;height:100%;min-width:0;min-height:0;gap:0;transform:translate3d(0,0,0)}
 .page-viewport .page-rail>.page-view{display:grid;flex:0 0 100%;width:100%;max-width:100%;height:100%;min-width:0;min-height:0;margin:0;box-sizing:border-box}
 .page-rail.page-rail-is-moving{will-change:transform;pointer-events:none}
-@media(prefers-reduced-motion:reduce){.page-rail.page-rail-is-moving{will-change:auto}}</style>
+.page-is-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+.page-is-dragging .page-rail{will-change:transform;pointer-events:none}
+.page-viewport input,.page-viewport textarea,.page-viewport select,.page-viewport [contenteditable],.page-viewport [role=slider]{touch-action:pan-y pinch-zoom}
+.page-viewport input[type=range]{touch-action:none}
+@media(prefers-reduced-motion:reduce){.page-rail.page-rail-is-moving{will-change:auto}}
+</style>
 </head>
 <body><div class="app">
 <header class="topbar"><div class="brand"><div class="brand-mark">✦</div><div><div class="brand-name">EDGE DESK</div><div class="brand-sub">PERSONAL CONTROL BAR</div></div></div><nav class="page-tabs" id="page-tabs" aria-label="페이지 메뉴"><button class="page-tab active" data-page="0">Home</button><button class="page-tab" data-page="1">Today</button><button class="page-tab" data-page="2">Work</button><button class="page-tab" data-page="3">Game</button><span class="sync-status" id="shared-status" data-state="disconnected" role="status" aria-live="polite" aria-label="위젯 자동 동기화 · 연결 대기" title="위젯 자동 동기화 · 연결 대기"><i class="sync-dot" aria-hidden="true"></i>위젯 자동 동기화</span></nav></header>
@@ -1950,6 +1964,8 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
 
   let activeIndex = Number((views.find(view => view.classList.contains('active')) || views[0]).dataset.view);
   let currentAnimation = null;
+  let gesture = null;
+  let suppressClickUntil = 0;
   let mayAnimate = false;
   let lastWidth = viewport.getBoundingClientRect().width;
 
@@ -2023,10 +2039,11 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     return 560 + Math.min(1, distance - 2) * 140;
   }
 
-  function navigate(index) {
+  function navigate(index, returnFromDrag = false) {
+    if (!returnFromDrag && gesture) finishGesture(null, true);
     const position = positionOf(index);
     const tab = tabs.find(button => Number(button.dataset.page) === index);
-    if (position < 0 || !tab || index === activeIndex) return;
+    if (position < 0 || !tab || (index === activeIndex && !returnFromDrag)) return;
     const offset = currentOffset();
     const width = viewport.getBoundingClientRect().width;
     cancelAt(offset);
@@ -2069,11 +2086,95 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
     else if (event.key === 'End') target = tabs[tabs.length - 1];
     if (target) { event.preventDefault(); target.focus({ preventScroll: true }); navigate(Number(target.dataset.page)); }
   });
-  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settle(); });
+
+  // Inputs keep their own editing/seek gestures. Ordinary cards and buttons
+  // can be swiped; a completed drag consumes its click before widget handlers.
+  const ownGesture = 'input,textarea,select,[contenteditable]:not([contenteditable="false"]),[role="slider"],audio,video,iframe,.event-add-popover,.wc-popover';
+  function finishGesture(event, cancelled = false) {
+    const drag = gesture;
+    if (!drag || (event && event.pointerId !== drag.pointerId)) return;
+    gesture = null;
+    viewport.classList.remove('page-is-dragging');
+    if (viewport.hasPointerCapture(drag.pointerId)) viewport.releasePointerCapture(drag.pointerId);
+    if (drag.atBoundary) { suppressClickUntil = performance.now() + 500; return; }
+    if (!drag.locked) return;
+    suppressClickUntil = performance.now() + 500;
+    const travelled = drag.x - drag.startX;
+    const velocity = (drag.x - drag.velocityX) / Math.max(1, drag.time - drag.velocityTime);
+    const distanceNeeded = Math.min(110, Math.max(48, drag.width * .045));
+    const quickSwipe = performance.now() - drag.time < 100 && Math.abs(travelled) >= 32 && Math.abs(velocity) >= .45 && Math.sign(velocity) === Math.sign(travelled);
+    let targetPosition = drag.position;
+    if (!cancelled && (Math.abs(travelled) >= distanceNeeded || quickSwipe)) {
+      targetPosition += travelled < 0 ? 1 : -1;
+    }
+    targetPosition = Math.max(0, Math.min(views.length - 1, targetPosition));
+    navigate(Number(views[targetPosition].dataset.view), true);
+  }
+  viewport.addEventListener('pointerdown', event => {
+    if (gesture) {
+      finishGesture(null, true);
+      return;
+    }
+    if (!event.isPrimary || event.button !== 0 || event.target.closest(ownGesture)) return;
+    const time = performance.now();
+    gesture = {
+      pointerId: event.pointerId, position: positionOf(activeIndex), locked: false,
+      startX: event.clientX, startY: event.clientY, x: event.clientX,
+      time, velocityX: event.clientX, velocityTime: time
+    };
+  });
+  viewport.addEventListener('pointermove', event => {
+    const drag = gesture;
+    if (!drag || event.pointerId !== drag.pointerId || drag.atBoundary) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.locked) {
+      if (Math.abs(dy) >= 12 && Math.abs(dy) >= Math.abs(dx)) { gesture = null; return; }
+      if (Math.abs(dx) < 12 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
+      // Endpoints do not loop around or send undocumented native-page commands.
+      if ((dx > 0 && drag.position === 0) || (dx < 0 && drag.position === views.length - 1)) { drag.atBoundary = true; return; }
+      drag.width = viewport.getBoundingClientRect().width;
+      if (!drag.width) { gesture = null; return; }
+      drag.offset = currentOffset();
+      drag.locked = true;
+      cancelAt(drag.offset);
+      viewport.setPointerCapture(drag.pointerId);
+      viewport.classList.add('page-is-dragging');
+    }
+    event.preventDefault();
+    const time = performance.now();
+    if (time - drag.velocityTime > 90) { drag.velocityX = drag.x; drag.velocityTime = drag.time; }
+    drag.x = event.clientX;
+    drag.time = time;
+    const shift = Math.max(-drag.width, Math.min(drag.width, dx));
+    const offset = Math.max(-(views.length - 1) * drag.width, Math.min(0, drag.offset + shift));
+    rail.style.transform = 'translate3d(' + offset + 'px,0,0)';
+  }, { passive: false });
+  viewport.addEventListener('pointerup', event => finishGesture(event));
+  viewport.addEventListener('pointercancel', event => finishGesture(event, true));
+  viewport.addEventListener('lostpointercapture', event => finishGesture(event, true));
+  viewport.addEventListener('pointerleave', event => {
+    if (gesture && !gesture.locked) finishGesture(event, true);
+  });
+  viewport.addEventListener('dragstart', event => {
+    if (gesture && !event.target.closest(ownGesture)) event.preventDefault();
+  });
+  document.addEventListener('pointerdown', event => {
+    if (!viewport.contains(event.target)) finishGesture(null, true);
+    suppressClickUntil = 0;
+  }, true);
+  document.addEventListener('click', event => {
+    if (event.detail > 0 && performance.now() < suppressClickUntil) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+  window.addEventListener('blur', () => finishGesture(null, true));
+  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) { finishGesture(null, true); settle(); } });
   if (typeof ResizeObserver === 'function') {
     new ResizeObserver(() => {
       const width = viewport.getBoundingClientRect().width;
-      if (Math.abs(width - lastWidth) > .5) { lastWidth = width; settle(); }
+      if (Math.abs(width - lastWidth) > .5) { lastWidth = width; finishGesture(null, true); settle(); }
     }).observe(viewport);
   } else window.addEventListener('resize', settle);
   markSelected(activeIndex);
@@ -2081,6 +2182,7 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   // The initial-page query script selects its page before this first frame.
   requestAnimationFrame(() => { mayAnimate = true; });
 })();
+
 </script>
 <script>
 const initialPage={home:0,today:1,work:2,game:3}[new URLSearchParams(location.search).get("page")];if(initialPage!==undefined)document.querySelector('.page-tab[data-page="'+initialPage+'"]').click();
