@@ -105,6 +105,165 @@ button,input{font:inherit}button{color:inherit;cursor:pointer}.app{width:100%;mi
 @media(max-aspect-ratio:2/1){.game-view{height:auto}}
 @container(max-width:480px){.lc-secondary{gap:10px}.lc-link{padding:15px 25px 15px 12px;gap:8px;min-height:84px}.lc-link-icon{width:28px;height:32px}.lc-link-icon svg{width:23px;height:23px}.lc-link strong{font-size:13px}.lc-small-external{right:9px;width:12px;height:12px}.lc-builder-copy{padding-left:20px}.lc-builder-copy strong{font-size:27px}}
 @media(prefers-reduced-motion:reduce){.lc-builder,.lc-link{transition:none}}
+/* Larger type for the Xenon Edge display. */
+body{font-size:20px}
+.topbar{position:relative;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:auto;min-height:70px}
+.brand{grid-column:1;grid-row:1;justify-self:start;min-width:0}
+.brand-mark{width:42px;height:42px;font-size:25px}
+.brand-name{font-size:22px}
+.brand-sub{font-size:11px}
+.page-tabs{position:relative;grid-column:2;grid-row:1;justify-self:center;gap:5px;padding:6px}
+.page-tab{min-width:106px;height:48px;padding:0 20px;font-size:22px}
+.sync-status{position:absolute;left:calc(100% + 20px);top:50%;transform:translateY(-50%);margin:0;font-size:14px}
+.sync-dot{width:8px;height:8px;flex:0 0 auto}
+.panel-title{font-size:clamp(26px,4.4cqw,34px);line-height:1.15}
+.kicker{font-size:clamp(12px,1.9cqw,15px);letter-spacing:.12em}
+.panel-head{gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.subtle,.timer-caption,.work-note-status{font-size:clamp(14px,2.1cqw,17px)}
+.field,.task-text,.work-memo{font-size:clamp(18px,2.8cqw,22px)}
+.field{padding:12px 14px}
+.task-row{min-height:58px;padding:12px 14px;gap:12px}
+.task-toggle{width:26px;height:26px;flex-basis:26px;font-size:19px}
+.task-count,.event-count{font-size:clamp(14px,2.2cqw,18px);padding:7px 10px}
+.task-progress-track{height:7px}
+.task-list,.event-list{gap:10px}
+.remove-btn{font-size:24px;width:28px;flex:0 0 auto}
+.add-btn,.icon-btn{min-width:46px;min-height:46px;font-size:25px}
+.control-btn,.preset{padding:11px 15px;font-size:clamp(17px,2.6cqw,21px)}
+.empty{font-size:clamp(16px,2.3cqw,20px);line-height:1.5}
+.timer-panel .timer-display{font-size:clamp(42px,17cqw,112px)}
+.timer-track{width:86%;max-width:520px;height:7px}
+.timer-custom-form{font-size:clamp(15px,2.2cqw,18px);gap:9px;grid-template-columns:auto minmax(80px,110px) auto auto;margin-top:16px}
+.timer-custom-form .field{width:100%;padding:9px 10px}
+.timer-custom-form .control-btn{padding:9px 14px}
+.home-location,.home-date-sub{font-size:clamp(16px,2.4cqw,20px);letter-spacing:.04em}
+.home-weather-block .home-condition{font-size:clamp(19px,2.8cqw,24px)}
+.home-weather-refresh{font-size:clamp(15px,2.2cqw,19px);padding:10px 13px}
+.home-weather-icon{font-size:clamp(44px,7cqw,68px)}
+.home-weather-block .home-temp{font-size:clamp(50px,10cqw,86px)}
+.home-temp-unit{font-size:clamp(22px,3.5cqw,30px)}
+.holiday-month-nav{gap:9px}
+.holiday-month-nav strong{font-size:clamp(18px,2.8cqw,22px);min-width:140px}
+.holiday-nav-btn{width:40px;height:40px;font-size:26px}
+.holiday-calendar{height:clamp(250px,42vh,320px);grid-template-rows:26px repeat(6,minmax(0,1fr));gap:5px}
+.holiday-weekday,.holiday-day{font-size:clamp(17px,2.7cqw,22px)}
+.holiday-weekday{height:26px}
+.holiday-item{min-height:43px;padding:9px 11px;gap:12px}
+.holiday-item-date,.holiday-item-name{font-size:clamp(16px,2.5cqw,20px)}
+.holiday-item-date{min-width:64px}
+.holiday-source,.music-note,.music-source{font-size:clamp(13px,1.9cqw,16px);line-height:1.4}
+.music-connection{font-size:clamp(14px,2cqw,17px);padding:7px 10px}
+.now-playing-state,.now-playing-artist{font-size:clamp(17px,2.6cqw,22px);line-height:1.4}
+.now-playing-title{font-size:clamp(23px,4cqw,34px)}
+.event-card.featured{grid-template-columns:82px minmax(0,1fr) auto 28px;min-height:122px;padding:15px;gap:14px}
+.event-date{font-size:15px}
+.event-card.featured .event-date{height:82px}
+.event-card.featured .event-date strong{font-size:30px}
+.event-card.featured .event-name{font-size:clamp(21px,3cqw,26px)}
+.event-time{font-size:clamp(18px,2.6cqw,22px)}
+.event-full-date,.event-card.compact .event-full-date{font-size:clamp(14px,2.1cqw,17px)}
+.event-card.compact{grid-template-columns:4px minmax(0,1fr) auto 28px;min-height:78px;padding:12px 14px;gap:12px}
+.event-card.compact .event-name{font-size:clamp(18px,2.7cqw,23px)}
+.dday-badge,.event-card.compact .dday-badge{min-width:70px;font-size:clamp(16px,2.3cqw,20px);padding:9px 11px}
+.event-add-popover{top:84px;width:min(560px,calc(100% - 32px));padding:16px}
+.event-form{grid-template-columns:minmax(0,1fr) 145px 125px 46px}
+.event-form .field{font-size:18px;padding:10px}
+.work-memo{line-height:1.6;padding:16px}
+.work-note-icon{width:50px;height:50px}
+.work-note-icon svg{width:26px;height:26px}
+.work-calc-screen{min-height:108px;padding:14px 18px}
+.work-calc-expression{min-height:24px;font-size:clamp(16px,2.4cqw,20px)}
+.work-calc-result{font-size:clamp(40px,8cqw,68px)}
+.work-calc-result.is-error{font-size:clamp(22px,4cqw,32px)}
+.work-calc-key{font-size:clamp(22px,3.7cqw,30px)}
+.wc-name{font-size:clamp(20px,3cqw,26px)}
+.wc-display{font-size:clamp(36px,14cqw,106px)}
+.wc-display.wc-long{font-size:clamp(28px,10cqw,76px)}
+.wc-status,.wc-detail span,.wc-form label{font-size:clamp(15px,2.2cqw,18px)}
+.wc-detail strong{font-size:clamp(18px,2.7cqw,22px)}
+.wc-detail{padding:14px}
+.wc-controls .control-btn{font-size:clamp(16px,2.5cqw,20px);padding:12px 5px}
+.wc-popover{top:84px;width:min(460px,calc(100% - 32px))}
+.wc-form .field{font-size:18px}
+.toast{font-size:18px;padding:12px 18px}
+.game-view{height:100%}
+.game-widget h2{font-size:clamp(28px,5cqw,40px)}
+.game-kicker,.lc-domain{font-size:14px}
+.lc-builder-copy strong{font-size:clamp(28px,5cqw,40px)}
+.lc-link strong{font-size:clamp(17px,3.5cqw,25px)}
+
+@media(max-width:1100px){
+  .topbar{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:14px;min-height:0}
+  .page-tabs{grid-column:1;grid-row:2;max-width:100%}
+  .sync-status{left:auto;right:0;top:-36px;transform:none;font-size:12px}
+}
+@media(max-width:700px){
+  .brand-name{font-size:18px}
+  .brand-sub{font-size:10px}
+  .brand-mark{width:36px;height:36px;font-size:23px}
+  .page-tabs{width:min(100%,470px);gap:3px;padding:5px}
+  .page-tab{flex:1;min-width:0;padding:0 8px;height:42px;font-size:18px}
+  .sync-status{font-size:11px}
+}
+@container(max-width:360px){
+  .panel-title{font-size:20px}
+  .kicker{font-size:11px;letter-spacing:.08em}
+  .panel-head{gap:8px;margin-bottom:14px}
+  .subtle,.timer-caption,.work-note-status{font-size:12px}
+  .field,.task-text,.work-memo{font-size:16px}
+  .field{padding:10px 8px}
+  .task-row{padding:10px 8px;gap:7px;min-height:48px}
+  .task-toggle{width:21px;height:21px;flex-basis:21px;font-size:16px}
+  .task-count,.event-count{font-size:13px;padding:5px 6px}
+  .remove-btn{width:19px;font-size:22px}
+  .add-btn,.icon-btn{min-width:36px;min-height:38px;width:36px;height:38px;font-size:22px}
+  .control-btn,.preset,.timer-controls .control-btn{font-size:14px;padding:9px 7px}
+  .empty{font-size:14px;padding:12px}
+  .timer-panel .timer-display{font-size:clamp(32px,20cqw,70px)}
+  .timer-custom-form{font-size:13px;grid-template-columns:auto minmax(36px,1fr) auto;gap:5px}
+  .timer-custom-form .control-btn{grid-column:1/-1;font-size:14px}
+  .home-location,.home-date-sub{font-size:13px}
+  .home-weather-block .home-condition{font-size:15px}
+  .home-weather-refresh{font-size:13px;padding:8px}
+  .holiday-month-nav strong{min-width:0;font-size:14px}
+  .holiday-nav-btn{width:27px;height:30px;font-size:22px;min-width:27px;min-height:30px}
+  .holiday-calendar{height:250px;gap:2px}
+  .holiday-weekday,.holiday-day{font-size:13px}
+  .holiday-item{padding:7px;gap:5px}
+  .holiday-item-date,.holiday-item-name{font-size:14px}
+  .holiday-item-date{min-width:0}
+  .holiday-source,.music-note,.music-source{font-size:11px}
+  .music-connection{font-size:12px}
+  .now-playing-state,.now-playing-artist{font-size:14px}
+  .now-playing-title{font-size:20px}
+  .event-card.featured{grid-template-columns:40px minmax(0,1fr) 18px;padding:8px;gap:7px}
+  .event-date{font-size:12px}
+  .event-card.featured .event-date{height:64px}
+  .event-card.featured .event-date strong{font-size:22px}
+  .event-card.featured .event-name,.event-card.compact .event-name{font-size:16px}
+  .event-time{font-size:14px}
+  .event-full-date,.event-card.compact .event-full-date{font-size:12px}
+  .event-card.featured .dday-badge,.event-card.compact .dday-badge{min-width:0;padding:5px;font-size:13px}
+  .event-card.compact{grid-template-columns:3px minmax(0,1fr) 18px;gap:6px;padding:9px}
+  .event-form{grid-template-columns:minmax(0,1fr) 36px}
+  .event-form #event-date{grid-column:1;grid-row:2}
+  .event-form #event-time{grid-column:1;grid-row:3}
+  .event-form .add-btn{grid-column:2;grid-row:1/span 3}
+  .event-form .field,.wc-form .field{font-size:16px}
+  .work-note-icon{width:40px;height:42px}
+  .work-note-icon svg{width:23px;height:23px}
+  .work-calc-screen{padding:12px 8px;min-height:90px}
+  .work-calc-expression{font-size:13px}
+  .work-calc-result{font-size:clamp(30px,10cqw,42px)}
+  .work-calc-key{font-size:20px}
+  .wc-name{font-size:18px}
+  .wc-display{font-size:clamp(26px,14cqw,70px)}
+  .wc-display.wc-long{font-size:clamp(20px,10cqw,50px)}
+  .wc-status,.wc-detail span,.wc-form label{font-size:13px}
+  .wc-detail strong{font-size:15px}
+  .wc-detail{padding:10px 7px}
+  .wc-controls .control-btn{font-size:12px;padding:11px 2px}
+}
 </style>
 </head>
 <body><div class="app">
