@@ -619,8 +619,12 @@ body{font-size:20px}
 .page-rail.page-rail-is-moving{will-change:transform;pointer-events:none}
 .page-is-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .page-is-dragging .page-rail{will-change:transform;pointer-events:none}
+/* Nested lists and clipped cards are scroll containers too. Declare the
+   horizontal gesture boundary on every inner surface before a touch starts;
+   the browser stops checking ancestors at the nearest scroll container. */
+.page-viewport .page-view,.page-viewport .page-view *{touch-action:pan-y pinch-zoom}
 .page-viewport input,.page-viewport textarea,.page-viewport select,.page-viewport [contenteditable],.page-viewport [role=slider]{touch-action:pan-y pinch-zoom}
-.page-viewport input[type=range]{touch-action:none}
+.page-viewport .page-view input[type=range],.page-viewport .page-view [role=slider]{touch-action:none}
 @media(prefers-reduced-motion:reduce){.page-rail.page-rail-is-moving{will-change:auto}}
 </style>
 </head>
