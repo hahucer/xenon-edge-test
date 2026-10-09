@@ -2093,6 +2093,11 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   function finishGesture(event, cancelled = false) {
     const drag = gesture;
     if (!drag || (event && event.pointerId !== drag.pointerId)) return;
+    // Touch hosts may batch the final movement into pointerup. Use the release
+    // position as well as pointermove, so the completed swipe is not shortened.
+    if (!cancelled && event && event.type === 'pointerup' && Number.isFinite(event.clientX)) {
+      drag.x = event.clientX;
+    }
     gesture = null;
     viewport.classList.remove('page-is-dragging');
     if (viewport.hasPointerCapture(drag.pointerId)) viewport.releasePointerCapture(drag.pointerId);
@@ -2152,7 +2157,12 @@ let holidayView=new Date();let holidayDataByYear={};const holidayMonthFormatter=
   }, { passive: false });
   viewport.addEventListener('pointerup', event => finishGesture(event));
   viewport.addEventListener('pointercancel', event => finishGesture(event, true));
-  viewport.addEventListener('lostpointercapture', event => finishGesture(event, true));
+  viewport.addEventListener('lostpointercapture', event => {
+    // Touch initially captures the touched card/button implicitly. Moving that
+    // capture to the viewport sends lostpointercapture from the old descendant;
+    // its bubbling event is a transfer, not cancellation of our swipe.
+    if (event.target === viewport && !viewport.hasPointerCapture(event.pointerId)) finishGesture(event, true);
+  });
   viewport.addEventListener('pointerleave', event => {
     if (gesture && !gesture.locked) finishGesture(event, true);
   });
